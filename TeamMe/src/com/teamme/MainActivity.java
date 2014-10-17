@@ -54,7 +54,7 @@ private void initilizeMap() {
         // check if map is created successfully or not
         if (googleMap != null) {
         	googleMap.setOnMapClickListener(new OnMapClickListener() {
-
+        		System.out.println("test");
         	    @Override
         	    public void onMapClick(LatLng point) {
         	          googleMap.addMarker(new MarkerOptions().position(point));
