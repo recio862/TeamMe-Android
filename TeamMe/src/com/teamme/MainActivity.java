@@ -3,20 +3,14 @@ package com.teamme;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.R;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
-
 
 public class MainActivity extends Activity {
     // Google Map
@@ -51,19 +45,21 @@ private void initilizeMap() {
     if (googleMap == null) {
         googleMap = ((MapFragment) getFragmentManager().findFragmentById(
                 R.id.map)).getMap();
-
+        if (googleMap != null){
+        	
+        }
         // check if map is created successfully or not
         if (googleMap != null) {
-        	googleMap.setOnMapClickListener(new OnMapClickListener() {
-        		System.out.println("test");
-        		System.out.println("test2");
-        	    @Override
-        	    public void onMapClick(LatLng point) {
-        	          googleMap.addMarker(new MarkerOptions().position(point));
-        	          // you can get latitude and longitude also from 'point'
-        	          // and using Geocoder, the address
-        	         }
+        	googleMap.setOnMapClickListener(new OnMapClickListener(){
+
+				@Override
+				public void onMapClick(LatLng point) {
+					// TODO Auto-generated method stub
+				    googleMap.addMarker(new MarkerOptions().position(point));        	     
+				}
+        		
         	});
+
         }
         // mf.currentLoc();
         // mf.addMarker();
