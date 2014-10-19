@@ -412,17 +412,20 @@ containing a value of this type.
         public static final int ic_plusone_small_off_client=0x7f020020;
         public static final int ic_plusone_standard_off_client=0x7f020021;
         public static final int ic_plusone_tall_off_client=0x7f020022;
-        public static final int powered_by_google_dark=0x7f020023;
-        public static final int powered_by_google_light=0x7f020024;
-        public static final int team=0x7f020025;
-        public static final int teamwork=0x7f020026;
-        public static final int up_arrow=0x7f020027;
+        public static final int options=0x7f020023;
+        public static final int powered_by_google_dark=0x7f020024;
+        public static final int powered_by_google_light=0x7f020025;
+        public static final int team=0x7f020026;
+        public static final int teamwork=0x7f020027;
+        public static final int up_arrow=0x7f020028;
     }
     public static final class id {
-        public static final int Button01=0x7f080018;
-        public static final int Button02=0x7f08001a;
-        public static final int VerticalLine=0x7f080019;
-        public static final int action_settings=0x7f08001c;
+        public static final int Button01=0x7f080019;
+        public static final int Button02=0x7f08001b;
+        public static final int VerticalLine1=0x7f080018;
+        public static final int VerticalLine2=0x7f08001a;
+        public static final int VerticalLine3=0x7f08001c;
+        public static final int action_settings=0x7f08001e;
         public static final int arrow_down=0x7f080016;
         public static final int arrow_up=0x7f080015;
         public static final int book_now=0x7f080010;
@@ -440,7 +443,7 @@ containing a value of this type.
         public static final int none=0x7f080000;
         public static final int normal=0x7f080001;
         public static final int production=0x7f080007;
-        public static final int root=0x7f08001b;
+        public static final int root=0x7f08001d;
         public static final int sandbox=0x7f080008;
         public static final int satellite=0x7f080002;
         public static final int selectionDetails=0x7f08000b;
@@ -458,7 +461,7 @@ containing a value of this type.
         public static final int popup=0x7f030002;
     }
     public static final class menu {
-        public static final int main=0x7f0b0000;
+        public static final int options=0x7f0b0000;
     }
     public static final class string {
         public static final int accept=0x7f060002;
@@ -588,8 +591,9 @@ containing a value of this type.
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f050009;
-        public static final int ChromeStylePopup=0x7f050008;
+        public static final int AppBaseTheme=0x7f05000a;
+        public static final int ChromeStylePopup=0x7f050009;
+        public static final int MyActionButtonOverflow=0x7f050008;
         public static final int Theme_IAPTheme=0x7f050000;
         public static final int WalletFragmentDefaultButtonTextAppearance=0x7f050003;
         public static final int WalletFragmentDefaultDetailsHeaderTextAppearance=0x7f050002;

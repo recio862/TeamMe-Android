@@ -18,8 +18,14 @@
         <LinearLayout 
              android:layout_width="match_parent"
                 android:layout_alignBottom="@+id/map"
-    android:layout_height="50dp"
+    android:layout_height="80dp"
     android:orientation="horizontal" >
+    <View
+        android:id="@+id/VerticalLine1"
+        android:layout_width="10dip"
+        android:layout_height="match_parent"
+        android:background="#aaa" 
+         android:alpha = "0.0"/>
        <Button 
               android:background="#FC8F00"
     android:textColor="@android:color/black"
@@ -28,13 +34,17 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
          android:layout_weight = "1"
-         android:onClick="clicked"
+           android:layout_marginBottom = "40dp"
+         android:onClick="clickedCreate"
+        android:alpha = "0.50"
        />
       <View
-        android:id="@+id/VerticalLine"
-        android:layout_width="1dip"
-        android:layout_height="match_parent"
-        android:background="#aaa" />
+        android:id="@+id/VerticalLine2"
+        android:layout_width="10dip"
+        android:layout_height="match_parent"   
+        android:background="#aaa" 
+        android:alpha = "0.0"
+        />
     <Button 
         android:background="#FC8F00"
     android:textColor="@android:color/black"
@@ -42,9 +52,17 @@
         android:id="@+id/Button02"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginBottom = "40dp"
         android:layout_weight = "1"
-        android:onClick="clicked"
+        android:onClick="clickedView"
+        android:alpha = "0.50"
         />
+    <View
+        android:id="@+id/VerticalLine3"
+        android:layout_width="10dip"
+        android:layout_height="match_parent"
+        android:background="#aaa"
+         android:alpha = "0.0" />
 </LinearLayout>
 
     </RelativeLayout>

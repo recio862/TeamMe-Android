@@ -2,6 +2,7 @@
 <resources>
     <style name="thin_ab" parent="android:Theme.Holo.Light">
         <item name="android:actionBarStyle" >@style/thin_ab_style</item>
+         <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
     </style>
 
     <style name="thin_ab_style" parent="android:Widget.Holo.ActionBar">
@@ -19,6 +20,12 @@
         
           </style>
           
+          
+
+<style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.ActionButton.Overflow">
+    <item name="android:src">@drawable/options</item>
+</style>
+
      <style name="ChromeStylePopup" parent="android:Widget.TextView">
 <item name="android:gravity">center</item>
 <item name="android:minHeight">50dp</item>

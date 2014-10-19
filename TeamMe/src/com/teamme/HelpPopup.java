@@ -1,6 +1,8 @@
 package com.teamme;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,6 +17,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.LatLng;
 import com.teamme.R;
 public class HelpPopup {
 	protected WindowManager mWindowManager;
@@ -35,10 +41,12 @@ public class HelpPopup {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		setContentView(layoutInflater.inflate(viewResource, null));
 		mHelpTextView = (TextView) mView.findViewById(R.id.text);
+		
 		mUpImageView = (ImageView) mView.findViewById(R.id.arrow_up);
 		mDownImageView = (ImageView) mView.findViewById(R.id.arrow_down);
 		mHelpTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mHelpTextView.setSelected(true);
+		mHelpTextView.setTextColor(0x88000000);
 	}
 	public HelpPopup(Context context) {
 		this(context, "", R.layout.popup);
@@ -47,6 +55,74 @@ public class HelpPopup {
 		this(context);
 		setText(text);
 	}
+	public void show(LatLng point, GoogleMap map, View myButton) {
+	
+		Projection projection = map.getProjection();
+
+	
+
+		LatLng markerLocation = point;
+	
+
+		Point screenPosition = projection.toScreenLocation(markerLocation);
+		
+	
+		preShow();
+		int[] location = new int[2];
+		location[0] = screenPosition.x;
+		location[1] = screenPosition.y;
+		Rect anchorRect = new Rect(location[0], location[1], location[0]
+				+ 10, location[1] + 10);
+		mView.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		int rootHeight = mView.getMeasuredHeight();
+		int rootWidth = mView.getMeasuredWidth();
+		final int screenWidth = mWindowManager.getDefaultDisplay().getWidth();
+		final int screenHeight = mWindowManager.getDefaultDisplay().getHeight();
+		int yPos = anchorRect.top - rootHeight;
+		boolean onTop = true;
+		if (anchorRect.top < screenHeight / 2) {
+			yPos = anchorRect.bottom;
+			onTop = false;
+		}
+		int whichArrow, requestedX;
+		//whichArrow = ((onTop) ? R.id.arrow_down : R.id.arrow_up);
+		whichArrow = R.id.arrow_down;
+		requestedX = anchorRect.centerX();
+		View arrow = whichArrow == R.id.arrow_up ? mUpImageView
+				: mDownImageView;
+		View hideArrow = whichArrow == R.id.arrow_up ? mDownImageView
+				: mUpImageView;
+		final int arrowWidth = arrow.getMeasuredWidth();
+		arrow.setVisibility(View.INVISIBLE);
+		//arrow.setVisibility(View.VISIBLE);
+		ViewGroup.MarginLayoutParams param = (ViewGroup.MarginLayoutParams) arrow
+				.getLayoutParams();
+		hideArrow.setVisibility(View.INVISIBLE);
+		int xPos = 0;
+		// ETXTREME RIGHT CLIKED
+		//if (anchorRect.left + rootWidth > screenWidth) {
+	//		xPos = (screenWidth - rootWidth);
+		//}
+		// ETXTREME LEFT CLIKED
+		//else if (anchorRect.left - (rootWidth / 2) < 0) {
+	///		xPos = anchorRect.left;
+	//	}
+		// INBETWEEN
+	//	else {
+			xPos = (anchorRect.centerX() - (rootWidth / 2));
+	//	}
+		param.leftMargin = (requestedX - xPos) - (arrowWidth / 2);
+		if (onTop) {
+			mHelpTextView.setMaxHeight(anchorRect.top - anchorRect.height());
+		} else {
+			mHelpTextView.setMaxHeight(screenHeight - yPos);
+		}
+		
+		mWindow.showAtLocation(myButton, Gravity.NO_GRAVITY, xPos, yPos);
+		mView.setAnimation(AnimationUtils.loadAnimation(mContext,
+				R.anim.float_anim));
+	}
+	
 	public void show(View anchor) {
 		preShow();
 		int[] location = new int[2];
@@ -78,17 +154,17 @@ public class HelpPopup {
 		hideArrow.setVisibility(View.INVISIBLE);
 		int xPos = 0;
 		// ETXTREME RIGHT CLIKED
-		if (anchorRect.left + rootWidth > screenWidth) {
-			xPos = (screenWidth - rootWidth);
-		}
+		//if (anchorRect.left + rootWidth > screenWidth) {
+	//		xPos = (screenWidth - rootWidth);
+		//}
 		// ETXTREME LEFT CLIKED
-		else if (anchorRect.left - (rootWidth / 2) < 0) {
-			xPos = anchorRect.left;
-		}
+		//else if (anchorRect.left - (rootWidth / 2) < 0) {
+	///		xPos = anchorRect.left;
+	//	}
 		// INBETWEEN
-		else {
+	//	else {
 			xPos = (anchorRect.centerX() - (rootWidth / 2));
-		}
+	//	}
 		param.leftMargin = (requestedX - xPos) - (arrowWidth / 2);
 		if (onTop) {
 			mHelpTextView.setMaxHeight(anchorRect.top - anchorRect.height());
