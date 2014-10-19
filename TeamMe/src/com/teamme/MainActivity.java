@@ -109,16 +109,16 @@ public class MainActivity extends Activity {
 			
 			// check if map is created successfully or not
 			if (googleMap != null) {
-				
-				Location location = googleMap.getMyLocation();
-
-				    if (location != null) {
-				    	myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-				        myLocation = new LatLng(location.getLatitude(),
-				                location.getLongitude());
-				    }
-				    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,
-				           13));
+//				
+//				Location location = googleMap.getMyLocation();
+//
+//				    if (location != null) {
+//				    	myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+//				        myLocation = new LatLng(location.getLatitude(),
+//				                location.getLongitude());
+//				    }
+//				    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,
+//				           13));
 				googleMap.setOnMarkerClickListener(new OnMarkerClickListener(){
 
 					@Override
