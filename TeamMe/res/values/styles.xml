@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="thin_ab" parent="android:Theme.Holo.Light">
+         <item name="android:popupMenuStyle">@style/MyApp.PopupMenu</item>
         <item name="android:actionBarStyle" >@style/thin_ab_style</item>
          <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
     </style>
@@ -20,10 +21,16 @@
         
           </style>
           
-          
+         
+
+   
+    <style name="MyApp.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
+       <item name="android:background">@android:color/black</item>
+        <item name="android:popupBackground">@drawable/overflow</item>
+    </style>
 
 <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.ActionButton.Overflow">
-    <item name="android:src">@drawable/options</item>
+    <item name="android:src">@drawable/options2</item>
 </style>
 
      <style name="ChromeStylePopup" parent="android:Widget.TextView">

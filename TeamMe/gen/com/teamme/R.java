@@ -413,11 +413,13 @@ containing a value of this type.
         public static final int ic_plusone_standard_off_client=0x7f020021;
         public static final int ic_plusone_tall_off_client=0x7f020022;
         public static final int options=0x7f020023;
-        public static final int powered_by_google_dark=0x7f020024;
-        public static final int powered_by_google_light=0x7f020025;
-        public static final int team=0x7f020026;
-        public static final int teamwork=0x7f020027;
-        public static final int up_arrow=0x7f020028;
+        public static final int options2=0x7f020024;
+        public static final int overflow=0x7f020025;
+        public static final int powered_by_google_dark=0x7f020026;
+        public static final int powered_by_google_light=0x7f020027;
+        public static final int team=0x7f020028;
+        public static final int teamwork=0x7f020029;
+        public static final int up_arrow=0x7f02002a;
     }
     public static final class id {
         public static final int Button01=0x7f080019;
@@ -425,7 +427,7 @@ containing a value of this type.
         public static final int VerticalLine1=0x7f080018;
         public static final int VerticalLine2=0x7f08001a;
         public static final int VerticalLine3=0x7f08001c;
-        public static final int action_settings=0x7f08001e;
+        public static final int action_settings=0x7f080021;
         public static final int arrow_down=0x7f080016;
         public static final int arrow_up=0x7f080015;
         public static final int book_now=0x7f080010;
@@ -433,13 +435,17 @@ containing a value of this type.
         public static final int buy_now=0x7f08000f;
         public static final int buy_with_google=0x7f08000e;
         public static final int classic=0x7f080011;
+        public static final int filtermap=0x7f08001e;
         public static final int grayscale=0x7f080012;
         public static final int holo_dark=0x7f080005;
         public static final int holo_light=0x7f080006;
         public static final int hybrid=0x7f080004;
+        public static final int logout=0x7f080022;
         public static final int map=0x7f080017;
         public static final int match_parent=0x7f08000c;
         public static final int monochrome=0x7f080013;
+        public static final int myprofile=0x7f08001f;
+        public static final int myteams=0x7f080020;
         public static final int none=0x7f080000;
         public static final int normal=0x7f080001;
         public static final int production=0x7f080007;
@@ -569,7 +575,11 @@ containing a value of this type.
         public static final int create_calendar_message=0x7f060005;
         public static final int create_calendar_title=0x7f060004;
         public static final int decline=0x7f060003;
+        public static final int filter_map=0x7f060027;
         public static final int hello_world=0x7f060024;
+        public static final int logout=0x7f06002a;
+        public static final int my_profile=0x7f060028;
+        public static final int my_teams=0x7f060029;
         public static final int store_picture_message=0x7f060001;
         public static final int store_picture_title=0x7f060000;
         public static final int title_activity_main=0x7f060026;
@@ -591,9 +601,10 @@ containing a value of this type.
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f05000a;
-        public static final int ChromeStylePopup=0x7f050009;
-        public static final int MyActionButtonOverflow=0x7f050008;
+        public static final int AppBaseTheme=0x7f05000b;
+        public static final int ChromeStylePopup=0x7f05000a;
+        public static final int MyActionButtonOverflow=0x7f050009;
+        public static final int MyApp_PopupMenu=0x7f050008;
         public static final int Theme_IAPTheme=0x7f050000;
         public static final int WalletFragmentDefaultButtonTextAppearance=0x7f050003;
         public static final int WalletFragmentDefaultDetailsHeaderTextAppearance=0x7f050002;
