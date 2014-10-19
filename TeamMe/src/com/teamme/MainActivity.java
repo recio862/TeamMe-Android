@@ -11,15 +11,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends Activity {
     // Google Map
     public GoogleMap googleMap;
-
+    
+    //Code to use popup- perhaps useful for first time users
+    public void clicked(View view) {
+  	HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap the map to select a location!");
+  	helpPopup.show(view);
+      }
+   	
+    
+    
 @Override
 protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+   
 
     try {
         Log.e("loading map. . . .", "loading map. . . ");
