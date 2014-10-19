@@ -32,6 +32,8 @@ public class HelpPopup {
 	protected View mView;
 	protected Drawable mBackgroundDrawable = null;
 	protected ShowListener showListener;
+	
+	
 	public HelpPopup(Context context, String text, int viewResource) {
 		mContext = context;
 		mWindow = new PopupWindow(context);
@@ -46,7 +48,8 @@ public class HelpPopup {
 		mDownImageView = (ImageView) mView.findViewById(R.id.arrow_down);
 		mHelpTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
 		mHelpTextView.setSelected(true);
-		mHelpTextView.setTextColor(0x88000000);
+		mHelpTextView.setTextColor(0xFF000000);
+//		mHelpTextView.setTextColor(0x88000000);
 	}
 	public HelpPopup(Context context) {
 		this(context, "", R.layout.popup);

@@ -1,27 +1,36 @@
 package com.teamme;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
+import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 public class MainActivity extends Activity {
 	// Google Map
 	public GoogleMap googleMap;
-	public Button myButton;
+	public Button createButton;
+	public Button viewButton;
+	public Marker myMarker;
+	public LatLng myLocation;
 
-
+	private boolean createEnabled = false;
+	private boolean viewEnabled = false;
 
 	//Quickfix to move maps zoom buttons to the top left so it doesnt interfere with the
 	//layout of the buttons
@@ -49,17 +58,20 @@ public class MainActivity extends Activity {
 			params.setMargins(margin, margin, margin, margin);
 		}
 	}
-	
-	
+
+
 	public void clickedCreate(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap a location first!");
-		helpPopup.show(view);
-
+		if (!createEnabled)
+			helpPopup.show(view);
+		else
+			CreateGame.newCreateGameDialog(myMarker, MainActivity.this);
 	}
 
 	public void clickedView(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap an existing activity first!");
-		helpPopup.show(view);
+		if (!viewEnabled)
+			helpPopup.show(view);
 
 	}
 
@@ -70,7 +82,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		fixZoom();
-		myButton = (Button)findViewById(R.id.Button01);
+		createButton = (Button)findViewById(R.id.Button01);
+
+		viewButton = (Button)findViewById(R.id.Button02);
 		try {
 			Log.e("loading map. . . .", "loading map. . . ");
 			// Loading map
@@ -92,19 +106,47 @@ public class MainActivity extends Activity {
 		if (googleMap == null) {
 			googleMap = ((MapFragment) getFragmentManager().findFragmentById(
 					R.id.map)).getMap();
-			if (googleMap != null){
-
-			}
+			
 			// check if map is created successfully or not
 			if (googleMap != null) {
+				
+				Location location = googleMap.getMyLocation();
+
+				    if (location != null) {
+				    	myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+				        myLocation = new LatLng(location.getLatitude(),
+				                location.getLongitude());
+				    }
+				    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,
+				           13));
+				googleMap.setOnMarkerClickListener(new OnMarkerClickListener(){
+
+					@Override
+					public boolean onMarkerClick(Marker arg0) {
+						
+						return true;
+					}
+					
+				});
 				googleMap.setOnMapClickListener(new OnMapClickListener(){
 
 					@Override
 					public void onMapClick(LatLng point) {
 						// TODO Auto-generated method stub
-						googleMap.addMarker(new MarkerOptions().position(point)); 
+						if (myMarker != null)
+							myMarker.remove();
+						// create marker
+						MarkerOptions markerOptions = new MarkerOptions().position(point).title("Create Game Here!");
+					
+						// Changing marker icon
+						markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+					
+						createButton.setAlpha((float) 1.0);
+						createEnabled = true;
+						
+						myMarker = googleMap.addMarker(markerOptions); 
 
-
+						
 					}
 
 				});
