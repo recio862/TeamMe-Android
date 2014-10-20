@@ -1,6 +1,7 @@
 package com.teamme;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.SyncStateContract.Constants;
@@ -8,7 +9,9 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,7 +53,7 @@ public class MainActivity extends Activity {
 
 			// Align it to - parent top|left
 			params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
 			// Update margins, set to 10dp
 			final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10,
@@ -64,8 +67,14 @@ public class MainActivity extends Activity {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap a location first!");
 		if (!createEnabled)
 			helpPopup.show(view);
-		else
-			CreateGame.newCreateGameDialog(myMarker, MainActivity.this);
+		else 
+		{
+			DialogFragment dialog = new CreateGameDialog();
+			dialog.show(getFragmentManager(), "CreateGameDialog");
+			
+			
+			
+		}
 	}
 
 	public void clickedView(View view) {
@@ -81,6 +90,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+	
 		fixZoom();
 		createButton = (Button)findViewById(R.id.Button01);
 
