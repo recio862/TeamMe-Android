@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ 
+ 
+    <string-array name="spinner_items">
+        <item>Soccer</item>
+        <item>Football</item>
+        <item>Disc Golf</item>
+        <item>Tennis</item>
+        <item>Biking</item>
+        <item>Bowling</item>
+        <item>Rock Climbing</item>
+        <item>Volleyball</item>
+    </string-array>
+ 
+</resources>
