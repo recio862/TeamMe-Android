@@ -440,6 +440,7 @@ containing a value of this type.
         public static final int VerticalLine1=0x7f080018;
         public static final int VerticalLine2=0x7f08001a;
         public static final int VerticalLine3=0x7f08001c;
+        public static final int about=0x7f08003e;
         public static final int action_settings=0x7f08003d;
         public static final int arrow_down=0x7f080016;
         public static final int arrow_up=0x7f080015;
@@ -464,7 +465,7 @@ containing a value of this type.
         public static final int linear5=0x7f080031;
         public static final int linear6=0x7f080035;
         public static final int linear7=0x7f080037;
-        public static final int logout=0x7f08003e;
+        public static final int logout=0x7f08003f;
         public static final int map=0x7f080017;
         public static final int match_parent=0x7f08000c;
         public static final int monochrome=0x7f080013;
@@ -507,6 +508,7 @@ containing a value of this type.
         public static final int options=0x7f0c0000;
     }
     public static final class string {
+        public static final int about=0x7f06002b;
         public static final int accept=0x7f060002;
         public static final int action_settings=0x7f060025;
         public static final int app_name=0x7f060023;

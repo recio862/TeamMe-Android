@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="thin_ab" parent="android:Theme.Holo.Light">
          <item name="android:popupMenuStyle">@style/MyApp.PopupMenu</item>
         <item name="android:actionBarStyle" >@style/thin_ab_style</item>
          <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
+         
     </style>
 
     <style name="thin_ab_style" parent="android:Widget.Holo.ActionBar">
         <item name="android:height">80dp</item>
         <item name="android:background">@android:color/black</item>
+        <item name="android:textStyle">bold</item>
+      
    
  <item name="android:titleTextStyle">@style/titleTextStyles</item>
     </style>
@@ -26,10 +29,13 @@
    
     <style name="MyApp.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
        <item name="android:background">@android:color/black</item>
+      <item name="android:alpha">0.7</item>
+      <item name="android:textStyle">bold</item>
         <item name="android:popupBackground">@drawable/overflow</item>
     </style>
 
 <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.ActionButton.Overflow">
+ 
     <item name="android:src">@drawable/options2</item>
 </style>
 

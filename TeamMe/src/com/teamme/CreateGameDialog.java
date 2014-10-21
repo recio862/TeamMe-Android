@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.Marker;
 
@@ -53,7 +57,7 @@ public class CreateGameDialog extends DialogFragment{
 
 		builder.setView(inflater.inflate(R.layout.create_dialog, null)).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-
+				
 			}
 		})
 		.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
@@ -64,10 +68,10 @@ public class CreateGameDialog extends DialogFragment{
 
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
-
-
-
-
+		
+		Log.d("before", "testing");
+		//RadioButton b = (RadioButton) dialog.findViewById(R.id.radio_pirates);
+		Log.d("after", "testing");
 		
 		return dialog;
 	}
@@ -75,6 +79,8 @@ public class CreateGameDialog extends DialogFragment{
 
 
 
-
+	public Dialog getDialog(){
+		return dialog;
+	}
 
 }

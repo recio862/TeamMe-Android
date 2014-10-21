@@ -9,5 +9,6 @@
 	 <string name="my_profile">My Profile</string>
 	 <string name="my_teams">My Teams</string>
 	 <string name="logout">Log Out</string>
+	  <string name="about">About</string>
 	 
 </resources>

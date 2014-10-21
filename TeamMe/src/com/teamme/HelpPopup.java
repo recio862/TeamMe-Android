@@ -1,6 +1,10 @@
 package com.teamme;
 
+
 import android.content.Context;
+
+
+
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -22,6 +26,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.teamme.R;
+
+//Credit: 
+// https://github.com/shardul/Android/tree/master/ChromeStyleHelpPopups/res/drawable
 public class HelpPopup {
 	protected WindowManager mWindowManager;
 	protected Context mContext;
