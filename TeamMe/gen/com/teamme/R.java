@@ -503,6 +503,7 @@ containing a value of this type.
         public static final int create_dialog=0x7f030001;
         public static final int main=0x7f030002;
         public static final int popup=0x7f030003;
+        public static final int settings_dialog=0x7f030004;
     }
     public static final class menu {
         public static final int options=0x7f0c0000;

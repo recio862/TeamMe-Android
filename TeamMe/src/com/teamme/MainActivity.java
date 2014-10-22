@@ -30,6 +30,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
@@ -54,6 +55,7 @@ public class MainActivity extends Activity {
 	public Button viewButton;
 	public Marker myMarker;
 	public LatLng myLocation;
+	private MarkerOptions markerOptions;
 	public AlertDialog dialog;
 	private boolean createEnabled = false;
 	private boolean viewEnabled = false;
@@ -91,6 +93,8 @@ public class MainActivity extends Activity {
 		LayoutInflater inflater = getLayoutInflater();
 		// 2. Chain together various setter methods to set the dialog characteristics
 
+		
+		if (id == 0){
 		builder.setView(inflater.inflate(R.layout.create_dialog, null)).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				
@@ -101,10 +105,20 @@ public class MainActivity extends Activity {
 				Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
 				gameCreated.setGravity(Gravity.CENTER, 0, 0);
 				gameCreated.show();
+				createButton.setAlpha((float)0.15);
+				markerOptions.alpha((float)(1.0));
+				myMarker = googleMap.addMarker(markerOptions); 
+				
+				markerOptions = null;
+				myMarker = null;
+				createEnabled=  false;
 				
 			}
 		});
 
+		}
+		else if (id == 1)
+			builder.setView(inflater.inflate(R.layout.settings_dialog, null));
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 
@@ -213,14 +227,17 @@ public class MainActivity extends Activity {
 					@Override
 					public void onMapClick(LatLng point) {
 						// TODO Auto-generated method stub
-						if (myMarker != null)
+						if (myMarker != null){
 							myMarker.remove();
+						}
 						// create marker
-						MarkerOptions markerOptions = new MarkerOptions().position(point).title("Create Game Here!");
-
+						markerOptions = new MarkerOptions().position(point).title("Create Game Here!");
+						
 						// Changing marker icon
 						markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-
+						markerOptions.alpha((float)0.15);
+						
+						
 						createButton.setAlpha((float) 0.70);
 
 						createEnabled = true;
@@ -238,6 +255,10 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	
+	public void settingsDialog(MenuItem item){
+		showDialog(1);
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
