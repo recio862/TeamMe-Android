@@ -7,6 +7,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK/google-play-services_lib"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="C:/Users/Zach/Downloads/json-20140107.jar"/>
+	<classpathentry kind="lib" path="libs/json-20140107.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
