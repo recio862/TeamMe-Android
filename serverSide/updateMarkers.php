@@ -1,5 +1,6 @@
 <?php
 include_once "db_connect.php";
+var_dump($_POST)
 if (isset($_POST)):
 $insertUser = $database->prepare('
     INSERT INTO markers
