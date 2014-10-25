@@ -1,18 +1,13 @@
 use locationData;
 
 /* more information on phone?*/
-CREATE TABLE if not exists APP_USERS (
-	USER_ID INTEGER unsigned PRIMARY KEY,
-	USER_LAT FLOAT NOT NULL,
-	USER_LNG FLOAT NOT NULL
+create table if not exists app_users (
+	user_id integer unsigned primary key,
+	user_lat float not null,
+	user_lng float not null
 	) ENGINE=InnoDB;
 
-CREATE TABLE if not exists SEQ (
-    NAME VARCHAR(30) PRIMARY KEY,
-    CURRENT_VALUE INTEGER NOT NULL 
-)ENGINE=InnoDB;
-
-CREATE TABLE if not exists markers (
+create table if not exists markers (
     marker_id integer unsigned auto_increment primary key,
     lat float not null,
     lng float not null,
@@ -26,6 +21,12 @@ create table if not exists user_profile(
     user_image blob
     ) engine=InnoDB;
 
+
+
+CREATE TABLE if not exists SEQ (
+    NAME VARCHAR(30) PRIMARY KEY,
+    CURRENT_VALUE INTEGER NOT NULL 
+)ENGINE=InnoDB;
 -- The use of LAST_INSERT_ID is a MySQL-specific trick to
 -- eliminate the need for an explicit transaction here.
 
