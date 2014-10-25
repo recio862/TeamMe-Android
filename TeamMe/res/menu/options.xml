@@ -1,53 +1,39 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.teamme.MainActivity" >
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-      <item
-        android:id="@+id/filtermap"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/filter_map"
-        />
-        
-  
-     <item
-        android:id="@+id/myprofile"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/my_profile"/>
-     
-      <item
-        android:id="@+id/myteams"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/my_teams"/>
-     
-       
-        <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"
-        android:onClick="settingsDialog"/>
-       
-        
-         <item
-        android:id="@+id/about"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/about"
-        android:onClick="aboutDialog"
-        />
-       
-       
-       
-         <item
-        android:id="@+id/logout"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        
-        android:title="@string/logout"/>
-      
-    
+    <item
+        android:id="@+id/mainMenu"
+        android:icon="@drawable/options2"
+        android:showAsAction="always"
+        android:title="Menu">
+        <menu>
+            <item
+                android:id="@+id/filtermap"
+                android:icon = "@drawable/filteroverflow"
+                android:title="@string/filter_map"/>
+            <item
+                android:id="@+id/myprofile"
+                android:icon="@drawable/profileoverflow"
+                android:title="@string/my_profile"/>
+            <item
+                android:id="@+id/myteams"
+                android:icon="@drawable/teamoverflow"
+                android:title="@string/my_teams"/>
+            <item
+                android:id="@+id/action_settings"
+                android:onClick="settingsDialog"
+                android:icon = "@drawable/settingsoverflow"
+                android:title="@string/action_settings"/>
+            <item
+                android:id="@+id/about"
+                android:icon="@drawable/about"
+                android:onClick="aboutDialog"
+                android:title="@string/about"/>
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/logoutoverflow"
+                android:title="@string/logout"/>
+        </menu>
+    </item>
 
 </menu>
