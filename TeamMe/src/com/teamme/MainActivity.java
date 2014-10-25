@@ -132,6 +132,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 		else if (id == 1)
 			builder.setView(inflater.inflate(R.layout.settings_dialog, null));
+		else if (id==2)
+			builder.setView(inflater.inflate(R.layout.about_dialog, null));
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 
@@ -263,6 +265,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 	
 	public void settingsDialog(MenuItem item){
 		showDialog(1);
+	}
+	public void aboutDialog(MenuItem item){
+		showDialog(2);
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
