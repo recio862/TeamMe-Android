@@ -10,5 +10,7 @@
 	 <string name="my_teams">My Teams</string>
 	 <string name="logout">Log Out</string>
 	  <string name="about">About</string>
-	 
+	 <string name="about_text">TeamMe! is an app designed to help users find local games
+	     or activities that they can join and save the teams they play with so that they can
+	     keep in touch with them and play more in the future.</string>
 </resources>

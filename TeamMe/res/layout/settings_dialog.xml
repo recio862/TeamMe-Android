@@ -1,24 +1,28 @@
- <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            >
-  
-<RelativeLayout 
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
-    
- 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:background="#FF000000"
-        android:contentDescription="@string/app_name"
-        android:scaleType="center" />
+            android:orientation="horizontal" >
 
-   </RelativeLayout>
-   
+            <TextView
+                android:id="@+id/sound_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="Sound"
+                android:textColor="#FC8F00"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
+            <Switch
+                android:id="@+id/sound_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
   
- </ScrollView>
+
+</ScrollView>
