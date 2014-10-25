@@ -1,19 +1,7 @@
 package com.teamme;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,7 +11,6 @@ import android.content.DialogInterface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -47,8 +34,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.teamme.Networking.AsyncResponse;
+import com.teamme.Networking.CoordParameters;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements AsyncResponse {
 	// Google Map
 	public GoogleMap googleMap;
 	public Button createButton;
@@ -57,10 +46,34 @@ public class MainActivity extends Activity {
 	public LatLng myLocation;
 	private MarkerOptions markerOptions;
 	public AlertDialog dialog;
+	public Networking messagePasser;
+	public Networking.DownloadMarkersTask finalPasser;
+	public static String jsonDownloadedMarkersString;
+	
 	private boolean createEnabled = false;
 	private boolean viewEnabled = false;
+	
+	//passes data from the async networking thread to ui thread after results are returned
+    public void gotMarkers(String jsonDownloadedMarkersString){
+			try{
+				final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
+				Toast.makeText(getApplicationContext(), "22222" , Toast.LENGTH_LONG).show();
+//				Log.d("LAT", "meow" + geodata.toString());
+	
+				//Toast.makeText(getApplicationContext(), geodata.toString() , Toast.LENGTH_LONG).show();
 
-	//Quickfix to move maps zoom buttons to the top left so it doesnt interfere with the
+				final int n = geodata.length();
+				for (int i = 0; i < n; i++) {
+					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
+					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
+					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
+					googleMap.addMarker(markerOptions); 
+				}
+			}catch(JSONException e) {
+				throw new RuntimeException(e);
+			}
+	}
+	//Quickfix to move maps zoom buttons to the top left so it doesn't interfere with the
 	//layout of the buttons
 	//http://stackoverflow.com/questions/14071230/android-maps-library-v2-zoom-controls-custom-position
 	public void fixZoom(){
@@ -95,7 +108,7 @@ public class MainActivity extends Activity {
 
 		
 		if (id == 0){
-		builder.setView(inflater.inflate(R.layout.create_dialog, null)).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+			builder.setView(inflater.inflate(R.layout.create_dialog, null)).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				
 			}
@@ -122,14 +135,9 @@ public class MainActivity extends Activity {
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 
-
 		return dialog;
 	}
-
-
-
-
-
+	
 	public void clickedCreate(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap a location first!");
 		if (!createEnabled)
@@ -153,8 +161,6 @@ public class MainActivity extends Activity {
 
 	}
 
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -162,12 +168,12 @@ public class MainActivity extends Activity {
 		
 		fixZoom();
 		createButton = (Button)findViewById(R.id.Button01);
-
+		messagePasser = new Networking(MainActivity.this);
 		viewButton = (Button)findViewById(R.id.Button02);
 		try {
 			Log.e("loading map. . . .", "loading map. . . ");
 			// Loading map
-			initilizeMap();
+			initializeMap();
 
 		} catch (Exception e) {
 			Log.e("catch. . .", "catch. . .");
@@ -179,7 +185,7 @@ public class MainActivity extends Activity {
 	/**
 	 * function to load map. If map is not created it will create it for you
 	 * */
-	private void initilizeMap() {
+	private void initializeMap() {
 		// MapFunctionality mf = new MapFunctionality();
 		Log.e("initializing map. . . ", "initializing map. . ");
 		if (googleMap == null) {
@@ -189,7 +195,9 @@ public class MainActivity extends Activity {
 			// check if map is created successfully or not
 			if (googleMap != null) {
 
-
+				finalPasser = messagePasser.new DownloadMarkersTask();
+				finalPasser.responder = this;
+				finalPasser.execute("http://72.182.49.84:80/android/project/grabMarkers.php?id=1"); 
 				googleMap.setMyLocationEnabled(true);
 				//Location location = googleMap.getMyLocation();
 				LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -198,8 +206,6 @@ public class MainActivity extends Activity {
 				Location location = locationManager.getLastKnownLocation(provider);
 				if (location != null) {
 					myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-					myLocation = new LatLng(location.getLatitude(),
-							location.getLongitude());
 					googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,
 							14));
 				}
@@ -209,7 +215,6 @@ public class MainActivity extends Activity {
 					CameraUpdate utAustin = CameraUpdateFactory.newLatLngZoom(coordinate, 14);
 					googleMap.animateCamera(utAustin);
 				}
-
 
 				googleMap.setOnMarkerClickListener(new OnMarkerClickListener(){
 
@@ -236,14 +241,14 @@ public class MainActivity extends Activity {
 						// Changing marker icon
 						markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 						markerOptions.alpha((float)0.15);
-						
+
 						
 						createButton.setAlpha((float) 0.70);
 
 						createEnabled = true;
-
+						CoordParameters params = new CoordParameters("http://72.182.49.84:80/android/project/updateMarkers.php", point, "0");
+						messagePasser.new SendCoordsTask().execute(params); 
 						myMarker = googleMap.addMarker(markerOptions); 
-
 
 
 					}
@@ -269,171 +274,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		initilizeMap();
-	}
-
-
-//inspired by http://stackoverflow.com/questions/12069669/how-can-you-pass-multiple-primitive-parameters-to-asynctask
-public static class CoordParameters {
-	String url;
-	LatLng position;
-	String userId;
-	CoordParameters(String url1, LatLng pos, String userId1){
-		this.position = pos;
-		this.url = url1;
-		this.userId = userId1;
-	}
-}
-
-//from the Android cookbook by Wei Meng lee, GET
-
-	public static InputStream OpenHttpGETConnection(String url) {
-		InputStream inputStream = null;
-		try {
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
-			inputStream = httpResponse.getEntity().getContent();
-		} catch (Exception e){
-			Log.d("InputStream", e.getLocalizedMessage());
-		}
-		return inputStream;
-	}
-	private class DownloadMarkersTask extends AsyncTask<String, Void, String> {
-		protected String doInBackground(String... urls){
-			return DownloadMarkers(urls[0]);			
-		}
-		
-		private String DownloadMarkers(String URL) {
-			int BUFFER_SIZE = 2000;
-			InputStream in = null;
-			try {
-				in = OpenHttpGETConnection(URL);
-			} catch(Exception e) {
-				Log.d("Download Markers", e.getLocalizedMessage());
-				return " ";
-			}
-			
-			InputStreamReader isr = new InputStreamReader(in);
-			int charRead;
-			String str = "";
-			char[] inputBuffer = new char[BUFFER_SIZE];
-			try {
-				while ((charRead = isr.read(inputBuffer)) > 0) {
-					///convert chars to string
-					String readString = String.copyValueOf(inputBuffer, 0, charRead);
-					str += readString;
-					inputBuffer = new char[BUFFER_SIZE];
-				}
-				in.close();
-			} catch(IOException e) {
-				Log.d("DownloadText", e.getLocalizedMessage());
-				return "";
-				}
-			return str;
-		}
-		
-		@Override
-		protected void onPostExecute(String result){
-			Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
-			Log.d("DownloadMarkersTask", result);
-		}
-	}
-	
-//from the Android cookbook by Wei Meng lee, POST
-	public InputStream OpenHttpPOSTConnection(String url, LatLng point, String userId) {
-		InputStream inputStream = null;
-		try{
-			//HttpParams httpParameters = new BasicHttpParams();
-			//HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
-			//HttpConnectionParams.setSoTimeout(httpParameters, 10000+12000);
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httpPost = new HttpPost(url);
-			//httpPost.setParams(httpParameters);
-			httpPost.addHeader("Host", "72.182.49.84");
-			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
-			List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-			nameValuePairs.add(new BasicNameValuePair("lat", String.valueOf(point.latitude)));
-			nameValuePairs.add(new BasicNameValuePair("lng",String.valueOf(point.longitude)));
-			nameValuePairs.add(new BasicNameValuePair("user_id",userId));
-			
-			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-			 //HttpProtocolParams.setUseExpectContinue(httpclient.getParams(), false);
-			 //HttpProtocolParams.setVersion(httpclient.getParams(), HttpVersion.HTTP_1_1);
-			 //HttpConnectionParams.setStaleCheckingEnabled(httpclient.getParams(), true);
-			/*
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
-			inputStream = httpResponse.getEntity().getContent();*/
-
-			HttpResponse httpResponse = httpclient.execute(httpPost);
-			inputStream = httpResponse.getEntity().getContent();
-			//HttpEntity entity = httpResponse.getEntity();
-	        //String logResponse = EntityUtils.toString(entity);
-	        //final String TAG = "server response";
-	        //Log.v(TAG,logResponse);
-		} catch(Exception e) {
-			Log.d("OpenHttpPOSTConnection", e.getLocalizedMessage());
-		}
-		return inputStream;
-	}
-
-	private class SendCoordsTask extends AsyncTask<CoordParameters, Void, String>{
-		protected String doInBackground(CoordParameters... params){
-			String url1 = params[0].url;
-			Log.d("URL", url1);
-			LatLng point = params[0].position;
-			Log.d("Position", point.toString());
-			String user1 = params[0].userId;
-			Log.d("User", user1);
-			return sendCoords(url1,point,user1);
-		}
-		
-		private String sendCoords(String URL, LatLng point, String userId) {
-			int BUFFER_SIZE = 2000;
-			InputStream in = null;
-			try {
-				in = OpenHttpPOSTConnection(URL, point, userId);
-				if (in == null){
-					Log.d("IN", "meow1");
-					//throw NoHttpResponseException;
-					return "";
-				}
-				//Scanner scanner = new Scanner(in).useDelimiter("\\A");
-				//String stringinput = scanner.hasNext() ? scanner.next() : null;
-				//scanner.close();
-				//Log.d("IN", stringinput);
-
-			} catch(Exception e) {
-				Log.d("Networking", e.getLocalizedMessage());
-				//Log.d("IN", "meow");
-
-				return "";
-			}
-			//Log.d("IN", "meow1");
-
-			InputStreamReader isr = new InputStreamReader(in);
-			int charRead;
-			String str = " ";
-			char [] inputBuffer = new char[BUFFER_SIZE];
-			try {
-				while ((charRead = isr.read(inputBuffer)) > 0) {
-					//convert chars to a String
-					String readString = String.copyValueOf(inputBuffer, 0, charRead);
-					str += readString;
-					inputBuffer = new char[BUFFER_SIZE];
-				}
-				in.close();
-			} catch (IOException e) {
-				Log.d("SendCoords", e.getLocalizedMessage());
-				return "";
-			}
-			return str;
-		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
-			Log.d("SendCoordsTask", result);
-		}
+		initializeMap();
 	}
 }
