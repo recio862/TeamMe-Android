@@ -499,10 +499,10 @@ containing a value of this type.
         public static final int sound_switch=0x7f08003c;
         public static final int spinner1=0x7f08002d;
         public static final int strict_sandbox=0x7f080009;
+        public static final int teamName=0x7f080026;
         public static final int terrain=0x7f080003;
         public static final int text=0x7f080014;
         public static final int timePicker1=0x7f08003b;
-        public static final int username=0x7f080026;
         public static final int username5=0x7f08002f;
         public static final int wrap_content=0x7f08000d;
     }
