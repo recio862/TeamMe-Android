@@ -71,6 +71,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
 					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
+					markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum"))));
 					googleMap.addMarker(markerOptions); 
 				}
 			}catch(Exception e) {
@@ -102,6 +103,43 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 	}
 
+	private BitmapDescriptor getIconFromActivityNum(int activityNum){
+		
+		BitmapDescriptor icon = (BitmapDescriptorFactory.fromResource(R.drawable.marker));
+		switch (activityNum){
+		case 1:
+			icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccer));
+			break;
+		case 2:
+			icon =(BitmapDescriptorFactory.fromResource(R.drawable.football));
+			break;
+		case 3:
+			icon =(BitmapDescriptorFactory.fromResource(R.drawable.frisbee));
+			break;
+		case 4:
+			icon =(BitmapDescriptorFactory.fromResource(R.drawable.tennis));
+			break;
+		case 5:
+			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bike));
+			break;
+		case 6:
+			
+			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowling));
+			break;
+		case 7:
+			
+			icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbing));
+			break;
+		case 8:
+			icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyball));
+			break;
+		}
+		
+		return icon;
+		
+		
+		
+	}
 	protected Dialog onCreateDialog(int id) {
 		// 1. Instantiate an AlertDialog.Builder with its constructor
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -132,39 +170,32 @@ public class MainActivity extends Activity implements AsyncResponse {
 				String activity = spinnerActivity.getSelectedItem().toString();
 				Integer activityNum = 0;
 				//see spinner_items in res/values/arrays.xml
-				BitmapDescriptor icon = (BitmapDescriptorFactory.fromResource(R.drawable.marker));
+				
 				switch (activity){
 				case "Soccer":
 					activityNum = 1;
-					icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccer));
+					
 					break;
 				case "Football":
 					activityNum = 2;
-					icon =(BitmapDescriptorFactory.fromResource(R.drawable.football));
 					break;
 				case "Disc Golf":
 					activityNum = 3;
-					icon =(BitmapDescriptorFactory.fromResource(R.drawable.frisbee));
 					break;
 				case "Tennis":
 					activityNum = 4;
-					icon =(BitmapDescriptorFactory.fromResource(R.drawable.tennis));
 					break;
 				case "Biking":
 					activityNum = 5;
-					icon =(BitmapDescriptorFactory.fromResource(R.drawable.bike));
 					break;
 				case "Bowling":
 					activityNum = 6;
-					icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowling));
 					break;
 				case "Rock Climbing":
 					activityNum = 7;
-					icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbing));
 					break;
 				case "Volleyball":
 					activityNum = 8;
-					icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyball));
 					break;
 				}
 				String teamName = edTxtTeamName.getText().toString();
@@ -182,9 +213,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 				gameCreated.setGravity(Gravity.CENTER, 0, 0);
 				gameCreated.show();
 				createButton.setAlpha((float)0.15);
-				markerOptions.icon(icon);
-				myMarker = googleMap.addMarker(markerOptions); 
+				myMarker.setIcon(getIconFromActivityNum(activityNum));
 				
+			
 				markerOptions = null;
 				myMarker = null;
 				createEnabled=  false;
