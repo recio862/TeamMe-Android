@@ -33,6 +33,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -131,30 +132,39 @@ public class MainActivity extends Activity implements AsyncResponse {
 				String activity = spinnerActivity.getSelectedItem().toString();
 				Integer activityNum = 0;
 				//see spinner_items in res/values/arrays.xml
+				BitmapDescriptor icon = (BitmapDescriptorFactory.fromResource(R.drawable.marker));
 				switch (activity){
 				case "Soccer":
 					activityNum = 1;
+					icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccer));
 					break;
 				case "Football":
 					activityNum = 2;
+					icon =(BitmapDescriptorFactory.fromResource(R.drawable.football));
 					break;
 				case "Disc Golf":
 					activityNum = 3;
+					icon =(BitmapDescriptorFactory.fromResource(R.drawable.frisbee));
 					break;
 				case "Tennis":
 					activityNum = 4;
+					icon =(BitmapDescriptorFactory.fromResource(R.drawable.tennis));
 					break;
 				case "Biking":
 					activityNum = 5;
+					icon =(BitmapDescriptorFactory.fromResource(R.drawable.bike));
 					break;
 				case "Bowling":
 					activityNum = 6;
+					icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowling));
 					break;
 				case "Rock Climbing":
 					activityNum = 7;
+					icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbing));
 					break;
 				case "Volleyball":
 					activityNum = 8;
+					icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyball));
 					break;
 				}
 				String teamName = edTxtTeamName.getText().toString();
@@ -172,7 +182,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 				gameCreated.setGravity(Gravity.CENTER, 0, 0);
 				gameCreated.show();
 				createButton.setAlpha((float)0.15);
-				markerOptions.alpha((float)(1.0));
+				markerOptions.icon(icon);
 				myMarker = googleMap.addMarker(markerOptions); 
 				
 				markerOptions = null;
@@ -291,8 +301,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 						
 						// Changing marker icon
 						markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-						markerOptions.alpha((float)0.15);
-							
+						
 						createButton.setAlpha((float) 0.70);
 						paramPoint = point;
 						createEnabled = true; 
