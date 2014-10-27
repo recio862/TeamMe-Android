@@ -127,7 +127,7 @@ public class Networking {
 					//httpPost.setParams(httpParameters);
 					httpPost.addHeader("Host", "72.182.49.84");
 					httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
-					List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+					List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(10);
 					nameValuePairs.add(new BasicNameValuePair("lat", String.valueOf(pos.latitude)));
 					nameValuePairs.add(new BasicNameValuePair("lng", String.valueOf(pos.longitude)));
 					nameValuePairs.add(new BasicNameValuePair("userId", userId));
