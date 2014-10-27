@@ -62,7 +62,7 @@
         android:focusableInTouchMode="true" />
         
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/teamName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"

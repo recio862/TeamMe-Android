@@ -36,10 +36,26 @@ public class Networking {
 			String url;
 			LatLng position;
 			String userId;
-			CoordParameters(String url1, LatLng pos, String userId1){
+			String finishHour;
+			String finishMinute;
+			String activePlayers;
+			String neededPlayers;
+			String customActivity;
+			String teamName;
+			Integer activityNum;
+	
+			CoordParameters(String url1, LatLng pos, String userId1, String finishHour1, String finishMinute1, String activePlayers1,
+					String neededPlayers1, String customActivity1, String teamName1, Integer activityNum1){
 				this.position = pos;
 				this.url = url1;
 				this.userId = userId1;
+				this.finishHour = finishHour1;
+				this.finishMinute = finishMinute1;
+				this.activePlayers = activePlayers1;
+				this.neededPlayers = neededPlayers1;
+				this.customActivity = customActivity1;
+				this.teamName = teamName1;
+				this.activityNum = activityNum1;
 			}
 		}
 
@@ -93,18 +109,14 @@ public class Networking {
 				
 				@Override
 				protected void onPostExecute(String result){
-					//Toast.makeText(mContext.getApplicationContext(), result, Toast.LENGTH_LONG).show();
-					//new AlertDialog.Builder(mContext.getApplicationContext())
-				    //.setTitle("Delete entry")
-				    //.setMessage("Are you sure you want to delete this entry?")
-				    //.show();
 					Log.d("DownloadMarkersTask", result);
 					responder.gotMarkers(result);
 				}
 			}
 			
 		//from the Android cookbook by Wei Meng lee, POST
-			public InputStream OpenHttpPOSTConnection(String url, LatLng point, String userId) {
+			public InputStream OpenHttpPOSTConnection(String url, LatLng pos, String userId, String finishHour, String finishMinute, 
+					String activePlayers, String neededPlayers, String customActivity, String teamName, Integer activityNum) {
 				InputStream inputStream = null;
 				try{
 					//HttpParams httpParameters = new BasicHttpParams();
@@ -115,26 +127,23 @@ public class Networking {
 					//httpPost.setParams(httpParameters);
 					httpPost.addHeader("Host", "72.182.49.84");
 					httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
-					List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-					nameValuePairs.add(new BasicNameValuePair("lat", String.valueOf(point.latitude)));
-					nameValuePairs.add(new BasicNameValuePair("lng",String.valueOf(point.longitude)));
-					nameValuePairs.add(new BasicNameValuePair("user_id",userId));
+					List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(10);
+					nameValuePairs.add(new BasicNameValuePair("lat", String.valueOf(pos.latitude)));
+					nameValuePairs.add(new BasicNameValuePair("lng", String.valueOf(pos.longitude)));
+					nameValuePairs.add(new BasicNameValuePair("userId", userId));
+					nameValuePairs.add(new BasicNameValuePair("finishHour", finishHour));
+					nameValuePairs.add(new BasicNameValuePair("finishMinute", finishMinute));
+					nameValuePairs.add(new BasicNameValuePair("activePlayers", activePlayers));
+					nameValuePairs.add(new BasicNameValuePair("neededPlayers", neededPlayers));
+					nameValuePairs.add(new BasicNameValuePair("customActivity", customActivity));
+					nameValuePairs.add(new BasicNameValuePair("teamName", teamName));
+					nameValuePairs.add(new BasicNameValuePair("activityNum", String.valueOf(activityNum)));
+
 					
 					httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-					 //HttpProtocolParams.setUseExpectContinue(httpclient.getParams(), false);
-					 //HttpProtocolParams.setVersion(httpclient.getParams(), HttpVersion.HTTP_1_1);
-					 //HttpConnectionParams.setStaleCheckingEnabled(httpclient.getParams(), true);
-					/*
-					HttpClient httpClient = new DefaultHttpClient();
-					HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
-					inputStream = httpResponse.getEntity().getContent();*/
 
 					HttpResponse httpResponse = httpclient.execute(httpPost);
 					inputStream = httpResponse.getEntity().getContent();
-					//HttpEntity entity = httpResponse.getEntity();
-			        //String logResponse = EntityUtils.toString(entity);
-			        //final String TAG = "server response";
-			        //Log.v(TAG,logResponse);
 				} catch(Exception e) {
 					Log.d("OpenHttpPOSTConnection", e.getLocalizedMessage());
 				}
@@ -143,34 +152,36 @@ public class Networking {
 
 			public class SendCoordsTask extends AsyncTask<CoordParameters, Void, String>{
 				protected String doInBackground(CoordParameters... params){
-					String url1 = params[0].url;
-					Log.d("URL", url1);
+
+					String url = params[0].url;
 					LatLng point = params[0].position;
-					Log.d("Position", point.toString());
-					String user1 = params[0].userId;
-					Log.d("User", user1);
-					return sendCoords(url1,point,user1);
+					String userId = params[0].userId;
+					String finishHour = params[0].finishHour;
+					String finishMinute = params[0].finishMinute;
+					String activePlayers = params[0].activePlayers;
+					String neededPlayers = params[0].neededPlayers;
+					String customActivity = params[0].customActivity;
+					String teamName = params[0].teamName;
+					Integer activityNum = params[0].activityNum;
+					return sendCoords(url,point,userId, finishHour, finishMinute, activePlayers,
+							neededPlayers, customActivity, teamName, activityNum);
 				}
 				
-				private String sendCoords(String URL, LatLng point, String userId) {
+				private String sendCoords(String url, LatLng pos, String userId, String finishHour, String finishMinute, 
+						String activePlayers, String neededPlayers, String customActivity, String teamName, Integer activityNum) {
 					int BUFFER_SIZE = 2000;
 					InputStream in = null;
 					try {
-						in = OpenHttpPOSTConnection(URL, point, userId);
+						in = OpenHttpPOSTConnection(url, pos, userId, finishHour, finishMinute, activePlayers,
+								neededPlayers, customActivity, teamName, activityNum);
 						if (in == null){
-							Log.d("IN", "meow1");
+							Log.d("IN", "error null returned by post request");
 							//throw NoHttpResponseException;
 							return "";
-						}
-						//Scanner scanner = new Scanner(in).useDelimiter("\\A");
-						//String stringinput = scanner.hasNext() ? scanner.next() : null;
-						//scanner.close();
-						//Log.d("IN", stringinput);
+						}				
 
 					} catch(Exception e) {
 						Log.d("Networking", e.getLocalizedMessage());
-						//Log.d("IN", "meow");
-
 						return "";
 					}
 					//Log.d("IN", "meow1");
