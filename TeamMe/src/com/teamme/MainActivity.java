@@ -48,6 +48,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public Button viewButton;
 	public Marker myMarker;
 	public LatLng myLocation;
+	public Marker selectedMarker;
 	private MarkerOptions markerOptions;
 	public AlertDialog dialog;
 	public Networking messagePasser;
@@ -56,27 +57,27 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public CoordParameters params;
 	//this is the point the user clicks on on the map that will be passed to server when creating game
 	public LatLng paramPoint;
-	
+
 	private boolean createEnabled = false;
 	private boolean viewEnabled = false;
-	
-	//passes data from the async networking thread to ui thread after results are returned
-    public void gotMarkers(String jsonDownloadedMarkersString){
-			try{
-				final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
-				Toast.makeText(getApplicationContext(), "Loading markers" , Toast.LENGTH_LONG).show();
 
-				final int n = geodata.length();
-				for (int i = 0; i < n; i++) {
-					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
-					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
-					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
-					markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum"))));
-					googleMap.addMarker(markerOptions); 
-				}
-			}catch(Exception e) {
-				throw new RuntimeException(e);
+	//passes data from the async networking thread to ui thread after results are returned
+	public void gotMarkers(String jsonDownloadedMarkersString){
+		try{
+			final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
+			Toast.makeText(getApplicationContext(), "Loading markers" , Toast.LENGTH_LONG).show();
+
+			final int n = geodata.length();
+			for (int i = 0; i < n; i++) {
+				Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
+				Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
+				markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
+				markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum"))));
+				googleMap.addMarker(markerOptions); 
 			}
+		}catch(Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	//Quickfix to move maps zoom buttons to the top left so it doesn't interfere with the
 	//layout of the buttons
@@ -104,7 +105,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	}
 
 	private BitmapDescriptor getIconFromActivityNum(int activityNum){
-		
+
 		BitmapDescriptor icon = (BitmapDescriptorFactory.fromResource(R.drawable.marker));
 		switch (activityNum){
 		case 1:
@@ -123,22 +124,22 @@ public class MainActivity extends Activity implements AsyncResponse {
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bike));
 			break;
 		case 6:
-			
+
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowling));
 			break;
 		case 7:
-			
+
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbing));
 			break;
 		case 8:
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyball));
 			break;
 		}
-		
+
 		return icon;
-		
-		
-		
+
+
+
 	}
 	protected Dialog onCreateDialog(int id) {
 		// 1. Instantiate an AlertDialog.Builder with its constructor
@@ -149,91 +150,104 @@ public class MainActivity extends Activity implements AsyncResponse {
 		// 2. Chain together various setter methods to set the dialog characteristics
 		if (id == 0){
 			builder.setView(dialogContent).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				
-			}
-		})
-		.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				
-				//setContentView( R.layout.create_dialog );
-				EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
-				EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
-				Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
-				EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
-				EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
-				TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
+				public void onClick(DialogInterface dialog, int id) {
 
-//				if (spinnerActivity.getSelectedItem() == null)
-//					activity = "";
-//				else
-				String activity = spinnerActivity.getSelectedItem().toString();
-				Integer activityNum = 0;
-				//see spinner_items in res/values/arrays.xml
-				
-				switch (activity){
-				case "Soccer":
-					activityNum = 1;
-					
-					break;
-				case "Football":
-					activityNum = 2;
-					break;
-				case "Disc Golf":
-					activityNum = 3;
-					break;
-				case "Tennis":
-					activityNum = 4;
-					break;
-				case "Biking":
-					activityNum = 5;
-					break;
-				case "Bowling":
-					activityNum = 6;
-					break;
-				case "Rock Climbing":
-					activityNum = 7;
-					break;
-				case "Volleyball":
-					activityNum = 8;
-					break;
 				}
-				String teamName = edTxtTeamName.getText().toString();
-				String customActivity = edTxtCustomActivity.getText().toString();
-				String activePlayers = edTxtPlayersActive.getText().toString();
-				String neededPlayers = edTxtPlayersNeeded.getText().toString();
-				String finishTimeHour = String.valueOf(pickFinishTime.getCurrentHour());
-				String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
-				
+			})
+			.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
 
-				params = new CoordParameters("http://72.182.49.84:80/android/project/updateMarkers.php", paramPoint, "0", 
-						finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
-				messagePasser.new SendCoordsTask().execute(params);
-				Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
-				gameCreated.setGravity(Gravity.CENTER, 0, 0);
-				gameCreated.show();
-				createButton.setAlpha((float)0.15);
-				myMarker.setIcon(getIconFromActivityNum(activityNum));
-				
-			
-				markerOptions = null;
-				myMarker = null;
-				createEnabled=  false;
-				
-			}
-		});
+					//setContentView( R.layout.create_dialog );
+					EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
+					EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
+					Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
+					EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
+					EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
+					TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
+
+					//				if (spinnerActivity.getSelectedItem() == null)
+					//					activity = "";
+					//				else
+					String activity = spinnerActivity.getSelectedItem().toString();
+					Integer activityNum = 0;
+					//see spinner_items in res/values/arrays.xml
+
+					switch (activity){
+					case "Soccer":
+						activityNum = 1;
+
+						break;
+					case "Football":
+						activityNum = 2;
+						break;
+					case "Disc Golf":
+						activityNum = 3;
+						break;
+					case "Tennis":
+						activityNum = 4;
+						break;
+					case "Biking":
+						activityNum = 5;
+						break;
+					case "Bowling":
+						activityNum = 6;
+						break;
+					case "Rock Climbing":
+						activityNum = 7;
+						break;
+					case "Volleyball":
+						activityNum = 8;
+						break;
+					}
+					String teamName = edTxtTeamName.getText().toString();
+					String customActivity = edTxtCustomActivity.getText().toString();
+					String activePlayers = edTxtPlayersActive.getText().toString();
+					String neededPlayers = edTxtPlayersNeeded.getText().toString();
+					String finishTimeHour = String.valueOf(pickFinishTime.getCurrentHour());
+					String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
+
+
+					params = new CoordParameters("http://72.182.49.84:80/android/project/updateMarkers.php", paramPoint, "0", 
+							finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
+					messagePasser.new SendCoordsTask().execute(params);
+					Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
+					gameCreated.setGravity(Gravity.CENTER, 0, 0);
+					gameCreated.show();
+					createButton.setAlpha((float)0.15);
+					myMarker.setIcon(getIconFromActivityNum(activityNum));
+
+
+					markerOptions = null;
+					myMarker = null;
+					createEnabled=  false;
+
+				}
+			});
 
 		}
-		else if (id == 1)
-			builder.setView(inflater.inflate(R.layout.settings_dialog, null));
-		else if (id==2)
+		else if (id == 1){
+			builder.setView(inflater.inflate(R.layout.settings_dialog, null));  
+			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+
+				}
+			});
+			
+		}
+		else if (id==2){
 			builder.setView(inflater.inflate(R.layout.about_dialog, null));
+		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+
+			}
+		});
+		}
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 
 		return dialog;
 	}
-	
+
 	public void clickedCreate(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap a location first!");
 		if (!createEnabled)
@@ -257,7 +271,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		fixZoom();
 		createButton = (Button)findViewById(R.id.Button01);
 		messagePasser = new Networking(MainActivity.this);
@@ -311,8 +325,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 				googleMap.setOnMarkerClickListener(new OnMarkerClickListener(){
 
 					@Override
-					public boolean onMarkerClick(Marker arg0) {
-
+					public boolean onMarkerClick(Marker myMarker) {
+						viewEnabled = true;
+						selectedMarker = myMarker;
+						selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 						return true;
 					}
 
@@ -329,10 +345,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 						}
 						// create marker
 						markerOptions = new MarkerOptions().position(point).title("Create Game Here!");
-						
+
 						// Changing marker icon
 						markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-						
+
 						createButton.setAlpha((float) 0.70);
 						paramPoint = point;
 						createEnabled = true; 
@@ -346,7 +362,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 	}
 
-	
+
 	public void settingsDialog(MenuItem item){
 		showDialog(1);
 	}
