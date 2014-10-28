@@ -328,7 +328,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					public boolean onMarkerClick(Marker myMarker) {
 						viewEnabled = true;
 						selectedMarker = myMarker;
-						selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+						//selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 						return true;
 					}
 
