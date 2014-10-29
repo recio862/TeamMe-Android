@@ -341,7 +341,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private void initializeMap() {
 		// MapFunctionality mf = new MapFunctionality();
 		Log.e("initializing map. . . ", "initializing map. . ");
-		if (googleMap == null) {
+		
 			googleMap = ((MapFragment) getFragmentManager().findFragmentById(
 					R.id.map)).getMap();
 
@@ -409,7 +409,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 			}
 
-		}
+		
 	}
 
 
