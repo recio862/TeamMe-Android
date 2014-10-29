@@ -266,6 +266,18 @@ public class MainActivity extends Activity implements AsyncResponse {
 		if (!viewEnabled)
 			helpPopup.show(view);
 	}
+	
+	public void featureUnavailable(MenuItem item){
+		String alphaRelease = "This feature is not yet available. Stay tuned for the beta release.";
+		showFeatureUnavailableToast(alphaRelease);
+	}
+	
+	public void showFeatureUnavailableToast(String alphaRelease){
+		
+		Toast gameCreated = Toast.makeText(getApplicationContext(), alphaRelease, Toast.LENGTH_SHORT);
+		gameCreated.setGravity(Gravity.CENTER, 0, 0);
+		gameCreated.show();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -326,7 +338,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 					@Override
 					public boolean onMarkerClick(Marker myMarker) {
-						viewEnabled = true;
+						String showUnavailable = "View Game Feature is Unavailable. In the future release, you can click this icon to see game info!";
+						showFeatureUnavailableToast(showUnavailable);
+						//viewEnabled = true;
 						selectedMarker = myMarker;
 						//selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 						return true;

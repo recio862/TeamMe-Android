@@ -10,15 +10,18 @@
             <item
                 android:id="@+id/filtermap"
                 android:icon = "@drawable/filteroverflow"
-                android:title="@string/filter_map"/>
+                android:title="@string/filter_map"
+                android:onClick="featureUnavailable"/>
             <item
                 android:id="@+id/myprofile"
                 android:icon="@drawable/profileoverflow"
-                android:title="@string/my_profile"/>
+                android:title="@string/my_profile"
+                android:onClick="featureUnavailable"/>
             <item
                 android:id="@+id/myteams"
                 android:icon="@drawable/teamoverflow"
-                android:title="@string/my_teams"/>
+                android:title="@string/my_teams"
+                android:onClick="featureUnavailable"/>
             <item
                 android:id="@+id/action_settings"
                 android:onClick="settingsDialog"
@@ -32,7 +35,8 @@
             <item
                 android:id="@+id/logout"
                 android:icon="@drawable/logoutoverflow"
-                android:title="@string/logout"/>
+                android:title="@string/logout"
+                android:onClick="featureUnavailable"/>
         </menu>
     </item>
 

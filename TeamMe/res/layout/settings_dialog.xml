@@ -74,8 +74,29 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" 
-            android:layout_marginBottom="40dp"
-            android:layout_marginTop="30dp">
+            android:layout_marginBottom="10dp"
+            >
+
+            <TextView
+                android:id="@+id/feature_not_ready"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+              
+                 android:layout_marginRight="20dp"
+                android:text="Feature Not Yet Implemented!"
+                android:textColor="#FF0000"
+                android:layout_marginLeft="10dp"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+            
+        </LinearLayout>
+        
+         <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
+           >
 
             <TextView
                 android:id="@+id/notification_setting"
@@ -95,6 +116,35 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
         
+             <View
+        android:id="@+id/center_divider3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="30dp"
+        android:alpha="0.10"
+        android:background="#000000" />
+        
+         <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
+            android:layout_marginBottom="10dp"
+           >
+
+            <TextView
+                android:id="@+id/feature_not_ready2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+              
+                 android:layout_marginRight="20dp"
+                android:text="Feature Not Yet Implemented!"
+                android:textColor="#FF0000"
+                android:layout_marginLeft="10dp"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+            
+        </LinearLayout>
          
     </LinearLayout>
 
