@@ -262,6 +262,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 
+	
 		
 		return dialog;
 	}
@@ -320,7 +321,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		mSoundOn = mPrefs.getBoolean("sound", true);
 		createButton = (Button)findViewById(R.id.Button01);
 		messagePasser = new Networking(MainActivity.this);
-	
+		
 		viewButton = (Button)findViewById(R.id.Button02);
 		try {
 			Log.e("loading map. . . .", "loading map. . . ");
@@ -414,8 +415,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	public void settingsDialog(MenuItem item){
 		showDialog(1);
-		
-		
+		Switch s = (Switch)dialog.findViewById(R.id.sound_switch2);
+		if (s!=null)
+			s.setChecked(mSoundOn);
 		
 	}
 	
