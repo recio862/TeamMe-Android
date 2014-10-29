@@ -80,7 +80,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public void gotMarkers(String jsonDownloadedMarkersString){
 		try{
 			final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
-			Toast.makeText(getApplicationContext(), "Loading markers" , Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
 
 			final int n = geodata.length();
 			for (int i = 0; i < n; i++) {

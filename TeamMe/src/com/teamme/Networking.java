@@ -207,7 +207,7 @@ public class Networking {
 				
 				@Override
 				protected void onPostExecute(String result) {
-					Toast.makeText(mContext.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+					//Toast.makeText(mContext.getApplicationContext(), result, Toast.LENGTH_LONG).show();
 					Log.d("SendCoordsTask", result);
 				}
 			}
