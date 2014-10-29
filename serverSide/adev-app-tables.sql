@@ -12,6 +12,15 @@ create table if not exists markers (
     lat float not null,
     lng float not null,
     user_id integer unsigned not null,
+    finishHour integer unsigned not null,
+    finishMinute integer unsigned not null,
+    activePlayers integer unsigned not null,
+    neededPlayers integer unsigned not null,
+    customActivity varchar(55), /*only not null if activity_id ==0*/
+    teamName varchar(55) not null default "team",
+    activityNum integer not null default 0,/*0-8*/
+    userName varchar(55)
+
     user_name varchar(55)
     ) ENGINE=InnoDB;
 
