@@ -3,6 +3,8 @@ AndroidDevProject
 TEAM MEMBERS:
 Brian Zachary Abel
 bza57
+Renato Recio 
+rjr862
 
 
 HOW TO USE THE APP:
@@ -15,14 +17,30 @@ These are actual markers that other people have placed though, and they're activ
 Then click the create button, and fill out the form according to your whims, or don't bother,
 and click the create game button inside the create game dialog. Either way it will work, but your
 game might be deleted by the server before you want it to be if you don't specify a time range.
+4. Bam, your marker is on the map.
 
 FEATURES/USE CASES COMPLETED:
+II. Map of activities screen
+V. Create a Game screen
+VI. Action Bar Menu
+XI. Kind've a settings screen (we have sound)
+XII. About
 
+FEATURES/USE CASES NOT COMPLETED:
+Profile Page
 
-FEATURES/USE CASES NOTCOMPLETED:
+I.Login Screen
+III. Map Filter
+IV. View Games Screen
+VII. My Profile 
+VIII. My Teams
+IX. Individual Team screen
+X. Public Profile Page
 
+ADDED FEATURES THAT WEREN'T IN PROTOTYPE:
+nothing.
 
-Classes we copied with CODE SOURCES:
+CLASSES WE COPIED WITH CODE SOURCES:
 //inspired by http://stackoverflow.com/questions/12069669/how-can-you-pass-multiple-primitive-parameters-to-asynctask
 		public static class CoordParameters {
 			CoordParameters(String url1, LatLng pos, String userId1, String finishHour1, String finishMinute1, String activePlayers1,
