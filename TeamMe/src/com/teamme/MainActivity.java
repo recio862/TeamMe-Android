@@ -340,7 +340,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 	 * */
 	private void initializeMap() {
 		// MapFunctionality mf = new MapFunctionality();
-		Log.e("initializing map. . . ", "initializing map. . ");
 		
 			googleMap = ((MapFragment) getFragmentManager().findFragmentById(
 					R.id.map)).getMap();
@@ -352,7 +351,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 				getPasser.responder = this;
 				getPasser.execute("http://72.182.49.84:80/android/project/grabMarkers.php?id=1"); 
 				googleMap.setMyLocationEnabled(true);
-				//Location location = googleMap.getMyLocation();
+				
 				LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 				Criteria criteria = new Criteria();
 				String provider = locationManager.getBestProvider(criteria, false);
@@ -462,6 +461,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		initializeMap();
 		fixZoom();
 		createSoundPool();
+		mSoundOn = mPrefs.getBoolean("sound", true);
 	}
 	
 	private void playSound(int id){
