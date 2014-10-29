@@ -1,5 +1,7 @@
 package com.teamme;
 
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -8,9 +10,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -21,11 +26,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,9 +55,15 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public GoogleMap googleMap;
 	public Button createButton;
 	public Button viewButton;
+	
+	private boolean mSoundOn;
+	private SoundPool mSounds;
+	private HashMap<Integer, Integer> mSoundIDMap;
+	private SharedPreferences mPrefs;
 	public Marker myMarker;
 	public LatLng myLocation;
 	public Marker selectedMarker;
+	private Switch switchButton;
 	private MarkerOptions markerOptions;
 	public AlertDialog dialog;
 	public Networking messagePasser;
@@ -151,7 +166,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		if (id == 0){
 			builder.setView(dialogContent).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-
+					playSound(R.raw.cancel);
 				}
 			})
 			.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
@@ -171,11 +186,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 					String activity = spinnerActivity.getSelectedItem().toString();
 					Integer activityNum = 0;
 					//see spinner_items in res/values/arrays.xml
-
+					playSound(R.raw.whistle);
 					switch (activity){
 					case "Soccer":
 						activityNum = 1;
-
 						break;
 					case "Football":
 						activityNum = 2;
@@ -227,11 +241,14 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 		else if (id == 1){
 			builder.setView(inflater.inflate(R.layout.settings_dialog, null));  
+			
 			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-
+					
 				}
 			});
+			
+			
 			
 		}
 		else if (id==2){
@@ -245,6 +262,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 
+		
 		return dialog;
 	}
 
@@ -279,14 +297,30 @@ public class MainActivity extends Activity implements AsyncResponse {
 		gameCreated.show();
 	}
 
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		
+
+		if(mSounds != null) {
+			mSounds.release();
+			mSounds = null;
+		}		
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		createSoundPool();
 		fixZoom();
+		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
+		mSoundOn = mPrefs.getBoolean("sound", true);
 		createButton = (Button)findViewById(R.id.Button01);
 		messagePasser = new Networking(MainActivity.this);
+	
 		viewButton = (Button)findViewById(R.id.Button02);
 		try {
 			Log.e("loading map. . . .", "loading map. . . ");
@@ -367,6 +401,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 						paramPoint = point;
 						createEnabled = true; 
 						myMarker = googleMap.addMarker(markerOptions); 
+						playSound(R.raw.placemarker);
 					}
 
 				});
@@ -379,7 +414,36 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	public void settingsDialog(MenuItem item){
 		showDialog(1);
+		
+		
+		
 	}
+	
+	public void soundClick(View view){
+		
+		    boolean on = ((Switch) view).isChecked();
+		    
+		
+		        if (on)
+		        	mSoundOn = true;
+		        else
+		        	mSoundOn = false;
+		        
+		        	
+		        	// Save the current scores
+		    		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+		    		SharedPreferences.Editor ed = mPrefs.edit();
+
+		    		
+		    		ed.putBoolean("sound", mSoundOn);
+		    		
+		    		ed.apply();
+		        	
+		        
+		        	
+		    }
+		
+	
 	public void aboutDialog(MenuItem item){
 		showDialog(2);
 	}
@@ -394,5 +458,22 @@ public class MainActivity extends Activity implements AsyncResponse {
 	protected void onResume() {
 		super.onResume();
 		initializeMap();
+		fixZoom();
+		createSoundPool();
+	}
+	
+	private void playSound(int id){
+		if (mSoundOn){
+			mSounds.play(mSoundIDMap.get(id), 1, 1, 1, 0, 1);
+		}
+
+	}
+	
+	private void createSoundPool() {
+		int[] soundIds = {R.raw.whistle, R.raw.cancel, R.raw.placemarker};
+		mSoundIDMap = new HashMap<Integer, Integer>();
+		mSounds = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+		for(int id : soundIds) 
+			mSoundIDMap.put(id, mSounds.load(this, id, 1));
 	}
 }
