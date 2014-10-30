@@ -29,7 +29,7 @@ XII. About
 
 
 FEATURES/USE CASES NOT COMPLETED:
-Profile Page
+VII. My Profile Page
 
 I.Login Screen
 III. Map Filter
