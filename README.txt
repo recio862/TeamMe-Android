@@ -18,13 +18,13 @@ These are actual markers that other people have placed though, and they're activ
 Then click the create button, and fill out the form according to your whims, or don't bother,
 and click the create game button inside the create game dialog. Either way it will work, but your
 game might be deleted by the server before you want it to be if you don't specify a time range.
-4. Bam, your marker is on the map.
+4. Bam, your marker is on the map for the world to see.
 
 FEATURES/USE CASES COMPLETED:
 II. Map of activities screen
 V. Create a Game screen
 VI. Action Bar Menu
-XI. Kind've a settings screen (we have sound)
+XI. Settings screen w/ sound
 XII. About
 
 

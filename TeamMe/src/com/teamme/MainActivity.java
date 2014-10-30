@@ -44,6 +44,7 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -55,7 +56,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public GoogleMap googleMap;
 	public Button createButton;
 	public Button viewButton;
-	
+
 	private boolean mSoundOn;
 	private SoundPool mSounds;
 	private HashMap<Integer, Integer> mSoundIDMap;
@@ -241,29 +242,29 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 		else if (id == 1){
 			builder.setView(inflater.inflate(R.layout.settings_dialog, null));  
-			
+
 			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					
+
 				}
 			});
-			
-			
-			
+
+
+
 		}
 		else if (id==2){
 			builder.setView(inflater.inflate(R.layout.about_dialog, null));
-		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
+			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
 
-			}
-		});
+				}
+			});
 		}
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 
-	
-		
+
+
 		return dialog;
 	}
 
@@ -285,32 +286,32 @@ public class MainActivity extends Activity implements AsyncResponse {
 		if (!viewEnabled)
 			helpPopup.show(view);
 	}
-	
+
 	public void featureUnavailable(MenuItem item){
 		String alphaRelease = "This feature is not yet available. Stay tuned for the beta release.";
 		showFeatureUnavailableToast(alphaRelease);
 	}
-	
+
 	public void showFeatureUnavailableToast(String alphaRelease){
-		
+
 		Toast gameCreated = Toast.makeText(getApplicationContext(), alphaRelease, Toast.LENGTH_SHORT);
 		gameCreated.setGravity(Gravity.CENTER, 0, 0);
 		gameCreated.show();
 	}
 
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
 
-		
+
 
 		if(mSounds != null) {
 			mSounds.release();
 			mSounds = null;
 		}		
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -321,7 +322,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		mSoundOn = mPrefs.getBoolean("sound", true);
 		createButton = (Button)findViewById(R.id.Button01);
 		messagePasser = new Networking(MainActivity.this);
-		
+
 		viewButton = (Button)findViewById(R.id.Button02);
 		try {
 			Log.e("loading map. . . .", "loading map. . . ");
@@ -339,75 +340,73 @@ public class MainActivity extends Activity implements AsyncResponse {
 	 * function to load map. If map is not created it will create it for you
 	 * */
 	private void initializeMap() {
-		// MapFunctionality mf = new MapFunctionality();
-		
-			googleMap = ((MapFragment) getFragmentManager().findFragmentById(
-					R.id.map)).getMap();
 
-			// check if map is created successfully or not
-			if (googleMap != null) {
+		googleMap = ((MapFragment) getFragmentManager().findFragmentById(
+				R.id.map)).getMap();
 
-				getPasser = messagePasser.new DownloadMarkersTask();
-				getPasser.responder = this;
-				getPasser.execute("http://72.182.49.84:80/android/project/grabMarkers.php?id=1"); 
-				googleMap.setMyLocationEnabled(true);
-				
-				LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-				Criteria criteria = new Criteria();
-				String provider = locationManager.getBestProvider(criteria, false);
-				Location location = locationManager.getLastKnownLocation(provider);
-				if (location != null) {
-					myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-					googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,
-							14));
-				}
-				else 
-				{
-					LatLng coordinate = new LatLng(30.2861, -97.7394);
-					CameraUpdate utAustin = CameraUpdateFactory.newLatLngZoom(coordinate, 14);
-					googleMap.animateCamera(utAustin);
-				}
+		// check if map is created successfully or not
+		if (googleMap != null) {
 
-				googleMap.setOnMarkerClickListener(new OnMarkerClickListener(){
+			getPasser = messagePasser.new DownloadMarkersTask();
+			getPasser.responder = this;
+			getPasser.execute("http://72.182.49.84:80/android/project/grabMarkers.php?id=1"); 
+			googleMap.setMyLocationEnabled(true);
 
-					@Override
-					public boolean onMarkerClick(Marker myMarker) {
-						String showUnavailable = "View Game Feature is Unavailable. In the future release, you can click this icon to see game info!";
-						showFeatureUnavailableToast(showUnavailable);
-						//viewEnabled = true;
-						selectedMarker = myMarker;
-						//selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-						return true;
-					}
-
-				});
-				googleMap.getUiSettings().setCompassEnabled(false);
-
-				googleMap.setOnMapClickListener(new OnMapClickListener(){
-
-					@Override
-					public void onMapClick(LatLng point) {
-						// TODO Auto-generated method stub
-						if (myMarker != null){
-							myMarker.remove();
-						}
-						// create marker
-						markerOptions = new MarkerOptions().position(point).title("Create Game Here!");
-
-						// Changing marker icon
-						markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-
-						createButton.setAlpha((float) 0.70);
-						paramPoint = point;
-						createEnabled = true; 
-						myMarker = googleMap.addMarker(markerOptions); 
-						playSound(R.raw.placemarker);
-					}
-
-				});
-
+			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			Criteria criteria = new Criteria();
+			String provider = locationManager.getBestProvider(criteria, false);
+			Location location = locationManager.getLastKnownLocation(provider);
+			if (location != null) {
+				myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+				googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,
+						14));
+			}
+			else 
+			{
+				LatLng coordinate = new LatLng(30.2861, -97.7394);
+				CameraUpdate utAustin = CameraUpdateFactory.newLatLngZoom(coordinate, 14);
+				googleMap.animateCamera(utAustin);
 			}
 
+			googleMap.setOnMarkerClickListener(new OnMarkerClickListener(){
+
+				@Override
+				public boolean onMarkerClick(Marker myMarker) {
+					String showUnavailable = "View Game Feature is Unavailable. In the future release, you can click this icon to see game info!";
+					showFeatureUnavailableToast(showUnavailable);
+					//viewEnabled = true;
+					selectedMarker = myMarker;
+					//selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+					return true;
+				}
+
+			});
+			googleMap.getUiSettings().setCompassEnabled(false);
+
+			googleMap.setOnMapClickListener(new OnMapClickListener(){
+
+				@Override
+				public void onMapClick(LatLng point) {
+					// TODO Auto-generated method stub
+					if (myMarker != null){
+						myMarker.remove();
+					}
+					// create marker
+					markerOptions = new MarkerOptions().position(point).title("Create Game Here!");
+
+					// Changing marker icon
+					markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+
+					createButton.setAlpha((float) 0.70);
+					paramPoint = point;
+					createEnabled = true; 
+					myMarker = googleMap.addMarker(markerOptions); 
+					playSound(R.raw.placemarker);
+				}
+
+			});
+
+		}
 		
 	}
 
@@ -417,34 +416,34 @@ public class MainActivity extends Activity implements AsyncResponse {
 		Switch s = (Switch)dialog.findViewById(R.id.sound_switch2);
 		if (s!=null)
 			s.setChecked(mSoundOn);
-		
-	}
-	
-	public void soundClick(View view){
-		
-		    boolean on = ((Switch) view).isChecked();
-		    
-		
-		        if (on)
-		        	mSoundOn = true;
-		        else
-		        	mSoundOn = false;
-		        
-		        	
-		        	// Save the current scores
-		    		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
-		    		SharedPreferences.Editor ed = mPrefs.edit();
 
-		    		
-		    		ed.putBoolean("sound", mSoundOn);
-		    		
-		    		ed.apply();
-		        	
-		        
-		        	
-		    }
-		
-	
+	}
+
+	public void soundClick(View view){
+
+		boolean on = ((Switch) view).isChecked();
+
+
+		if (on)
+			mSoundOn = true;
+		else
+			mSoundOn = false;
+
+
+		// Save the current scores
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+		SharedPreferences.Editor ed = mPrefs.edit();
+
+
+		ed.putBoolean("sound", mSoundOn);
+
+		ed.apply();
+
+
+
+	}
+
+
 	public void aboutDialog(MenuItem item){
 		showDialog(2);
 	}
@@ -462,15 +461,17 @@ public class MainActivity extends Activity implements AsyncResponse {
 		fixZoom();
 		createSoundPool();
 		mSoundOn = mPrefs.getBoolean("sound", true);
+		
+		
 	}
-	
+
 	private void playSound(int id){
 		if (mSoundOn){
 			mSounds.play(mSoundIDMap.get(id), 1, 1, 1, 0, 1);
 		}
 
 	}
-	
+
 	private void createSoundPool() {
 		int[] soundIds = {R.raw.whistle, R.raw.cancel, R.raw.placemarker};
 		mSoundIDMap = new HashMap<Integer, Integer>();
