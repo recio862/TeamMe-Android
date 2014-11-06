@@ -1,6 +1,8 @@
 package com.teamme;
 
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +59,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public Button createButton;
 	public Button viewButton;
 
+	private HashMap<MarkerOptions, MarkerInfo> mapMarkers;
 	private boolean mSoundOn;
 	private SoundPool mSounds;
 	private HashMap<Integer, Integer> mSoundIDMap;
@@ -76,20 +79,23 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	private boolean createEnabled = false;
 	private boolean viewEnabled = false;
-
+	
 	//passes data from the async networking thread to ui thread after results are returned
 	public void gotMarkers(String jsonDownloadedMarkersString){
 		try{
 			final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
 			Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
-
+		
 			final int n = geodata.length();
 			for (int i = 0; i < n; i++) {
 				Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 				Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
+				String userId = geodata.getJSONObject(i).getString("userId");
 				markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 				markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum"))));
 				googleMap.addMarker(markerOptions); 
+				mapMarkers.put(markerOptions, new MarkerInfo(markerOptions, geodata.getJSONObject(i)));
+			
 			}
 		}catch(Exception e) {
 			throw new RuntimeException(e);
@@ -140,7 +146,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bike));
 			break;
 		case 6:
-
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowling));
 			break;
 		case 7:
@@ -168,6 +173,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			builder.setView(dialogContent).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					playSound(R.raw.cancel);
+					resetFields(dialogContent);
 				}
 			})
 			.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
@@ -235,7 +241,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 					markerOptions = null;
 					myMarker = null;
 					createEnabled=  false;
-
+					resetFields(dialogContent);
+					
 				}
 			});
 
@@ -268,6 +275,27 @@ public class MainActivity extends Activity implements AsyncResponse {
 		return dialog;
 	}
 
+	protected void resetFields(View dialogContent) {
+		EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
+		edTxtTeamName.setText("");
+		EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
+		edTxtCustomActivity.setText("");
+		Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
+		spinnerActivity.setSelection(0);
+		EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
+		edTxtPlayersActive.setText("");
+		EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
+		edTxtPlayersNeeded.setText("");
+		TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
+		Calendar c = Calendar.getInstance();
+		pickFinishTime.setCurrentHour(c.get(Calendar.HOUR_OF_DAY));
+		pickFinishTime.setCurrentMinute(c.get(Calendar.MINUTE));
+		
+		
+		
+	}
+	
+	
 	public void clickedCreate(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap a location first!");
 		if (!createEnabled)
@@ -285,6 +313,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap an existing activity first!");
 		if (!viewEnabled)
 			helpPopup.show(view);
+		else{
+			showDialog(0);
+		}
 	}
 
 	public void featureUnavailable(MenuItem item){
@@ -322,7 +353,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 		mSoundOn = mPrefs.getBoolean("sound", true);
 		createButton = (Button)findViewById(R.id.Button01);
 		messagePasser = new Networking(MainActivity.this);
-
+		if (mapMarkers == null)
+			mapMarkers = new HashMap<MarkerOptions, MarkerInfo>();
 		viewButton = (Button)findViewById(R.id.Button02);
 		try {
 			Log.e("loading map. . . .", "loading map. . . ");
