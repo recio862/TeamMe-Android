@@ -337,6 +337,14 @@ public class MainActivity extends Activity implements AsyncResponse {
 			});
 
 		}
+		else if (id == 4){
+			builder.setView(inflater.inflate(R.layout.map_filter, null));
+			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+
+				}
+			});
+		}
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 
@@ -379,6 +387,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 	}
 
+	
+	
 	public void clickedView(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap an existing activity first!");
 		if (!viewEnabled)
@@ -556,7 +566,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	}
 
-
+	public void filterDialog(MenuItem item){
+		showDialog(4);
+	}
 	public void aboutDialog(MenuItem item){
 		showDialog(2);
 	}

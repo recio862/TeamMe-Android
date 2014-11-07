@@ -12,5 +12,16 @@
         <item>Rock Climbing</item>
         <item>Volleyball</item>
     </string-array>
+    
+    <string-array name="teams">
+        <item>This</item>
+        <item>Needs</item>
+        <item>To</item>
+        <item>Be</item>
+        <item>Dynamically</item>
+        <item>Set</item>
+        <item>...</item>
+        <item>Damn.</item>
+    </string-array>
  
 </resources>

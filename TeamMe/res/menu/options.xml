@@ -11,7 +11,7 @@
                 android:id="@+id/filtermap"
                 android:icon = "@drawable/filteroverflow"
                 android:title="@string/filter_map"
-                android:onClick="featureUnavailable"/>
+                android:onClick="filterDialog"/>
             <item
                 android:id="@+id/myprofile"
                 android:icon="@drawable/profileoverflow"
