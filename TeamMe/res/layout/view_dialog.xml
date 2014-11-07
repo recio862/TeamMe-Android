@@ -69,6 +69,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="25dp"
                  android:inputType="text"
+                 android:enabled = "false"
             android:background="@android:drawable/edit_text" />
     </LinearLayout>
 
@@ -121,6 +122,7 @@
             <RadioButton
                 android:id="@+id/radio_pirates55"
                 android:layout_width="wrap_content"
+                   android:enabled = "false"
                 android:layout_height="wrap_content"
                 android:text="Select Activity From List" />
 
@@ -129,6 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
+                   android:enabled = "false"
                 android:layout_marginRight="70dp"
                 android:background="@android:drawable/btn_dropdown"
                 android:entries="@array/spinner_items"
@@ -138,12 +141,14 @@
                 android:id="@+id/radio_ninjas55"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                   android:enabled = "false"
                 android:text="Custom Activity" />
 
             <EditText
                 android:id="@+id/username555"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                   android:enabled = "false"
                 android:layout_marginLeft="30dp"
                      android:inputType="text"
                 android:layout_marginRight="70dp"
@@ -191,6 +196,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="25dp"
              android:inputType="number"
+                android:enabled = "false"
             android:background="@android:drawable/edit_text" />
         
         
@@ -224,6 +230,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="25dp"
+               android:enabled = "false"
              android:inputType="number"
             android:background="@android:drawable/edit_text" />
         

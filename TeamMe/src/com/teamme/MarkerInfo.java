@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MarkerInfo {
 
-	private MarkerOptions mMarker;
+	//private MarkerOptions mMarker;
 	private JSONObject mObject;
 	private String userId;
 	private String finishHour; 
@@ -19,14 +19,14 @@ public class MarkerInfo {
 	private Integer activityNum;
 
 
-	public MarkerInfo(MarkerOptions markerOptions, JSONObject jsonObject) {
-		setmMarker(markerOptions);
+	public MarkerInfo(JSONObject jsonObject) {
+		//setmMarker(markerOptions);
 		setmObject(jsonObject);
 		saveObjectFields();
 	}
 	private void saveObjectFields() {
 		JSONObject jsonObject = getmObject();
-		if (getmMarker() == null || jsonObject == null){
+		if (jsonObject == null){
 			setUserId("");
 			setFinishHour("");
 			setFinishMinute("");
@@ -55,12 +55,12 @@ public class MarkerInfo {
 
 
 	}
-	public MarkerOptions getmMarker() {
-		return mMarker;
-	}
-	public void setmMarker(MarkerOptions mMarker) {
-		this.mMarker = mMarker;
-	}
+//	public MarkerOptions getmMarker() {
+//		return mMarker;
+//	}
+//	public void setmMarker(MarkerOptions mMarker) {
+//		this.mMarker = mMarker;
+//	}
 	public JSONObject getmObject() {
 		return mObject;
 	}

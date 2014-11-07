@@ -67,6 +67,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public Marker myMarker;
 	public LatLng myLocation;
 	public Marker selectedMarker;
+	private int indexOfMarkers;
 	private Switch switchButton;
 	private String markerID;
 	private MarkerOptions markerOptions;
@@ -91,13 +92,12 @@ public class MainActivity extends Activity implements AsyncResponse {
 			for (int i = 0; i < n; i++) {
 				Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 				Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
-				String userId = geodata.getJSONObject(i).getString("userId");
 				markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
-				markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum"))));
+				markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
 				markerOptions.title(""+i);
 				googleMap.addMarker(markerOptions);
-				mapMarkers.put(""+i, new MarkerInfo(markerOptions, geodata.getJSONObject(i)));
-
+				mapMarkers.put(""+i, new MarkerInfo(geodata.getJSONObject(i)));
+				
 			}
 		}catch(Exception e) {
 			throw new RuntimeException(e);
@@ -128,34 +128,57 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 	}
 
-	private BitmapDescriptor getIconFromActivityNum(int activityNum){
+	private BitmapDescriptor getIconFromActivityNum(int activityNum, boolean selected){
 
 		BitmapDescriptor icon = (BitmapDescriptorFactory.fromResource(R.drawable.marker));
 		switch (activityNum){
 		case 1:
+			if (!selected)
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccer));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccerselected));
 			break;
 		case 2:
+			if (!selected)
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.football));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.footballselected));
 			break;
 		case 3:
+			if (!selected)
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.frisbee));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.footballselected));
 			break;
 		case 4:
+			if (!selected)
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.tennis));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.tennisselected));
 			break;
 		case 5:
+			if (!selected)
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bike));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.bikeselected));
 			break;
 		case 6:
+			if (!selected)
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowling));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowlingselected));
 			break;
 		case 7:
-
+			if (!selected)
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbing));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbingselected));
 			break;
 		case 8:
+			if (!selected)
 			icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyball));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyballselected));
 			break;
 		}
 
@@ -237,8 +260,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 					gameCreated.setGravity(Gravity.CENTER, 0, 0);
 					gameCreated.show();
 					createButton.setAlpha((float)0.15);
-					myMarker.setIcon(getIconFromActivityNum(activityNum));
-
+					myMarker.setIcon(getIconFromActivityNum(activityNum, false));
+					
 
 					markerOptions = null;
 					myMarker = null;
@@ -272,18 +295,20 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 		else if (id==3){
 			builder.setView(viewDialogContent);
-			MarkerInfo markerInfo = null;
 			String title = selectedMarker.getTitle();
 			Log.d("title is: ", title);
+			final MarkerInfo markerInfo = mapMarkers.get(title);
+			
 
-			if (mapMarkers.containsKey(title)){
-				markerInfo = mapMarkers.get(title);
-			}
+			//TO-DO: error checking
+//			if (mapMarkers.containsKey(title)){
+//				markerInfo = mapMarkers.get(title);
+//			}
 			EditText edTxtTeamName = (EditText) viewDialogContent.findViewById(R.id.teamName55);
 			if (markerInfo != null)edTxtTeamName.setText(markerInfo.getTeamName());
 		
 			EditText edTxtCustomActivity = (EditText) viewDialogContent.findViewById(R.id.username555);
-			if (markerInfo != null)edTxtCustomActivity.setText(markerInfo.getTeamName());
+			if (markerInfo != null)edTxtCustomActivity.setText(markerInfo.getCustomActivity());
 			Spinner spinnerActivity = (Spinner) viewDialogContent.findViewById(R.id.spinner155);
 			if (markerInfo != null)spinnerActivity.setSelection(markerInfo.getActivityNum());
 			EditText edTxtPlayersActive = (EditText) viewDialogContent.findViewById(R.id.num_players55);
@@ -298,6 +323,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 					playSound(R.raw.cancel);
 					viewEnabled = false;
 					viewButton.setAlpha((float) 0.15);
+					if (markerInfo != null)
+					selectedMarker.setIcon(getIconFromActivityNum(markerInfo.getActivityNum(), false));
 					resetFields(dialogContent);
 				}
 			})
@@ -320,15 +347,15 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	protected void resetFields(View dialogContent) {
 		EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
-		edTxtTeamName.setText("");
+		edTxtTeamName.setText(null);
 		EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
-		edTxtCustomActivity.setText("");
+		edTxtCustomActivity.setText(null);
 		Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
 		spinnerActivity.setSelection(0);
 		EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
-		edTxtPlayersActive.setText("");
+		edTxtPlayersActive.setText(null);
 		EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
-		edTxtPlayersNeeded.setText("");
+		edTxtPlayersNeeded.setText(null);
 		TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
 		Calendar c = Calendar.getInstance();
 		pickFinishTime.setCurrentHour(c.get(Calendar.HOUR_OF_DAY));
@@ -450,9 +477,18 @@ public class MainActivity extends Activity implements AsyncResponse {
 				public boolean onMarkerClick(Marker myMarker) {
 					//String showUnavailable = "View Game Feature is Unavailable. In the future release, you can click this icon to see game info!";
 					//showFeatureUnavailableToast(showUnavailable);
+					if (myMarker.getTitle().equals("-1"))
+						return true;
+					
 					viewEnabled = true;
 					viewButton.setAlpha((float) 0.70);
-					selectedMarker = myMarker;
+					
+					if (selectedMarker != null)
+						selectedMarker.setIcon(getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
+					
+						selectedMarker = myMarker;
+						selectedMarker.setIcon(getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), true));
+						
 					//selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 					return true;
 				}
@@ -473,7 +509,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 					// Changing marker icon
 					markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-
+					markerOptions.title("-1");
 					createButton.setAlpha((float) 0.70);
 					paramPoint = point;
 					createEnabled = true; 
