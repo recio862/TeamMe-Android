@@ -67,7 +67,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public Marker myMarker;
 	public LatLng myLocation;
 	public Marker selectedMarker;
-	private int indexOfMarkers;
 	private Switch switchButton;
 	private String markerID;
 	private MarkerOptions markerOptions;
