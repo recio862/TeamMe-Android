@@ -13,4 +13,8 @@
 	 <string name="about_text">TeamMe! is an app designed to help users find local games
 	     or activities that they can join and save the teams they play with so that they can
 	     keep in touch with them and play more in the future.</string>
+	 <string name="profile_pic">Profile Picture</string>
+	 <string name="profile_name">Your Name</string>
+	 <string name="login">Login</string>
+	 <string name="register">Register</string>
 </resources>

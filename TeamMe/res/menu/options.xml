@@ -16,7 +16,7 @@
                 android:id="@+id/myprofile"
                 android:icon="@drawable/profileoverflow"
                 android:title="@string/my_profile"
-                android:onClick="featureUnavailable"/>
+                android:onClick="profile"/>
             <item
                 android:id="@+id/myteams"
                 android:icon="@drawable/teamoverflow"

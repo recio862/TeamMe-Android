@@ -12,6 +12,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
@@ -127,6 +128,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 	}
 
+	public void profile(MenuItem item){
+		Intent intent = new Intent(getApplicationContext(), Profile.class);
+		System.out.println("HERE");
+		startActivity(intent);
+	}
 	private BitmapDescriptor getIconFromActivityNum(int activityNum, boolean selected){
 
 		BitmapDescriptor icon = (BitmapDescriptorFactory.fromResource(R.drawable.marker));
