@@ -79,6 +79,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 	//this is the point the user clicks on on the map that will be passed to server when creating game
 	public LatLng paramPoint;
 
+	//to use the Deleter, do something like
+	
+	//params = new GameDeletionParameters("http://72.182.49.84:80/android/project/deleteMarkers.php", Integer gameNum);
+	//messagePasser.new DeleteMarkersTask().execute(params);
+
 	private boolean createEnabled = false;
 	private boolean viewEnabled = false;
 
