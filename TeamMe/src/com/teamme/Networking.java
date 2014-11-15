@@ -59,6 +59,90 @@ public class Networking {
 			}
 		}
 
+//used in deleting stuff
+		public static class GameDeletionParameters {
+			Integer gameNum;
+			String url;
+			GameDeletionParameters(String url1, Integer gameNum1){
+				this.url = url1;
+				this.gameNum = gameNum1;
+			}
+		}
+
+		public InputStream OpenHttpPOSTConnectionForDeletion(String url, Integer activityNum) {
+			InputStream inputStream = null;
+			try{
+				//HttpParams httpParameters = new BasicHttpParams();
+				//HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
+				//HttpConnectionParams.setSoTimeout(httpParameters, 10000+12000);
+				HttpClient httpclient = new DefaultHttpClient();
+				HttpPost httpPost = new HttpPost(url);
+				//httpPost.setParams(httpParameters);
+				httpPost.addHeader("Host", "72.182.49.84");
+				httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
+				List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+				nameValuePairs.add(new BasicNameValuePair("activityNum", String.valueOf(activityNum)));
+
+				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+
+				HttpResponse httpResponse = httpclient.execute(httpPost);
+				inputStream = httpResponse.getEntity().getContent();
+			} catch(Exception e) {
+				Log.d("OpenHttpPOSTConnectionForDeletion", e.getLocalizedMessage());
+			}
+			return inputStream;
+		}
+		
+		public class DeleteMarkersTask extends AsyncTask<GameDeletionParameters, Void, String>{
+			protected String doInBackground(GameDeletionParameters... params){
+				String url = params[0].url;
+				Integer gameNum = params[0].gameNum;
+				
+				return deleteCoords(url, gameNum);
+			}
+			
+			private String deleteCoords(String url, Integer gameNum) {
+				int BUFFER_SIZE = 2000;
+				InputStream in = null;
+				try {
+					in = OpenHttpPOSTConnectionForDeletion(url, gameNum);
+					if (in == null){
+						Log.d("IN", "error null returned by post request");
+						//throw NoHttpResponseException;
+						return "";
+					}				
+
+				} catch(Exception e) {
+					Log.d("Networking", e.getLocalizedMessage());
+					return "";
+				}
+				//Log.d("IN", "meow1");
+
+				InputStreamReader isr = new InputStreamReader(in);
+				int charRead;
+				String str = " ";
+				char [] inputBuffer = new char[BUFFER_SIZE];
+				try {
+					while ((charRead = isr.read(inputBuffer)) > 0) {
+						//convert chars to a String
+						String readString = String.copyValueOf(inputBuffer, 0, charRead);
+						str += readString;
+						inputBuffer = new char[BUFFER_SIZE];
+					}
+					in.close();
+				} catch (IOException e) {
+					Log.d("DeleteCoords", e.getLocalizedMessage());
+					return "";
+				}
+				return str;
+			}
+			
+			@Override
+			protected void onPostExecute(String result) {
+				//Toast.makeText(mContext.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+				Log.d("DeleteCoordsTask", result);
+			}
+		}
 		//from the Android cookbook by Wei Meng lee, GET
 
 			public static InputStream OpenHttpGETConnection(String url) {
