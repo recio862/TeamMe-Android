@@ -49,6 +49,33 @@ public AnimatedView(Context context, AttributeSet attrs)  {
                 h = new Handler();
 
       }
+public AnimatedView(Context context)  {
+
+    super(context);
+
+    mContext = context;
+    
+    rand = new Random();
+    initializeBitMap();
+    initializeArrays();
+    initializeVelocities();
+    h = new Handler();
+
+}
+public AnimatedView (Context context, AttributeSet attrs, int defStyle){
+
+    super(context,attrs, defStyle);
+
+    mContext = context;
+    
+    rand = new Random();
+    initializeBitMap();
+    initializeArrays();
+    initializeVelocities();
+    h = new Handler();
+
+}
+
 
          private void initializeVelocities() {
         	 xVelocityArray = new int[numObjects];

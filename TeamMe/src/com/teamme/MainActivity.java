@@ -98,7 +98,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			for (int i = 0; i < n; i++) {
 				Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 				Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
-				mGameNumber = (geodata.getJSONObject(i).getInt("markerID"));
+				mGameNumber = (geodata.getJSONObject(i).getInt("markerId"));
 				markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 				markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
 				markerOptions.title(""+i);
