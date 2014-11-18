@@ -146,12 +146,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 		SharedPreferences.Editor ed = mPrefs.edit();
 
 
-		ed.putBoolean("loggedIn", false);
+		ed.putBoolean("loggedOut", true);
 
 		ed.apply();
 		Intent intent = new Intent(getApplicationContext(), Login.class);
 		System.out.println("HERE");
 		startActivity(intent);
+		finish();
 	}
 	private BitmapDescriptor getIconFromActivityNum(int activityNum, boolean selected){
 
@@ -456,7 +457,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
-		if (mPrefs.getBoolean("loggedIn", true)){
+		if (mPrefs.getBoolean("loggedOut", true)){
 		Intent intent = new Intent(getApplicationContext(), Login.class);
 		startActivity(intent);
 		finish();

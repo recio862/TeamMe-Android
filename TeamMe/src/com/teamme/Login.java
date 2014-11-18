@@ -25,7 +25,7 @@ public class Login extends Activity{
 		SharedPreferences.Editor ed = mPrefs.edit();
 
 
-		ed.putBoolean("loggedIn", false);
+		ed.putBoolean("loggedOut", false);
 
 		ed.apply();
 			Intent intent = new Intent(getApplicationContext(), MainActivity.class);
