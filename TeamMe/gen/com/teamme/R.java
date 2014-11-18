@@ -483,6 +483,7 @@ containing a value of this type.
         public static final int VerticalLine3=0x7f090020;
         public static final int about=0x7f090066;
         public static final int action_settings=0x7f090065;
+        public static final int anim_view=0x7f09003c;
         public static final int arrow_down=0x7f090016;
         public static final int arrow_up=0x7f090015;
         public static final int book_now=0x7f090010;
@@ -496,7 +497,6 @@ containing a value of this type.
         public static final int center_divider355=0x7f09005c;
         public static final int center_divider55=0x7f09004c;
         public static final int classic=0x7f090011;
-        public static final int divider=0x7f09003d;
         public static final int email=0x7f09003e;
         public static final int feature_not_ready=0x7f090044;
         public static final int filtermap=0x7f090062;
@@ -521,7 +521,7 @@ containing a value of this type.
         public static final int linear655=0x7f09005d;
         public static final int linear7=0x7f09003a;
         public static final int linear755=0x7f09005f;
-        public static final int loginHeader=0x7f09003c;
+        public static final int loginHeader=0x7f09003d;
         public static final int login_button=0x7f09003f;
         public static final int logout=0x7f090067;
         public static final int mainMenu=0x7f090061;
