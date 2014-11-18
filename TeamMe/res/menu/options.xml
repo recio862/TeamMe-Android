@@ -36,7 +36,7 @@
                 android:id="@+id/logout"
                 android:icon="@drawable/logoutoverflow"
                 android:title="@string/logout"
-                android:onClick="featureUnavailable"/>
+                android:onClick="logout"/>
         </menu>
     </item>
 

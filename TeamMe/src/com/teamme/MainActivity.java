@@ -66,6 +66,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private HashMap<Integer, Integer> mSoundIDMap;
 	private SharedPreferences mPrefs;
 	public Marker myMarker;
+	public int mGameNumber;
 	public LatLng myLocation;
 	public Marker selectedMarker;
 	private Switch switchButton;
@@ -97,6 +98,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			for (int i = 0; i < n; i++) {
 				Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 				Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
+				mGameNumber = (geodata.getJSONObject(i).getInt("markerID"));
 				markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 				markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
 				markerOptions.title(""+i);
@@ -135,6 +137,19 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	public void profile(MenuItem item){
 		Intent intent = new Intent(getApplicationContext(), Profile.class);
+		System.out.println("HERE");
+		startActivity(intent);
+	}
+	
+	public void logout(MenuItem item){
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+		SharedPreferences.Editor ed = mPrefs.edit();
+
+
+		ed.putBoolean("loggedIn", false);
+
+		ed.apply();
+		Intent intent = new Intent(getApplicationContext(), Login.class);
 		System.out.println("HERE");
 		startActivity(intent);
 	}
@@ -434,13 +449,22 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}		
 	}
 
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
+		if (mPrefs.getBoolean("loggedIn", true)){
+		Intent intent = new Intent(getApplicationContext(), Login.class);
+		startActivity(intent);
+		finish();
+		return;
+		}
 		setContentView(R.layout.activity_main);
 		createSoundPool();
 		fixZoom();
-		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 		mSoundOn = mPrefs.getBoolean("sound", true);
 		createButton = (Button)findViewById(R.id.Button01);
 		messagePasser = new Networking(MainActivity.this);

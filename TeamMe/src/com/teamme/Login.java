@@ -1,7 +1,10 @@
 package com.teamme;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 public class Login extends Activity{
@@ -16,12 +19,22 @@ public class Login extends Activity{
 		
 	}
 	
-	public void login(){
-		//TO-DO create dialog with username/password fields to handle login
-		//TO-DO connect data from fields to server and authenticate
+	public void login(View view){
+	
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+		SharedPreferences.Editor ed = mPrefs.edit();
+
+
+		ed.putBoolean("loggedIn", false);
+
+		ed.apply();
+			Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+			startActivity(intent);
+			finish();
+			
 	}
 	
-	public void register(){
+	public void register(View view){
 		//TO-DO create dialog with all fields necessary to create a profile
 		//TO-DO connect data from dialog to server
 		
