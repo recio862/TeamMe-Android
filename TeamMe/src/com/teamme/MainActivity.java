@@ -497,7 +497,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 			getPasser = messagePasser.new DownloadMarkersTask();
 			getPasser.responder = this;
-			getPasser.execute("http://72.182.49.84:80/android/project/grabMarkers.php?id=1"); 
+
+			getPasser.execute("http://" + messagePasser.amazonServerIp + ":80/android/project/grabMarkers.php?id=1"); 
+
 			googleMap.setMyLocationEnabled(true);
 
 			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
