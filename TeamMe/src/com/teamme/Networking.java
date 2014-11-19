@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Networking {
+	public final String amazonServerIp = "54.148.102.210";
+	public final String privateServerIp = "72.182.49.84";
 	public interface AsyncResponse {
 	    void gotMarkers(String output);
 	}
@@ -78,7 +80,7 @@ public class Networking {
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpPost httpPost = new HttpPost(url);
 				//httpPost.setParams(httpParameters);
-				httpPost.addHeader("Host", "72.182.49.84");
+				httpPost.addHeader("Host", amazonServerIp);
 				httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
 				List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 				nameValuePairs.add(new BasicNameValuePair("activityNum", String.valueOf(activityNum)));
@@ -209,7 +211,7 @@ public class Networking {
 					HttpClient httpclient = new DefaultHttpClient();
 					HttpPost httpPost = new HttpPost(url);
 					//httpPost.setParams(httpParameters);
-					httpPost.addHeader("Host", "72.182.49.84");
+					httpPost.addHeader("Host",amazonServerIp);
 					httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
 					List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(10);
 					nameValuePairs.add(new BasicNameValuePair("lat", String.valueOf(pos.latitude)));
