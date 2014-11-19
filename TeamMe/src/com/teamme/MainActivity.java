@@ -90,6 +90,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	//passes data from the async networking thread to ui thread after results are returned
 	public void gotMarkers(String jsonDownloadedMarkersString){
+	        if (jsonDownloadedMarkersString == "0" || jsonDownloadedMarkersString == null || jsonDownloadedMarkersString == ""){
+			Toast.makeText(getApplicationContext(), "Failed to contact server, check connection; flip orientation restart app", 3);
+			return;
+		}
+		else{
 		try{
 			final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
 			Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
@@ -108,6 +113,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			}
 		}catch(Exception e) {
 			throw new RuntimeException(e);
+		}
 		}
 	}
 	//Quickfix to move maps zoom buttons to the top left so it doesn't interfere with the
