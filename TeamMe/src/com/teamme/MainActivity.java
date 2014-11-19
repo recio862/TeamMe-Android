@@ -90,11 +90,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	//passes data from the async networking thread to ui thread after results are returned
 	public void gotMarkers(String jsonDownloadedMarkersString){
-	        if (jsonDownloadedMarkersString == "0" || jsonDownloadedMarkersString == null || jsonDownloadedMarkersString == ""){
-			Toast.makeText(getApplicationContext(), "Failed to contact server, check connection; flip orientation restart app", 3);
-			return;
-		}
-		else{
 		try{
 			final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
 			Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
@@ -113,7 +108,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 			}
 		}catch(Exception e) {
 			throw new RuntimeException(e);
-		}
 		}
 	}
 	//Quickfix to move maps zoom buttons to the top left so it doesn't interfere with the
@@ -285,7 +279,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
 
 
-					params = new CoordParameters("http://72.182.49.84:80/android/project/updateMarkers.php", paramPoint, "0", 
+					params = new CoordParameters("http://" + messagePasser.usedIp ":80/android/project/updateMarkers.php", paramPoint, "0", 
 							finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
 					messagePasser.new SendCoordsTask().execute(params);
 					Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
@@ -504,7 +498,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			getPasser = messagePasser.new DownloadMarkersTask();
 			getPasser.responder = this;
 
-			getPasser.execute("http://" + messagePasser.amazonServerIp + ":80/android/project/grabMarkers.php?id=1"); 
+			getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabMarkers.php?id=1"); 
 
 			googleMap.setMyLocationEnabled(true);
 
