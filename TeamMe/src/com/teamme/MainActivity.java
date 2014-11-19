@@ -279,7 +279,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
 
 
-					params = new CoordParameters("http://" + messagePasser.amazonServerIp + ":80/android/project/updateMarkers.php", paramPoint, "0", 
+					params = new CoordParameters("http://72.182.49.84:80/android/project/updateMarkers.php", paramPoint, "0", 
 							finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
 					messagePasser.new SendCoordsTask().execute(params);
 					Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
@@ -497,7 +497,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 			getPasser = messagePasser.new DownloadMarkersTask();
 			getPasser.responder = this;
-			getPasser.execute("http://" + amazonServerIp + ":80/android/project/grabMarkers.php?id=1"); 
+			getPasser.execute("http://72.182.49.84:80/android/project/grabMarkers.php?id=1"); 
 			googleMap.setMyLocationEnabled(true);
 
 			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
