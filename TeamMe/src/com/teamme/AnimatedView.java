@@ -38,7 +38,7 @@ public class AnimatedView extends ImageView{
 
 	private Handler h;
 
-	private final int numObjects = 400;
+	private final int numObjects = 20;
 	private final int FRAME_RATE = 10;
 
 	private BitmapDrawable[] bitMapArray;
@@ -173,13 +173,13 @@ public class AnimatedView extends ImageView{
 
 				y += yVelocity;
 
-				if ((x > this.getWidth() - ball.getBitmap().getWidth()) || (x < 0)) {
+				if ((x > width - ball.getBitmap().getWidth()) || (x < 0)) {
 
 					xVelocity = xVelocity*-1;
 
 				}
 
-				if ((y > this.getHeight()) || (y < 0)) {
+				if ((y > height) || (y < 0)) {
 
 					yVelocity = yVelocity*-1;
 

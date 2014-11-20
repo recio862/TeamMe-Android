@@ -67,6 +67,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private SharedPreferences mPrefs;
 	public Marker myMarker;
 	public int mGameNumber;
+	public int index;
 	public LatLng myLocation;
 	public Marker selectedMarker;
 	private Switch switchButton;
@@ -100,6 +101,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 				final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
 				Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
 				final int n = geodata.length();
+				index = n;
 				for (int i = 0; i < n; i++) {
 					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
@@ -299,8 +301,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 					gameCreated.show();
 					createButton.setAlpha((float)0.15);
 					myMarker.setIcon(getIconFromActivityNum(activityNum, false));
-
-
+					MarkerInfo mi = new MarkerInfo(null);
+					mi.setActivityNum(activityNum);
+					mapMarkers.put(""+index,mi );
+					myMarker.setTitle(""+index);
+					index++;
 					markerOptions = null;
 					myMarker = null;
 					createEnabled=  false;
@@ -536,9 +541,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 				public boolean onMarkerClick(Marker myMarker) {
 					//String showUnavailable = "View Game Feature is Unavailable. In the future release, you can click this icon to see game info!";
 					//showFeatureUnavailableToast(showUnavailable);
-					if (myMarker.getTitle().equals("-1"))
+					if (myMarker.getTitle().equals("-1")){
+						Log.d("tag","test");
 						return true;
 
+					}
 					viewEnabled = true;
 					viewButton.setAlpha((float) 0.70);
 
