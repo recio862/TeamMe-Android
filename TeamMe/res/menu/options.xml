@@ -21,7 +21,7 @@
                 android:id="@+id/myteams"
                 android:icon="@drawable/teamoverflow"
                 android:title="@string/my_teams"
-                android:onClick="featureUnavailable"/>
+                android:onClick="teams"/>
             <item
                 android:id="@+id/action_settings"
                 android:onClick="settingsDialog"

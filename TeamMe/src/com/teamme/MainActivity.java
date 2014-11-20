@@ -71,6 +71,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public Marker selectedMarker;
 	private Switch switchButton;
 	private String markerID;
+	public String usedIp;
 	private MarkerOptions markerOptions;
 	public AlertDialog dialog;
 	public Networking messagePasser;
@@ -81,7 +82,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public LatLng paramPoint;
 
 	//to use the Deleter, do something like
-	
+
 	//params = new GameDeletionParameters("http://72.182.49.84:80/android/project/deleteMarkers.php", Integer gameNum);
 	//messagePasser.new DeleteMarkersTask().execute(params);
 
@@ -90,24 +91,28 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	//passes data from the async networking thread to ui thread after results are returned
 	public void gotMarkers(String jsonDownloadedMarkersString){
-		try{
-			final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
-			Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
-
-			final int n = geodata.length();
-			for (int i = 0; i < n; i++) {
-				Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
-				Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
-				mGameNumber = (geodata.getJSONObject(i).getInt("markerId"));
-				markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
-				markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
-				markerOptions.title(""+i);
-				googleMap.addMarker(markerOptions);
-				mapMarkers.put(""+i, new MarkerInfo(geodata.getJSONObject(i)));
-				
+		if (jsonDownloadedMarkersString == "0" || jsonDownloadedMarkersString == null || jsonDownloadedMarkersString == ""){
+			Toast.makeText(getApplicationContext(), "Failed to contact server, check connection; flip orientation restart app", 3);
+			return;
+		}
+		else{
+			try{
+				final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
+				Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
+				final int n = geodata.length();
+				for (int i = 0; i < n; i++) {
+					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
+					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
+					mGameNumber = (geodata.getJSONObject(i).getInt("markerId"));
+					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
+					markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
+					markerOptions.title(""+i);
+					googleMap.addMarker(markerOptions);
+					mapMarkers.put(""+i, new MarkerInfo(geodata.getJSONObject(i)));
+				}
+			}catch(Exception e) {
+				throw new RuntimeException(e);
 			}
-		}catch(Exception e) {
-			throw new RuntimeException(e);
 		}
 	}
 	//Quickfix to move maps zoom buttons to the top left so it doesn't interfere with the
@@ -137,10 +142,17 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	public void profile(MenuItem item){
 		Intent intent = new Intent(getApplicationContext(), Profile.class);
-		System.out.println("HERE");
 		startActivity(intent);
+
 	}
-	
+
+	public void teams(MenuItem item){
+		Intent intent = new Intent(getApplicationContext(), Teams.class);
+
+		startActivity(intent);
+
+	}
+
 	public void logout(MenuItem item){
 		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
 		SharedPreferences.Editor ed = mPrefs.edit();
@@ -150,7 +162,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 		ed.apply();
 		Intent intent = new Intent(getApplicationContext(), Login.class);
-		System.out.println("HERE");
 		startActivity(intent);
 		finish();
 	}
@@ -160,49 +171,49 @@ public class MainActivity extends Activity implements AsyncResponse {
 		switch (activityNum){
 		case 1:
 			if (!selected)
-			icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccer));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccer));
 			else
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccerselected));
 			break;
 		case 2:
 			if (!selected)
-			icon =(BitmapDescriptorFactory.fromResource(R.drawable.football));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.football));
 			else
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.footballselected));
 			break;
 		case 3:
 			if (!selected)
-			icon =(BitmapDescriptorFactory.fromResource(R.drawable.frisbee));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.frisbee));
 			else
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.footballselected));
 			break;
 		case 4:
 			if (!selected)
-			icon =(BitmapDescriptorFactory.fromResource(R.drawable.tennis));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.tennis));
 			else
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.tennisselected));
 			break;
 		case 5:
 			if (!selected)
-			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bike));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.bike));
 			else
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.bikeselected));
 			break;
 		case 6:
 			if (!selected)
-			icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowling));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowling));
 			else
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.bowlingselected));
 			break;
 		case 7:
 			if (!selected)
-			icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbing));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbing));
 			else
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.climbingselected));
 			break;
 		case 8:
 			if (!selected)
-			icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyball));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyball));
 			else
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.volleyballselected));
 			break;
@@ -287,7 +298,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					gameCreated.show();
 					createButton.setAlpha((float)0.15);
 					myMarker.setIcon(getIconFromActivityNum(activityNum, false));
-					
+
 
 					markerOptions = null;
 					myMarker = null;
@@ -324,15 +335,15 @@ public class MainActivity extends Activity implements AsyncResponse {
 			String title = selectedMarker.getTitle();
 			Log.d("title is: ", title);
 			final MarkerInfo markerInfo = mapMarkers.get(title);
-			
+
 
 			//TO-DO: error checking
-//			if (mapMarkers.containsKey(title)){
-//				markerInfo = mapMarkers.get(title);
-//			}
+			//			if (mapMarkers.containsKey(title)){
+			//				markerInfo = mapMarkers.get(title);
+			//			}
 			EditText edTxtTeamName = (EditText) viewDialogContent.findViewById(R.id.teamName55);
 			if (markerInfo != null)edTxtTeamName.setText(markerInfo.getTeamName());
-		
+
 			EditText edTxtCustomActivity = (EditText) viewDialogContent.findViewById(R.id.username555);
 			if (markerInfo != null)edTxtCustomActivity.setText(markerInfo.getCustomActivity());
 			Spinner spinnerActivity = (Spinner) viewDialogContent.findViewById(R.id.spinner155);
@@ -350,7 +361,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					viewEnabled = false;
 					viewButton.setAlpha((float) 0.15);
 					if (markerInfo != null)
-					selectedMarker.setIcon(getIconFromActivityNum(markerInfo.getActivityNum(), false));
+						selectedMarker.setIcon(getIconFromActivityNum(markerInfo.getActivityNum(), false));
 					resetFields(dialogContent);
 				}
 			})
@@ -413,8 +424,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 	}
 
-	
-	
+
+
 	public void clickedView(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap an existing activity first!");
 		if (!viewEnabled)
@@ -450,18 +461,19 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}		
 	}
 
-	
-	
-	
+
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 		if (mPrefs.getBoolean("loggedOut", true)){
-		Intent intent = new Intent(getApplicationContext(), Login.class);
-		startActivity(intent);
-		finish();
-		return;
+			Intent intent = new Intent(getApplicationContext(), Login.class);
+			startActivity(intent);
+			finish();
+			return;
 		}
 		setContentView(R.layout.activity_main);
 		createSoundPool();
@@ -469,6 +481,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		mSoundOn = mPrefs.getBoolean("sound", true);
 		createButton = (Button)findViewById(R.id.Button01);
 		messagePasser = new Networking(MainActivity.this);
+		usedIp = messagePasser.amazonServerIp;
 		if (mapMarkers == null)
 			mapMarkers = new HashMap<String, MarkerInfo>();
 		viewButton = (Button)findViewById(R.id.Button02);
@@ -498,7 +511,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			getPasser = messagePasser.new DownloadMarkersTask();
 			getPasser.responder = this;
 
-			getPasser.execute("http://" + messagePasser.amazonServerIp + ":80/android/project/grabMarkers.php?id=1"); 
+			getPasser.execute("http://" + messagePasser.privateServerIp + ":80/android/project/grabMarkers.php?id=1"); 
 
 			googleMap.setMyLocationEnabled(true);
 
@@ -526,16 +539,16 @@ public class MainActivity extends Activity implements AsyncResponse {
 					//showFeatureUnavailableToast(showUnavailable);
 					if (myMarker.getTitle().equals("-1"))
 						return true;
-					
+
 					viewEnabled = true;
 					viewButton.setAlpha((float) 0.70);
-					
+
 					if (selectedMarker != null)
 						selectedMarker.setIcon(getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
-					
-						selectedMarker = myMarker;
-						selectedMarker.setIcon(getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), true));
-						
+
+					selectedMarker = myMarker;
+					selectedMarker.setIcon(getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), true));
+
 					//selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 					return true;
 				}

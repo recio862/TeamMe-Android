@@ -80,7 +80,7 @@ public class Networking {
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpPost httpPost = new HttpPost(url);
 				//httpPost.setParams(httpParameters);
-				httpPost.addHeader("Host", amazonServerIp);
+				httpPost.addHeader("Host", privateServerIp);
 				httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
 				List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 				nameValuePairs.add(new BasicNameValuePair("activityNum", String.valueOf(activityNum)));
@@ -211,7 +211,7 @@ public class Networking {
 					HttpClient httpclient = new DefaultHttpClient();
 					HttpPost httpPost = new HttpPost(url);
 					//httpPost.setParams(httpParameters);
-					httpPost.addHeader("Host",amazonServerIp);
+					httpPost.addHeader("Host",privateServerIp);
 					httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
 					List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(10);
 					nameValuePairs.add(new BasicNameValuePair("lat", String.valueOf(pos.latitude)));
