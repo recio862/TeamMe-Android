@@ -18,166 +18,171 @@ import android.widget.ImageView;
 //http://www.techrepublic.com/blog/software-engineer/bouncing-a-ball-on-androids-canvas/
 public class AnimatedView extends ImageView{
 
-        private Context mContext;
+	private Context mContext;
 
-        int xArray[];
+	int xArray[];
 
-        int yArray[];
+	int yArray[];
 
-        private Random rand;
-        
-        private int xVelocityArray[];
+	private Random rand;
 
-        private int yVelocityArray[];
+	private int xVelocityArray[];
 
-        private Handler h;
+	private int yVelocityArray[];
 
-        private final int numObjects = 400;
-        private final int FRAME_RATE = 10;
+	private Handler h;
 
-        private BitmapDrawable[] bitMapArray;
-public AnimatedView(Context context, AttributeSet attrs)  {
+	private final int numObjects = 400;
+	private final int FRAME_RATE = 10;
 
-                super(context, attrs);
+	private BitmapDrawable[] bitMapArray;
+	public AnimatedView(Context context, AttributeSet attrs)  {
 
-                mContext = context;
-                
-                rand = new Random();
-                initializeBitMap();
-                initializeArrays();
-                initializeVelocities();
-                h = new Handler();
+		super(context, attrs);
 
-      }
-public AnimatedView(Context context)  {
+		mContext = context;
 
-    super(context);
+		rand = new Random();
+		initializeBitMap();
+		initializeArrays();
+		initializeVelocities();
+		h = new Handler();
 
-    mContext = context;
-    
-    rand = new Random();
-    initializeBitMap();
-    initializeArrays();
-    initializeVelocities();
-    h = new Handler();
+	}
+	public AnimatedView(Context context)  {
 
-}
-public AnimatedView (Context context, AttributeSet attrs, int defStyle){
+		super(context);
 
-    super(context,attrs, defStyle);
+		mContext = context;
 
-    mContext = context;
-    
-    rand = new Random();
-    initializeBitMap();
-    initializeArrays();
-    initializeVelocities();
-    h = new Handler();
+		rand = new Random();
+		initializeBitMap();
+		initializeArrays();
+		initializeVelocities();
+		h = new Handler();
 
-}
+	}
+	public AnimatedView (Context context, AttributeSet attrs, int defStyle){
+
+		super(context,attrs, defStyle);
+
+		mContext = context;
+
+		rand = new Random();
+		initializeBitMap();
+		initializeArrays();
+		initializeVelocities();
+		h = new Handler();
+
+	}
 
 
-         private void initializeVelocities() {
-        	 xVelocityArray = new int[numObjects];
-        	 yVelocityArray = new int[numObjects];
-        	 int negative = 1;
-        	 for (int i = 0 ; i < numObjects; i++){
-        		 if (rand.nextInt(2) == 1)
-        			 negative *= -1;
-        		 xVelocityArray[i] = (1+ rand.nextInt(2)) * negative;
-        		 yVelocityArray[i] = (1+ rand.nextInt(2)) * negative;
-        	 }
-	
-}
+	private void initializeVelocities() {
+		xVelocityArray = new int[numObjects];
+		yVelocityArray = new int[numObjects];
+		int negative = 1;
+		for (int i = 0 ; i < numObjects; i++){
+			if (rand.nextInt(2) == 1)
+				negative *= -1;
+			xVelocityArray[i] = (1+ rand.nextInt(2)) * negative;
+			yVelocityArray[i] = (1+ rand.nextInt(2)) * negative;
+		}
 
-		private void initializeArrays() {
-			xArray = new int[numObjects];
-			yArray = new int[numObjects];
-			for (int i = 0 ; i < numObjects; i++){
-       		 xArray[i] = 20+ rand.nextInt(1000);
-       		 yArray[i] = 20 + rand.nextInt(1000);
-       	 }
-	
-}
+	}
 
-		private void initializeBitMap() {
-      
-        	 bitMapArray = new BitmapDrawable[numObjects];
-        	 bitMapArray[0] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.soccer);
-        	 bitMapArray[1] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.football);
-        	 bitMapArray[2] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.frisbee);
-        	 bitMapArray[3] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.tennis);
-        	 bitMapArray[4] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.bike);
-        	 bitMapArray[5] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.bowling);
-        	 bitMapArray[6] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.climbing);
-        	 bitMapArray[7] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.volleyball);
-        	 
-        	 for (int i = 0 ; i < numObjects-8 ; i++){
-        		 bitMapArray[i+8] = bitMapArray[i];
-        	 }
-	
-}
+	private void initializeArrays() {
+		xArray = new int[numObjects];
+		yArray = new int[numObjects];
+		for (int i = 0 ; i < numObjects; i++){
+			xArray[i] = 20+ rand.nextInt(1000);
+			yArray[i] = 20 + rand.nextInt(1000);
+		}
 
-		private Runnable r = new Runnable() {
+	}
 
-                 @Override
+	private void initializeBitMap() {
 
-                 public void run() {
+		bitMapArray = new BitmapDrawable[numObjects];
+		bitMapArray[0] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.soccer);
+		bitMapArray[1] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.football);
+		bitMapArray[2] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.frisbee);
+		bitMapArray[3] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.tennis);
+		bitMapArray[4] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.bike);
+		bitMapArray[5] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.bowling);
+		bitMapArray[6] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.climbing);
+		bitMapArray[7] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.volleyball);
 
-                         invalidate();
+		for (int i = 0 ; i < numObjects-8 ; i++){
+			bitMapArray[i+8] = bitMapArray[i];
+		}
 
-                 }
+	}
 
-         };
+	private Runnable r = new Runnable() {
 
-         protected void onDraw(Canvas c) {
+		@Override
 
-                 BitmapDrawable ball = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.soccer);
+		public void run() {
 
-                 for (int i =0 ; i < numObjects ; i++){
-                	 ball = bitMapArray[i];
-                	int  x = xArray[i];
-                	int y= yArray[i];
-                	int xVelocity = xVelocityArray[i];
-                	int yVelocity = yVelocityArray[i];
-             if (x<0 && y <0) {
+			invalidate();
 
-                 x = this.getWidth()/2;
+		}
 
-                 y = 0;
+	};
 
-             } else {
+	protected void onDraw(Canvas c) {
 
-                 x += xVelocity;
+		BitmapDrawable ball = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.soccer);
 
-                 y += yVelocity;
+		for (int i =0 ; i < numObjects ; i++){
+			ball = bitMapArray[i];
+			int  x = xArray[i];
+			int y= yArray[i];
+			int xVelocity = xVelocityArray[i];
+			int yVelocity = yVelocityArray[i];
+			if (x<0 && y <0) {
 
-                 if ((x > this.getWidth() - ball.getBitmap().getWidth()) || (x < 0)) {
+				x = this.getWidth()/2;
 
-                         xVelocity = xVelocity*-1;
+				y = 0;
 
-                 }
+			} else {
 
-                 if ((y > this.getHeight()) || (y < 0)) {
+				x += xVelocity;
 
-                         yVelocity = yVelocity*-1;
+				y += yVelocity;
 
-                 }
+				if ((x > this.getWidth() - ball.getBitmap().getWidth()) || (x < 0)) {
 
-            }
+					xVelocity = xVelocity*-1;
 
-                 
-            c.drawBitmap(ball.getBitmap(), x, y, null);
-            xArray[i] =x;
-            yArray[i] = y;
-            xVelocityArray[i] = xVelocity;
-            yVelocityArray[i] = yVelocity;
-        	
-           
+				}
 
-                 }
-                 h.postDelayed(r, FRAME_RATE);
-                 
-      }
+				if ((y > this.getHeight()) || (y < 0)) {
 
+					yVelocity = yVelocity*-1;
+
+				}
+
+			}
+
+
+			c.drawBitmap(ball.getBitmap(), x, y, null);
+			xArray[i] =x;
+			yArray[i] = y;
+			xVelocityArray[i] = xVelocity;
+			yVelocityArray[i] = yVelocity;
+
+
+
+		}
+		h.postDelayed(r, FRAME_RATE);
+
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	    super.onMeasure(widthMeasureSpec, this.getHeight());
+	    setMeasuredDimension(widthMeasureSpec, resolveSize(1000, heightMeasureSpec));
+	}
 }

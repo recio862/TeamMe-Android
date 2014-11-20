@@ -25,7 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class Networking {
 	public final String amazonServerIp = "54.148.102.210";
 	public final String privateServerIp = "72.182.49.84";
-	public final String usedIp = privateServerIp;
+	public final String usedIp = amazonServerIp;
 	public interface AsyncResponse {
 		void gotMarkers(String output);
 	}

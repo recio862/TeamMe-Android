@@ -143,13 +143,14 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public void profile(MenuItem item){
 		Intent intent = new Intent(getApplicationContext(), Profile.class);
 		startActivity(intent);
+		
 
 	}
 
 	public void teams(MenuItem item){
 		Intent intent = new Intent(getApplicationContext(), Teams.class);
-
 		startActivity(intent);
+	
 
 	}
 
@@ -358,11 +359,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 			builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					playSound(R.raw.cancel);
-					viewEnabled = false;
-					viewButton.setAlpha((float) 0.15);
-					if (markerInfo != null)
-						selectedMarker.setIcon(getIconFromActivityNum(markerInfo.getActivityNum(), false));
-					resetFields(dialogContent);
+					
+				resetFields(dialogContent);
 				}
 			})
 			.setNegativeButton("Join Game", new DialogInterface.OnClickListener() {
