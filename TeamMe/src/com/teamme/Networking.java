@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class Networking {
 	public final String amazonServerIp = "54.148.102.210";
 	public final String privateServerIp = "72.182.49.84";
+	public final String usedIp = privateServerIp;
 	public interface AsyncResponse {
 	    void gotMarkers(String output);
 	}
@@ -80,7 +81,11 @@ public class Networking {
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpPost httpPost = new HttpPost(url);
 				//httpPost.setParams(httpParameters);
+<<<<<<< HEAD
 				httpPost.addHeader("Host", privateServerIp);
+=======
+				httpPost.addHeader("Host", usedIp);
+>>>>>>> branch 'master' of https://github.com/NotBrianZach/AndroidDevProject.git
 				httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
 				List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 				nameValuePairs.add(new BasicNameValuePair("activityNum", String.valueOf(activityNum)));
@@ -211,7 +216,11 @@ public class Networking {
 					HttpClient httpclient = new DefaultHttpClient();
 					HttpPost httpPost = new HttpPost(url);
 					//httpPost.setParams(httpParameters);
+<<<<<<< HEAD
 					httpPost.addHeader("Host",privateServerIp);
+=======
+					httpPost.addHeader("Host",usedIp);
+>>>>>>> branch 'master' of https://github.com/NotBrianZach/AndroidDevProject.git
 					httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
 					List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(10);
 					nameValuePairs.add(new BasicNameValuePair("lat", String.valueOf(pos.latitude)));
