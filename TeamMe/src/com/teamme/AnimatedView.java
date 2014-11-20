@@ -163,9 +163,9 @@ public class AnimatedView extends ImageView{
 			int yVelocity = yVelocityArray[i];
 			if (x<0 && y <0) {
 
-				x = this.getWidth()/2;
+				x = width/2;
 
-				y = 0;
+				y = height/2;
 
 			} else {
 
