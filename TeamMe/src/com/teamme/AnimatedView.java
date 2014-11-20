@@ -5,12 +5,15 @@ import java.util.Random;
 import android.content.Context;
 
 import android.graphics.Canvas;
+import android.graphics.Point;
 
 import android.graphics.drawable.BitmapDrawable;
 
 import android.os.Handler;
 
 import android.util.AttributeSet;
+import android.view.Display;
+import android.view.WindowManager;
 
 import android.widget.ImageView;
 
@@ -24,6 +27,9 @@ public class AnimatedView extends ImageView{
 
 	int yArray[];
 
+	private int height;
+	private int width;
+	
 	private Random rand;
 
 	private int xVelocityArray[];
@@ -41,7 +47,12 @@ public class AnimatedView extends ImageView{
 		super(context, attrs);
 
 		mContext = context;
-
+		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		width = size.x;
+		height = size.y;
 		rand = new Random();
 		initializeBitMap();
 		initializeArrays();
@@ -54,7 +65,12 @@ public class AnimatedView extends ImageView{
 		super(context);
 
 		mContext = context;
-
+		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		width = size.x;
+		height = size.y;
 		rand = new Random();
 		initializeBitMap();
 		initializeArrays();
@@ -67,7 +83,12 @@ public class AnimatedView extends ImageView{
 		super(context,attrs, defStyle);
 
 		mContext = context;
-
+		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		width = size.x;
+		height = size.y;
 		rand = new Random();
 		initializeBitMap();
 		initializeArrays();
@@ -94,8 +115,8 @@ public class AnimatedView extends ImageView{
 		xArray = new int[numObjects];
 		yArray = new int[numObjects];
 		for (int i = 0 ; i < numObjects; i++){
-			xArray[i] = 20+ rand.nextInt(1000);
-			yArray[i] = 20 + rand.nextInt(1000);
+			xArray[i] = 20+ rand.nextInt(width);
+			yArray[i] = 20 + rand.nextInt(height);
 		}
 
 	}
@@ -182,7 +203,8 @@ public class AnimatedView extends ImageView{
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-	    super.onMeasure(widthMeasureSpec, this.getHeight());
-	    setMeasuredDimension(widthMeasureSpec, resolveSize(1000, heightMeasureSpec));
+		
+	    super.onMeasure(widthMeasureSpec, height);
+	    setMeasuredDimension(widthMeasureSpec, resolveSize(height, heightMeasureSpec));
 	}
 }
