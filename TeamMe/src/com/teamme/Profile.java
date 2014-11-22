@@ -6,14 +6,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.json.JSONArray;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,20 +24,79 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
-public class Profile extends Activity {
+import com.teamme.Networking.AsyncResponse;
+
+public class Profile extends Activity implements AsyncResponse {
 	
 	public String prof_name;
 	public ImageView profile;
 	private Bitmap pic = null;
+	public Networking messagePasser;
+	public Networking.GetRequest getPasser;
+	public Networking.GetRequest profilePasser;
+	public String usedIp;
+	EditText username;
+	EditText email;
+	EditText phone; 
+	
+    // here we populate the user profile fields from data pulled from the server which relies
+	//on the user having already signed in, to query the server for that email address.
+	public void getResponse(String jsonResponseString){
+
+		if (jsonResponseString.equals("0") || jsonResponseString.equals(null) || 
+				jsonResponseString.equals("") || jsonResponseString.equals("[]")){
+			Log.e("PROFILE RESPONSE STRING CAUGHT", jsonResponseString);
+			return;
+		}
+		else{
+			try{
+				Log.e("PROFILE RESPONSE STRING", jsonResponseString);
+				final JSONArray jsonProfile = new JSONArray(jsonResponseString);
+				Toast.makeText(getApplicationContext(), "Loading user profile" , Toast.LENGTH_LONG).show();
+				//final int n = geodata.length();
+				
+				username.setText(jsonProfile.getJSONObject(0).getString("userName"));
+				phone.setText(jsonProfile.getJSONObject(0).getString("phone"));
+
+				//for (int i = 0; i < n; i++) {
+//					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
+//					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
+					//username, email, phone
+					
+//					mGameNumber = (geodata.getJSONObject(i).getInt("markerId"));
+//					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
+//					markerOptions.icon(getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
+//					markerOptions.title(""+i);
+//					googleMap.addMarker(markerOptions);
+//					mapMarkers.put(""+i, new MarkerInfo(geodata.getJSONObject(i)));
+				//}
+			}catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.profile);
+
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+		username = (EditText) findViewById(R.id.edit_profile_name);
+		email = (EditText) findViewById(R.id.edit_email);
+		phone = (EditText) findViewById(R.id.edit_phone_number);
+		Log.e("pref email", mPrefs.getString("email"," "));
+
+		email.setText(mPrefs.getString("email"," "));
+		
+		messagePasser = new Networking(Profile.this);
+		usedIp = messagePasser.amazonServerIp;
+		
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		//prof_name = (String) savedInstanceState.get("profile_name");
 		
@@ -43,6 +104,32 @@ public class Profile extends Activity {
 			TextView name = (TextView) findViewById(R.id.profile_name);
 			name.setText(prof_name);
 		}*/
+		Button confirmChanges = (Button) findViewById(R.id.view_team_button);
+		getPasser = messagePasser.new GetRequest();
+		getPasser.responder = this;
+		getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabUserProfile.php?email=" + mPrefs.getString("email","")); 
+		//username, email and phone number should be set from information retrieved from server now
+		
+		confirmChanges.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				username = (EditText) findViewById(R.id.edit_profile_name);
+				email = (EditText) findViewById(R.id.edit_email);
+				phone = (EditText) findViewById(R.id.edit_phone_number);
+				SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+				SharedPreferences.Editor ed = mPrefs.edit();
+				ed.putString("email",email.getText().toString());
+				ed.apply();
+
+				
+				profilePasser = messagePasser.new GetRequest();
+				profilePasser.responder = Profile.this;
+				profilePasser.execute("http://" + messagePasser.usedIp + 
+						":80/android/project/updateProfile.php?email=" +
+						email.getText().toString() + "&phone=" + phone.getText().toString() + "&username=" + username.getText().toString()); 
+
+			}
+		});
 		
 		profile = (ImageView) findViewById(R.id.profile_pic);
 		profile.setOnClickListener(new OnClickListener() {

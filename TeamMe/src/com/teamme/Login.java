@@ -13,14 +13,15 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 public class Login extends Activity{
 
-	
+	EditText email;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -34,9 +35,9 @@ public class Login extends Activity{
 		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
 		SharedPreferences.Editor ed = mPrefs.edit();
 
-
+		email = (EditText) findViewById(R.id.email);
 		ed.putBoolean("loggedOut", false);
-
+		ed.putString("email",email.getText().toString());
 		ed.apply();
 			Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 			startActivity(intent);

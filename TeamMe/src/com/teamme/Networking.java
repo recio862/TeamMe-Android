@@ -27,7 +27,7 @@ public class Networking {
 	public final String privateServerIp = "72.182.49.84";
 	public final String usedIp = amazonServerIp;
 	public interface AsyncResponse {
-		void gotMarkers(String output);
+		void getResponse(String output);
 	}
 	protected Context mContext;
 
@@ -160,7 +160,7 @@ public class Networking {
 		}
 		return inputStream;
 	}
-	public class DownloadMarkersTask extends AsyncTask<String, Void, String> {
+	public class GetRequest extends AsyncTask<String, Void, String> {
 		public AsyncResponse responder = null;
 		protected String doInBackground(String... urls){
 			return DownloadMarkers(urls[0]);			
@@ -198,7 +198,8 @@ public class Networking {
 		@Override
 		protected void onPostExecute(String result){
 			Log.d("DownloadMarkersTask", result);
-			responder.gotMarkers(result);
+			Log.e("GET RESPONSE: ", result);
+			responder.getResponse(result);
 		}
 	}
 

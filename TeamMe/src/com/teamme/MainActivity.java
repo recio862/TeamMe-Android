@@ -76,8 +76,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private MarkerOptions markerOptions;
 	public AlertDialog dialog;
 	public Networking messagePasser;
-	public Networking.DownloadMarkersTask getPasser;
-	public static String jsonDownloadedMarkersString;
+	public Networking.GetRequest getPasser;
 	public CoordParameters params;
 	//this is the point the user clicks on on the map that will be passed to server when creating game
 	public LatLng paramPoint;
@@ -91,9 +90,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private boolean viewEnabled = false;
 
 	//passes data from the async networking thread to ui thread after results are returned
-	public void gotMarkers(String jsonDownloadedMarkersString){
-		if (jsonDownloadedMarkersString == "0" || jsonDownloadedMarkersString == null || jsonDownloadedMarkersString == ""){
-			Toast.makeText(getApplicationContext(), "Failed to contact server, check connection; flip orientation restart app", 3);
+	public void getResponse(String jsonDownloadedMarkersString){
+		if (jsonDownloadedMarkersString.equals("0") || jsonDownloadedMarkersString.equals(null) 
+				|| jsonDownloadedMarkersString.equals("") || jsonDownloadedMarkersString.equals("[]")){
+			Log.e("PROFILE RESPONSE STRING CAUGHT", jsonDownloadedMarkersString);
 			return;
 		}
 		else{
@@ -349,7 +349,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 			//			}
 			EditText edTxtTeamName = (EditText) viewDialogContent.findViewById(R.id.teamName55);
 			if (markerInfo != null)edTxtTeamName.setText(markerInfo.getTeamName());
-
 			EditText edTxtCustomActivity = (EditText) viewDialogContent.findViewById(R.id.username555);
 			if (markerInfo != null)edTxtCustomActivity.setText(markerInfo.getCustomActivity());
 			Spinner spinnerActivity = (Spinner) viewDialogContent.findViewById(R.id.spinner155);
@@ -511,7 +510,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		// check if map is created successfully or not
 		if (googleMap != null) {
 
-			getPasser = messagePasser.new DownloadMarkersTask();
+			getPasser = messagePasser.new GetRequest();
 			getPasser.responder = this;
 
 
@@ -566,7 +565,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 				@Override
 				public void onMapClick(LatLng point) {
-					// TODO Auto-generated method stub
 					if (myMarker != null){
 						myMarker.remove();
 					}
