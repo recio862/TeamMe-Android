@@ -3,8 +3,6 @@ package com.teamme;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.gms.maps.model.MarkerOptions;
-
 public class MarkerInfo {
 
 	//private MarkerOptions mMarker;

@@ -4,19 +4,13 @@ import java.util.Random;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import android.graphics.Canvas;
 import android.graphics.Point;
-
 import android.graphics.drawable.BitmapDrawable;
-
 import android.os.Handler;
-import android.preference.PreferenceManager;
-
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.WindowManager;
-
 import android.widget.ImageView;
 
 

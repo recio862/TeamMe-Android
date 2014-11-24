@@ -2,13 +2,13 @@ package com.teamme;
 
 import java.util.Calendar;
 
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 public class TeamMeUtils {
 
@@ -33,6 +33,8 @@ public class TeamMeUtils {
 
 	}
 
+	
+	
 	public static Integer getActivityNumber(String activity) {
 		int activityNum = 0;
 		switch (activity){

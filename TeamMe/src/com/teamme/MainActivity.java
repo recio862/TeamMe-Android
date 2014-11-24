@@ -1,6 +1,5 @@
 package com.teamme;
 
-import java.util.Calendar;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -41,7 +40,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -96,6 +94,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 		final View viewDialogContent = inflater.inflate(R.layout.view_dialog, null);
 		final View editDialogContent = inflater.inflate(R.layout.edit_dialog, null);
 		// 2. Chain together various setter methods to set the dialog characteristics
+		
+		//CREATE GAME DIALOG
 		if (id == 0){
 			TimePicker mTimePicker = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
 
@@ -163,30 +163,25 @@ public class MainActivity extends Activity implements AsyncResponse {
 			});
 
 		}
+		//SETTINGS DIALOG
 		else if (id == 1){
 			builder.setView(inflater.inflate(R.layout.settings_dialog, null));  
-
 			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-
 				}
 			});
 
-
-
 		}
+		//ABOUT DIALOG
 		else if (id==2){
 			builder.setView(inflater.inflate(R.layout.about_dialog, null));
 			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-
-
-
-
 				}
 			});
 		}
-
+		
+		//JOIN GAME DIALOG
 		else if (id==3){
 			builder.setView(viewDialogContent);
 			String title = selectedMarker.getTitle();
@@ -253,6 +248,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 				}
 			});
 		}
+		//MAP FILTER DIALOG
 		else if (id == 4){
 			builder.setView(inflater.inflate(R.layout.map_filter, null));
 			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -261,6 +257,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 				}
 			});
 		}
+		//EDIT GAME DIALOG
 		else if (id == 6){
 			builder.setView(editDialogContent);
 			String title = selectedMarker.getTitle();

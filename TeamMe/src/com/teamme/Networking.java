@@ -18,7 +18,6 @@ import org.apache.http.message.BasicNameValuePair;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
