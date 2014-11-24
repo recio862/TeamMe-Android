@@ -116,7 +116,8 @@
             android:id="@+id/radiogroup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical" 
+            android:checkedButton = "@+id/radio_pirates">
 
             <RadioButton
                 android:id="@+id/radio_pirates"

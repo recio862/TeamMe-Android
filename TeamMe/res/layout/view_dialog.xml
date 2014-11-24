@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
-        android:drawableLeft="@drawable/creategame"
+        android:drawableLeft="@drawable/viewgame"
         android:drawablePadding="15dp"
         android:gravity="center"
         android:paddingLeft="20dp"
@@ -70,7 +70,7 @@
             android:layout_marginRight="25dp"
                  android:inputType="text"
                  android:enabled = "false"
-            android:background="@android:drawable/edit_text" />
+             />
     </LinearLayout>
 
     <View
@@ -133,8 +133,9 @@
                 android:layout_marginLeft="30dp"
                    android:enabled = "false"
                 android:layout_marginRight="70dp"
-                android:background="@android:drawable/btn_dropdown"
+                android:background="@drawable/activitybox3"
                 android:entries="@array/spinner_items"
+                android:paddingLeft="10dp"
                 android:spinnerMode="dropdown" />
 
             <RadioButton
@@ -152,7 +153,9 @@
                 android:layout_marginLeft="30dp"
                      android:inputType="text"
                 android:layout_marginRight="70dp"
-                android:background="@android:drawable/edit_text" />
+                android:paddingLeft="20dp"
+               android:background="@drawable/activitybox3"
+                 />
         </RadioGroup>
     </RelativeLayout>
 
@@ -195,9 +198,10 @@
             android:layout_marginBottom="20dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="25dp"
+              android:paddingLeft="10dp"
              android:inputType="number"
                 android:enabled = "false"
-            android:background="@android:drawable/edit_text" />
+             />
         
         
     </LinearLayout>
@@ -230,9 +234,10 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="25dp"
+              android:paddingLeft="10dp"
                android:enabled = "false"
              android:inputType="number"
-            android:background="@android:drawable/edit_text" />
+             />
         
         
     </LinearLayout>

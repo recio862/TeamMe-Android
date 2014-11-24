@@ -3,6 +3,7 @@ package com.teamme;
 import java.util.Random;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -10,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 
 import android.os.Handler;
+import android.preference.PreferenceManager;
 
 import android.util.AttributeSet;
 import android.view.Display;
@@ -38,14 +40,20 @@ public class AnimatedView extends ImageView{
 
 	private Handler h;
 
-	private final int numObjects = 20;
+	private int numObjects = 20;
 	private final int FRAME_RATE = 10;
 
 	private BitmapDrawable[] bitMapArray;
+	
+	
+	
 	public AnimatedView(Context context, AttributeSet attrs)  {
 
+		
 		super(context, attrs);
 
+		
+		
 		mContext = context;
 		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();

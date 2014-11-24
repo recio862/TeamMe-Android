@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -32,6 +33,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -145,15 +147,15 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public void profile(MenuItem item){
 		Intent intent = new Intent(getApplicationContext(), Profile.class);
 		startActivity(intent);
-		
-		
+
+
 
 	}
 
 	public void teams(MenuItem item){
 		Intent intent = new Intent(getApplicationContext(), Teams.class);
 		startActivity(intent);
-	
+
 
 	}
 
@@ -173,6 +175,12 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 		BitmapDescriptor icon = (BitmapDescriptorFactory.fromResource(R.drawable.marker));
 		switch (activityNum){
+		case 0:
+			if (!selected)
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.customgame));
+			else
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.customgameselected));
+			break;
 		case 1:
 			if (!selected)
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.soccer));
@@ -249,6 +257,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
 					EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
 					Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
+					RadioButton rb = (RadioButton) dialogContent.findViewById(R.id.radio_pirates);
 					EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
 					EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
 					TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
@@ -260,31 +269,34 @@ public class MainActivity extends Activity implements AsyncResponse {
 					Integer activityNum = 0;
 					//see spinner_items in res/values/arrays.xml
 					playSound(R.raw.whistle);
-					switch (activity){
-					case "Soccer":
-						activityNum = 1;
-						break;
-					case "Football":
-						activityNum = 2;
-						break;
-					case "Disc Golf":
-						activityNum = 3;
-						break;
-					case "Tennis":
-						activityNum = 4;
-						break;
-					case "Biking":
-						activityNum = 5;
-						break;
-					case "Bowling":
-						activityNum = 6;
-						break;
-					case "Rock Climbing":
-						activityNum = 7;
-						break;
-					case "Volleyball":
-						activityNum = 8;
-						break;
+					if (rb.isChecked()){
+						switch (activity){
+
+						case "Soccer":
+							activityNum = 1;
+							break;
+						case "Football":
+							activityNum = 2;
+							break;
+						case "Disc Golf":
+							activityNum = 3;
+							break;
+						case "Tennis":
+							activityNum = 4;
+							break;
+						case "Biking":
+							activityNum = 5;
+							break;
+						case "Bowling":
+							activityNum = 6;
+							break;
+						case "Rock Climbing":
+							activityNum = 7;
+							break;
+						case "Volleyball":
+							activityNum = 8;
+							break;
+						}
 					}
 					String teamName = edTxtTeamName.getText().toString();
 					String customActivity = edTxtCustomActivity.getText().toString();
@@ -349,6 +361,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 			Log.d("title is: ", title);
 			MarkerInfo markerInfo = mapMarkers.get(title);
 
+			RadioButton rb1 = (RadioButton)viewDialogContent.findViewById(R.id.radio_pirates55);
+			RadioButton rb2 = (RadioButton)viewDialogContent.findViewById(R.id.radio_ninjas55);
 
 			//TO-DO: error checking
 			//			if (mapMarkers.containsKey(title)){
@@ -357,25 +371,55 @@ public class MainActivity extends Activity implements AsyncResponse {
 			EditText edTxtTeamName = (EditText) viewDialogContent.findViewById(R.id.teamName55);
 			if (markerInfo != null)edTxtTeamName.setText(markerInfo.getTeamName());
 			EditText edTxtCustomActivity = (EditText) viewDialogContent.findViewById(R.id.username555);
-			if (markerInfo != null)edTxtCustomActivity.setText(markerInfo.getCustomActivity());
+
 			Spinner spinnerActivity = (Spinner) viewDialogContent.findViewById(R.id.spinner155);
-			if (markerInfo != null)spinnerActivity.setSelection(markerInfo.getActivityNum()-1);
+			if (markerInfo != null)
+				if (markerInfo.getActivityNum()-1 != -1){
+					spinnerActivity.setSelection(markerInfo.getActivityNum()-1);
+					rb1.setChecked(true);
+					rb2.setChecked(false);
+					rb1.setVisibility(View.GONE);
+					rb2.setVisibility(View.GONE);
+					edTxtCustomActivity.setVisibility(View.GONE);
+				}
+				else {
+					edTxtCustomActivity.setText(markerInfo.getCustomActivity());
+					rb2.setChecked(true);
+					rb1.setChecked(false);
+					rb1.setVisibility(View.GONE);
+					rb2.setVisibility(View.GONE);
+					spinnerActivity.setVisibility(View.GONE);
+				}
+			
+			spinnerActivity.setEnabled(false);
+			
 			EditText edTxtPlayersActive = (EditText) viewDialogContent.findViewById(R.id.num_players55);
 			if (markerInfo != null)edTxtPlayersActive.setText(markerInfo.getActivePlayers());
 			EditText edTxtPlayersNeeded = (EditText) viewDialogContent.findViewById(R.id.num_players255);
 			if (markerInfo != null)edTxtPlayersNeeded.setText(markerInfo.getNeededPlayers());
 			TimePicker pickFinishTime = (TimePicker) viewDialogContent.findViewById(R.id.timePicker155);
+			pickFinishTime.setEnabled(false);
 
-
+			
+			
+			
+			
+			
+			
+			
 			builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					viewEnabled = false;
+					
+					if (selectedMarker != null){
+						viewEnabled = false;
 					viewButton.setAlpha((float)0.15);
+					
 					selectedMarker.setIcon(getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
 					selectedMarker = null;
 					playSound(R.raw.cancel);
 					
-				resetFields(dialogContent);
+					resetFields(dialogContent);
+					}
 				}
 			})
 			.setNegativeButton("Join Game", new DialogInterface.OnClickListener() {
@@ -398,7 +442,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 		dialog.show();
-
+		
 
 		return super.onCreateDialog(id);
 	}
@@ -465,12 +509,14 @@ public class MainActivity extends Activity implements AsyncResponse {
 	@Override
 	protected void onPause() {
 		super.onPause();
-
+		dialog.dismiss();
 		googleMap.clear();
 		selectedMarker = null;
 		mapMarkers = new HashMap<String, MarkerInfo>();
 		viewEnabled = false;
+		createEnabled = false;
 		viewButton.setAlpha((float) 0.15);
+		createButton.setAlpha((float)0.15);
 
 		if(mSounds != null) {
 			mSounds.release();
@@ -605,12 +651,31 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	public void settingsDialog(MenuItem item){
 		showDialog(1);
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
 		Switch s = (Switch)dialog.findViewById(R.id.sound_switch2);
 		if (s!=null)
 			s.setChecked(mSoundOn);
+		
+		/*Switch s2 = (Switch)dialog.findViewById(R.id.anim_switch);
+		if (s2!=null)
+			s2.setChecked(mPrefs.getBoolean("animationOn", true));
+			*/
 
 	}
 
+	public void animClick(View view){
+		boolean on = ((Switch) view).isChecked();
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+		SharedPreferences.Editor ed = mPrefs.edit();
+
+		if (on)
+		ed.putBoolean("animationOn", true);
+		else
+			ed.putBoolean("animationOn", false);
+
+		ed.apply();
+
+	}
 	public void soundClick(View view){
 
 		boolean on = ((Switch) view).isChecked();
