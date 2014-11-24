@@ -509,7 +509,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		dialog.dismiss();
+		if (dialog != null)
+			dialog.dismiss();
 		googleMap.clear();
 		selectedMarker = null;
 		mapMarkers = new HashMap<String, MarkerInfo>();
@@ -656,10 +657,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 		if (s!=null)
 			s.setChecked(mSoundOn);
 		
-		/*Switch s2 = (Switch)dialog.findViewById(R.id.anim_switch);
+		Switch s2 = (Switch)dialog.findViewById(R.id.anim_switch);
 		if (s2!=null)
 			s2.setChecked(mPrefs.getBoolean("animationOn", true));
-			*/
+			
 
 	}
 

@@ -46,7 +46,14 @@ public class AnimatedView extends ImageView{
 	private BitmapDrawable[] bitMapArray;
 	
 	
-	
+	private void setPrefs(){
+		
+				SharedPreferences mPrefs = mContext.getSharedPreferences("ttt_prefs", mContext.MODE_PRIVATE);  
+		
+				if (mPrefs.getBoolean("animationOn", true) == false)
+					numObjects = 0;
+					
+	}
 	public AnimatedView(Context context, AttributeSet attrs)  {
 
 		
@@ -55,6 +62,8 @@ public class AnimatedView extends ImageView{
 		
 		
 		mContext = context;
+		setPrefs();
+		if (numObjects != 0){
 		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		Point size = new Point();
@@ -66,7 +75,7 @@ public class AnimatedView extends ImageView{
 		initializeArrays();
 		initializeVelocities();
 		h = new Handler();
-
+		}
 	}
 	public AnimatedView(Context context)  {
 
@@ -140,9 +149,10 @@ public class AnimatedView extends ImageView{
 		bitMapArray[5] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.bowling);
 		bitMapArray[6] =(BitmapDrawable) mContext.getResources().getDrawable(R.drawable.climbing);
 		bitMapArray[7] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.volleyball);
+		bitMapArray[8] = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.customgame);
 
-		for (int i = 0 ; i < numObjects-8 ; i++){
-			bitMapArray[i+8] = bitMapArray[i];
+		for (int i = 0 ; i < numObjects-9 ; i++){
+			bitMapArray[i+9] = bitMapArray[i];
 		}
 
 	}
@@ -160,7 +170,8 @@ public class AnimatedView extends ImageView{
 	};
 
 	protected void onDraw(Canvas c) {
-
+		if (numObjects == 0)
+			return;
 		BitmapDrawable ball = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.soccer);
 
 		for (int i =0 ; i < numObjects ; i++){
