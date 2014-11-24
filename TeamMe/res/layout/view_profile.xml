@@ -16,16 +16,7 @@
 
      
 
-            <ImageView
-                android:id="@+id/profile_pic"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginTop="10dp"
-                android:contentDescription="@string/profile_pic"
-                android:paddingLeft="5dp"
-                android:layout_toLeftOf="@+id/myProfile"
-                android:paddingTop="5dp"
-                android:src="@drawable/default_profile" />
+            
 
             <TextView
                 android:id="@+id/myProfile"
@@ -35,6 +26,7 @@
                 android:layout_marginTop="20dp"
                 android:drawablePadding="15dp"
                 android:text="View Profile"
+                android:drawableLeft = "@drawable/profileoverflow"
                 android:textColor="#FC8F00"
 android:layout_centerHorizontal="true"
                 android:textSize="40sp"

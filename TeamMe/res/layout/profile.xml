@@ -14,39 +14,49 @@
             android:layout_height="fill_parent"
             android:alpha=".2" />
 
-     
+        <TextView
+            android:id="@+id/myProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:drawableLeft="@drawable/profileoverflow"
+            android:drawablePadding="15dp"
+            android:text="My Profile"
+            android:textColor="#FC8F00"
+            android:textSize="40sp"
+            android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/profile_pic"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginTop="10dp"
-                android:clickable="true"
-                android:contentDescription="@string/profile_pic"
-                android:paddingLeft="5dp"
-                android:layout_toLeftOf="@+id/myProfile"
-                android:paddingTop="5dp"
-                android:src="@drawable/default_profile" />
+        <ImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_below="@+id/myProfile"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:contentDescription="@string/profile_pic"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            
+            android:src="@drawable/default_profile" />
 
-            <TextView
-                android:id="@+id/myProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:drawablePadding="15dp"
-                android:text="My Profile"
-                android:textColor="#FC8F00"
-android:layout_centerHorizontal="true"
-                android:textSize="40sp"
-                android:textStyle="bold" />
-        
-
+         <TextView
+            android:id="@+id/picinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below = "@+id/profile_pic"
+            android:text="Click Icon To Change Image!"
+            android:textColor="#000000"
+            android:textSize="10sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/myProfile"
+            android:layout_below="@+id/picinfo"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="50dp"
             android:gravity="right"

@@ -27,6 +27,7 @@
                 android:layout_marginTop="20dp"
                 android:drawablePadding="15dp"
                 android:text="View Team"
+                android:drawableLeft="@drawable/teamoverflow"
                 android:textColor="#FC8F00"
 android:layout_centerHorizontal="true"
                 android:textSize="40sp"

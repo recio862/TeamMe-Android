@@ -20,6 +20,8 @@
                 android:layout_width="fill_parent"
                 android:alpha= ".2"/>
     
+      
+         
             <TextView
                 android:id="@+id/loginHeader"
                 android:layout_width="wrap_content"
@@ -28,6 +30,7 @@
                 android:gravity="center"
                 android:layout_marginLeft = "95dp"
             	android:layout_marginTop = "10dp"
+            	android:drawableLeft = "@drawable/teamoverflow"
                 android:text="My Teams"
 android:layout_centerHorizontal="true"
                 android:textColor="#FC8F00"
