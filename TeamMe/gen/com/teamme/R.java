@@ -597,6 +597,8 @@ containing a value of this type.
         public static final int settings_dialog=0x7f030007;
         public static final int teams=0x7f030008;
         public static final int view_dialog=0x7f030009;
+        public static final int view_profile=0x7f03000a;
+        public static final int view_team=0x7f03000b;
     }
     public static final class menu {
         public static final int options=0x7f0d0000;

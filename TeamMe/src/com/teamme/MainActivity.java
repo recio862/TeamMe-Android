@@ -146,6 +146,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		Intent intent = new Intent(getApplicationContext(), Profile.class);
 		startActivity(intent);
 		
+		
 
 	}
 
@@ -303,6 +304,12 @@ public class MainActivity extends Activity implements AsyncResponse {
 					myMarker.setIcon(getIconFromActivityNum(activityNum, false));
 					MarkerInfo mi = new MarkerInfo(null);
 					mi.setActivityNum(activityNum);
+					mi.setActivePlayers(activePlayers);
+					mi.setNeededPlayers(neededPlayers);
+					mi.setFinishHour(finishTimeHour);
+					mi.setFinishMinute(finishTimeMinute);
+					mi.setCustomActivity(customActivity);
+					mi.setTeamName(teamName);
 					mapMarkers.put(""+index,mi );
 					myMarker.setTitle(""+index);
 					index++;
@@ -340,7 +347,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			builder.setView(viewDialogContent);
 			String title = selectedMarker.getTitle();
 			Log.d("title is: ", title);
-			final MarkerInfo markerInfo = mapMarkers.get(title);
+			MarkerInfo markerInfo = mapMarkers.get(title);
 
 
 			//TO-DO: error checking
@@ -352,7 +359,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			EditText edTxtCustomActivity = (EditText) viewDialogContent.findViewById(R.id.username555);
 			if (markerInfo != null)edTxtCustomActivity.setText(markerInfo.getCustomActivity());
 			Spinner spinnerActivity = (Spinner) viewDialogContent.findViewById(R.id.spinner155);
-			if (markerInfo != null)spinnerActivity.setSelection(markerInfo.getActivityNum());
+			if (markerInfo != null)spinnerActivity.setSelection(markerInfo.getActivityNum()-1);
 			EditText edTxtPlayersActive = (EditText) viewDialogContent.findViewById(R.id.num_players55);
 			if (markerInfo != null)edTxtPlayersActive.setText(markerInfo.getActivePlayers());
 			EditText edTxtPlayersNeeded = (EditText) viewDialogContent.findViewById(R.id.num_players255);
@@ -386,10 +393,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
+		dialog.show();
 
 
-
-		return dialog;
+		return super.onCreateDialog(id);
 	}
 
 	protected void resetFields(View dialogContent) {
@@ -455,7 +462,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 	protected void onPause() {
 		super.onPause();
 
-
+		googleMap.clear();
+		selectedMarker = null;
+		mapMarkers = new HashMap<String, MarkerInfo>();
+		viewEnabled = false;
+		viewButton.setAlpha((float) 0.15);
 
 		if(mSounds != null) {
 			mSounds.release();
