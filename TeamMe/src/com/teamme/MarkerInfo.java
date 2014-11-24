@@ -55,12 +55,12 @@ public class MarkerInfo {
 
 
 	}
-//	public MarkerOptions getmMarker() {
-//		return mMarker;
-//	}
-//	public void setmMarker(MarkerOptions mMarker) {
-//		this.mMarker = mMarker;
-//	}
+	//	public MarkerOptions getmMarker() {
+	//		return mMarker;
+	//	}
+	//	public void setmMarker(MarkerOptions mMarker) {
+	//		this.mMarker = mMarker;
+	//	}
 	public JSONObject getmObject() {
 		return mObject;
 	}
@@ -114,6 +114,20 @@ public class MarkerInfo {
 	}
 	public void setActivityNum(Integer activityNum) {
 		this.activityNum = activityNum;
+	}
+	public void setAllFields(Integer activityNum2, String userId2,
+			String activePlayers2, String neededPlayers2,
+			String finishTimeHour, String finishTimeMinute,
+			String customActivity2, String teamName2) {
+		setActivityNum(activityNum2);
+		setUserId(userId2);
+		setActivePlayers(activePlayers2);
+		setNeededPlayers(neededPlayers2);
+		setFinishHour(finishTimeHour);
+		setFinishMinute(finishTimeMinute);
+		setCustomActivity(customActivity2);
+		setTeamName(teamName2);
+
 	}
 
 }
