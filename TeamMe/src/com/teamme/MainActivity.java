@@ -369,6 +369,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 			builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
+					viewEnabled = false;
+					viewButton.setAlpha((float)0.15);
+					selectedMarker.setIcon(getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
+					selectedMarker = null;
 					playSound(R.raw.cancel);
 					
 				resetFields(dialogContent);
