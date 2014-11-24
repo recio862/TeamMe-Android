@@ -20,6 +20,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -197,7 +198,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			if (!selected)
 				icon =(BitmapDescriptorFactory.fromResource(R.drawable.frisbee));
 			else
-				icon =(BitmapDescriptorFactory.fromResource(R.drawable.footballselected));
+				icon =(BitmapDescriptorFactory.fromResource(R.drawable.frisbeeselected));
 			break;
 		case 4:
 			if (!selected)
@@ -242,8 +243,12 @@ public class MainActivity extends Activity implements AsyncResponse {
 		LayoutInflater inflater = getLayoutInflater();
 		final View dialogContent = inflater.inflate(R.layout.create_dialog, null);
 		final View viewDialogContent = inflater.inflate(R.layout.view_dialog, null);
+		final View editDialogContent = inflater.inflate(R.layout.edit_dialog, null);
 		// 2. Chain together various setter methods to set the dialog characteristics
 		if (id == 0){
+			TimePicker mTimePicker = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
+
+	        mTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
 			builder.setView(dialogContent).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					playSound(R.raw.cancel);
@@ -298,6 +303,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 							break;
 						}
 					}
+					SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
+					String userId = mPrefs.getString("email", "noUserNameFound!");
 					String teamName = edTxtTeamName.getText().toString();
 					String customActivity = edTxtCustomActivity.getText().toString();
 					String activePlayers = edTxtPlayersActive.getText().toString();
@@ -306,7 +313,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
 
 
-					params = new CoordParameters("http://" + messagePasser.usedIp + ":80/android/project/updateMarkers.php", paramPoint, "0", 
+					params = new CoordParameters("http://" + messagePasser.usedIp + ":80/android/project/updateMarkers.php", paramPoint, userId, 
 							finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
 					messagePasser.new SendCoordsTask().execute(params);
 					Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
@@ -316,6 +323,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					myMarker.setIcon(getIconFromActivityNum(activityNum, false));
 					MarkerInfo mi = new MarkerInfo(null);
 					mi.setActivityNum(activityNum);
+					mi.setUserId(userId);
 					mi.setActivePlayers(activePlayers);
 					mi.setNeededPlayers(neededPlayers);
 					mi.setFinishHour(finishTimeHour);
@@ -350,7 +358,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 			builder.setView(inflater.inflate(R.layout.about_dialog, null));
 			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-
+					
+						 
+						    
+						
 				}
 			});
 		}
@@ -439,6 +450,72 @@ public class MainActivity extends Activity implements AsyncResponse {
 				}
 			});
 		}
+		else if (id == 6){
+			builder.setView(editDialogContent);
+			String title = selectedMarker.getTitle();
+			Log.d("title is: ", title);
+			MarkerInfo markerInfo = mapMarkers.get(title);
+
+			RadioButton rb1 = (RadioButton)editDialogContent.findViewById(R.id.radio_pirates);
+			RadioButton rb2 = (RadioButton)editDialogContent.findViewById(R.id.radio_ninjas);
+
+			
+			EditText edTxtTeamName = (EditText) editDialogContent.findViewById(R.id.teamName);
+			if (markerInfo != null)edTxtTeamName.setText(markerInfo.getTeamName());
+			EditText edTxtCustomActivity = (EditText) editDialogContent.findViewById(R.id.username5);
+
+			Spinner spinnerActivity = (Spinner) editDialogContent.findViewById(R.id.spinner1);
+			if (markerInfo != null)
+				if (markerInfo.getActivityNum()-1 != -1){
+					spinnerActivity.setSelection(markerInfo.getActivityNum()-1);
+					rb1.setChecked(true);
+					rb2.setChecked(false);
+				}
+				else {
+					edTxtCustomActivity.setText(markerInfo.getCustomActivity());
+					rb2.setChecked(true);
+					rb1.setChecked(false);
+				}
+			
+			
+			EditText edTxtPlayersActive = (EditText) editDialogContent.findViewById(R.id.num_players);
+			if (markerInfo != null)edTxtPlayersActive.setText(markerInfo.getActivePlayers());
+			EditText edTxtPlayersNeeded = (EditText) editDialogContent.findViewById(R.id.num_players2);
+			if (markerInfo != null)edTxtPlayersNeeded.setText(markerInfo.getNeededPlayers());
+			TimePicker pickFinishTime = (TimePicker) editDialogContent.findViewById(R.id.timePicker1);
+			
+
+			
+			
+			
+			
+			
+			
+			
+			builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					
+					if (selectedMarker != null){
+						viewEnabled = false;
+					viewButton.setAlpha((float)0.15);
+					
+					selectedMarker.setIcon(getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
+					selectedMarker = null;
+					playSound(R.raw.cancel);
+					
+					resetFields(dialogContent);
+					}
+				}
+			})
+			.setNegativeButton("Edit Game", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+
+
+
+				}
+			});
+			
+		}
 		// 3. Get the AlertDialog from create()
 		dialog = builder.create();
 		dialog.show();
@@ -488,6 +565,18 @@ public class MainActivity extends Activity implements AsyncResponse {
 		if (!viewEnabled)
 			helpPopup.show(view);
 		else{
+			SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
+			String userId = mPrefs.getString("email", "null");
+			if (selectedMarker != null){
+				if (mapMarkers.containsKey(selectedMarker.getTitle())){
+					String getUserIdFromMarker = mapMarkers.get(selectedMarker.getTitle()).getUserId();
+					Log.d("UID:", getUserIdFromMarker);
+					if (getUserIdFromMarker.equals(userId)){
+						showDialog(6);
+						return;
+					}
+				}
+			}
 			showDialog(3);
 
 		}
