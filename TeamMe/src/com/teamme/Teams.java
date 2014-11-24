@@ -43,7 +43,7 @@ public class Teams extends Activity {
 	
 	//USE THIS TO CALL THE VIEW TEAM PAGE!
 	/*
-	Intent intent = new Intent(getApplicationContext(), ViewProfile.class);
+	Intent intent = new Intent(getApplicationContext(), ViewTeam.class);
 	intent.putExtra("team_id", team_id); //adds identifier for team ID , goes to savedInstanceState, used savedInstanceState.get(team_id) to get the team id while you are in ViewTeam.java
 	startActivity(intent);*/
 	
