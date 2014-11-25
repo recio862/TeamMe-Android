@@ -86,6 +86,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	/////////Dialogs (these should be separate classes)
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 	protected Dialog onCreateDialog(int id) {
 		// 1. Instantiate an AlertDialog.Builder with its constructor
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -94,7 +99,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		final View viewDialogContent = inflater.inflate(R.layout.view_dialog, null);
 		final View editDialogContent = inflater.inflate(R.layout.edit_dialog, null);
 		// 2. Chain together various setter methods to set the dialog characteristics
-		
+
 		//CREATE GAME DIALOG
 		if (id == 0){
 			TimePicker mTimePicker = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
@@ -180,7 +185,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 				}
 			});
 		}
-		
+
 		//JOIN GAME DIALOG
 		else if (id==3){
 			builder.setView(viewDialogContent);
@@ -320,7 +325,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 		return super.onCreateDialog(id);
 	}
-
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 
 	////////////////////////////////////////////////////////////////
@@ -543,8 +551,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 				@Override
 				public boolean onMarkerClick(Marker myMarker) {
-					//String showUnavailable = "View Game Feature is Unavailable. In the future release, you can click this icon to see game info!";
-					//showFeatureUnavailableToast(showUnavailable);
+					
 					if (myMarker.getTitle().equals("-1")){
 						return true;
 					}
@@ -552,9 +559,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 					viewButton.setAlpha((float) 0.70);
 
 					if (selectedMarker != null)
-						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
+						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
+								mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
+					
 					selectedMarker = myMarker;
-					selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), true));
+					
+					selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
+							mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), true));
 					return true;
 				}
 
@@ -610,15 +621,17 @@ public class MainActivity extends Activity implements AsyncResponse {
 				Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
 				final int n = geodata.length();
 				index = n;
+				int uniqueId = 0;
 				for (int i = 0; i < n; i++) {
+					uniqueId = i;
 					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
 					mGameNumber = (geodata.getJSONObject(i).getInt("markerId"));
 					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 					markerOptions.icon(TeamMeUtils.getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
-					markerOptions.title(""+i);
+					markerOptions.title(""+ uniqueId);
 					googleMap.addMarker(markerOptions);
-					mapMarkers.put(""+i, new MarkerInfo(geodata.getJSONObject(i)));
+					mapMarkers.put(""+uniqueId, new MarkerInfo(geodata.getJSONObject(i)));
 				}
 			}catch(Exception e) {
 				throw new RuntimeException(e);
