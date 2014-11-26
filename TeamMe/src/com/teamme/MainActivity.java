@@ -11,6 +11,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
+import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -23,8 +26,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -56,6 +63,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	public GoogleMap googleMap;
+	private boolean restrictMarkerLoading;
 	public Button createButton;
 	public Button viewButton;
 	private HashMap<String, MarkerInfo> mapMarkers;
@@ -66,6 +74,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public Marker myMarker;
 	public int mGameNumber;
 	public int index;
+	public boolean initialLoad = false;
+	private Toast loadingToast;
 	public LatLng myLocation;
 	public Marker selectedMarker;
 	public String usedIp;
@@ -92,12 +102,16 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	protected Dialog onCreateDialog(int id) {
+		if (loadingToast != null)
+			loadingToast.cancel();
 		// 1. Instantiate an AlertDialog.Builder with its constructor
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = getLayoutInflater();
 		final View dialogContent = inflater.inflate(R.layout.create_dialog, null);
 		final View viewDialogContent = inflater.inflate(R.layout.view_dialog, null);
 		final View editDialogContent = inflater.inflate(R.layout.edit_dialog, null);
+		final View filterDialogContent = inflater.inflate(R.layout.map_filter, null);
+
 		// 2. Chain together various setter methods to set the dialog characteristics
 
 		//CREATE GAME DIALOG
@@ -107,6 +121,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 			mTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
 			builder.setView(dialogContent).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
+//					createEnabled = false;
+//					createButton.setAlpha((float)0.15);
+//					myMarker.remove();
 					playSound(R.raw.cancel);
 					TeamMeUtils.resetFields(dialogContent);
 				}
@@ -171,8 +188,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 		//SETTINGS DIALOG
 		else if (id == 1){
 			builder.setView(inflater.inflate(R.layout.settings_dialog, null));  
-			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
+			builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog2, int id) {
+			
+					
 				}
 			});
 
@@ -180,7 +199,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		//ABOUT DIALOG
 		else if (id==2){
 			builder.setView(inflater.inflate(R.layout.about_dialog, null));
-			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 				}
 			});
@@ -232,7 +251,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			TimePicker pickFinishTime = (TimePicker) viewDialogContent.findViewById(R.id.timePicker155);
 			pickFinishTime.setEnabled(false);
 
-
+			
 			builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 
@@ -252,15 +271,16 @@ public class MainActivity extends Activity implements AsyncResponse {
 				public void onClick(DialogInterface dialog, int id) {
 				}
 			});
+			
 		}
 		//MAP FILTER DIALOG
 		else if (id == 4){
 			builder.setView(inflater.inflate(R.layout.map_filter, null));
-			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-
 				}
 			});
+
 		}
 		//EDIT GAME DIALOG
 		else if (id == 6){
@@ -322,7 +342,32 @@ public class MainActivity extends Activity implements AsyncResponse {
 		dialog = builder.create();
 		dialog.show();
 
-
+		Button positive_button = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+		
+		if (positive_button != null){
+			positive_button.setBackgroundColor(Color.parseColor("#000000"));
+			positive_button.setTextColor(Color.parseColor("#FC8F00"));  
+			positive_button.setTypeface(null, Typeface.BOLD);
+			positive_button.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View arg0, MotionEvent event) {
+					Button b = (Button) arg0;
+					if(event.getAction() == MotionEvent.ACTION_DOWN) {
+						b.setBackgroundColor(Color.parseColor("#383838"));
+				        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+				          b.setBackgroundColor(Color.parseColor("#000000"));
+				        }
+					return false;
+				}
+			});
+		}
+		Button negative_button = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+		if (negative_button != null){
+			negative_button.setBackgroundDrawable(getResources().getDrawable(android.R.color.black));
+			negative_button.setTextColor(Color.parseColor("#FC8F00"));  
+			negative_button.setTypeface(null, Typeface.BOLD);
+		}
+		
 		return super.onCreateDialog(id);
 	}
 	////////////////////////////////////////////////////////////////
@@ -341,12 +386,17 @@ public class MainActivity extends Activity implements AsyncResponse {
 		super.onPause();
 		if (dialog != null)
 			dialog.dismiss();
-		googleMap.clear();
+		if (googleMap != null)
+			googleMap.clear();
+		if (loadingToast != null)
+			loadingToast.cancel();
 		selectedMarker = null;
 		mapMarkers = new HashMap<String, MarkerInfo>();
 		viewEnabled = false;
 		createEnabled = false;
+		if (viewButton != null)
 		viewButton.setAlpha((float) 0.15);
+		if (createButton != null)
 		createButton.setAlpha((float)0.15);
 
 		if(mSounds != null) {
@@ -370,12 +420,37 @@ public class MainActivity extends Activity implements AsyncResponse {
 		createSoundPool();
 		fixZoom();
 		mSoundOn = mPrefs.getBoolean("sound", true);
+
+		viewButton = (Button)findViewById(R.id.Button02);
+		viewButton.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View arg0, MotionEvent event) {
+				Button b = (Button) arg0;
+				if(event.getAction() == MotionEvent.ACTION_DOWN) {
+					b.setBackgroundColor(Color.parseColor("#E38100"));
+			        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+			          b.setBackgroundColor(Color.parseColor("#FC8F00"));
+			        }
+				return false;
+			}
+		});
 		createButton = (Button)findViewById(R.id.Button01);
+		createButton.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View arg0, MotionEvent event) {
+				Button b = (Button) arg0;
+				if(event.getAction() == MotionEvent.ACTION_DOWN) {
+					b.setBackgroundColor(Color.parseColor("#E38100"));
+			        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+			          b.setBackgroundColor(Color.parseColor("#FC8F00"));
+			        }
+				return false;
+			}
+		});
 		messagePasser = new Networking(MainActivity.this);
 		usedIp = messagePasser.amazonServerIp;
 		if (mapMarkers == null)
 			mapMarkers = new HashMap<String, MarkerInfo>();
-		viewButton = (Button)findViewById(R.id.Button02);
 		try {
 			Log.e("loading map. . . .", "loading map. . . ");
 			// Loading map
@@ -446,6 +521,56 @@ public class MainActivity extends Activity implements AsyncResponse {
 	}
 	public void filterDialog(MenuItem item){
 		showDialog(4);
+		
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
+		Log.d("filterint:", ""+mPrefs.getInt("filter", -5)); 
+		RadioButton[] radiobuttons = new RadioButton[4];
+		radiobuttons[0] = (RadioButton) dialog.findViewById(R.id.nofilterbutton);
+		radiobuttons[1] = (RadioButton) dialog.findViewById(R.id.activitybutton);
+		radiobuttons[2] = (RadioButton) dialog.findViewById(R.id.customactivitybutton);
+
+		EditText t = (EditText) dialog.findViewById(R.id.customactivity);
+		String customActivity = mPrefs.getString("customActivity", "");
+
+		Spinner s = (Spinner) dialog.findViewById(R.id.activity);
+		s.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				RadioButton b = (RadioButton)dialog.findViewById(R.id.activitybutton);
+				if (!b.isChecked())
+					restrictMarkerLoading = true;
+				filteractivityspinner();
+				restrictMarkerLoading = false;
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				RadioButton b = (RadioButton)dialog.findViewById(R.id.activitybutton);
+				if (!b.isChecked())
+				restrictMarkerLoading = true;
+				filteractivityspinner();
+				restrictMarkerLoading = false;
+
+			}
+		});
+		String spinnerActivity = s.getSelectedItem().toString();
+		int activityNumber = TeamMeUtils.getActivityNumber(spinnerActivity);
+
+		int filter = mPrefs.getInt("filter", -1);
+		restrictMarkerLoading = true;
+		if (filter == -1){
+			
+			radiobuttons[0].setChecked(true);
+		}
+		else if (filter == 0){
+			radiobuttons[2].setChecked(true);
+			t.setText(customActivity);
+		}
+		else {
+			radiobuttons[1].setChecked(true);
+			s.setSelection(filter-1);
+		}
+		restrictMarkerLoading = false;
 	}
 	public void aboutDialog(MenuItem item){
 		showDialog(2);
@@ -508,6 +633,73 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	/////////Filter options can be found here 
+	////////////////////////////////////////////////////////////////
+	public void setFilterSettings(int type){
+		SharedPreferences mPrefs =  getSharedPreferences("ttt_prefs", MODE_PRIVATE);
+
+		RadioButton b = (RadioButton) dialog.findViewById(R.id.activitybutton);
+		if (!b.isChecked() && type == 4)
+			return;
+
+		EditText t = (EditText) dialog.findViewById(R.id.customactivity);
+		String customActivity = mPrefs.getString("customActivity", "");
+
+		Spinner s = (Spinner) dialog.findViewById(R.id.activity);
+		String spinnerActivity = s.getSelectedItem().toString();
+		int activityNumber = TeamMeUtils.getActivityNumber(spinnerActivity);
+
+
+		SharedPreferences.Editor ed = mPrefs.edit();
+
+		if (type == 0)
+			ed.putInt("filter", -1);
+		else if (type==1 || (b.isChecked() && type == 4)){
+			ed.putInt("filter", activityNumber);
+			Log.d("Storing....", ""+activityNumber);
+		}
+		else {
+			ed.putInt("filter", 0);
+			ed.putString("customActivity", customActivity);
+		}
+
+		ed.apply();
+	}
+	public void noFilter(View view){
+		setFilterSettings(0);
+		refreshMap();
+	}
+	public void activity(View view){
+		setFilterSettings(1);
+		refreshMap();
+
+	}
+	public void customactivity(View view){
+		setFilterSettings(2);
+		refreshMap();
+
+	}
+	public void filteractivityspinner(){
+		setFilterSettings(4);
+		refreshMap();
+	}
+
+	private boolean passesFilter(MarkerInfo marker) {
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
+		int filterType = mPrefs.getInt("filter", -1);
+
+		if (filterType == marker.getActivityNum() || filterType == -1 )
+			return true;
+
+		return false;
+	}
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 
 
 	////////////////////////////////////////////////////////////////
@@ -517,6 +709,17 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	private void refreshMap(){
+		if (restrictMarkerLoading == true)
+			return;
+		googleMap.clear();
+		getPasser = messagePasser.new GetRequest();
+		getPasser.responder = this;
+
+		getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabMarkers.php?id=1"); 
+	
+
+	}
 	private void initializeMap() {
 		googleMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
@@ -551,7 +754,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 				@Override
 				public boolean onMarkerClick(Marker myMarker) {
-					
+
 					if (myMarker.getTitle().equals("-1")){
 						return true;
 					}
@@ -561,9 +764,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 					if (selectedMarker != null)
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
 								mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
-					
+
 					selectedMarker = myMarker;
-					
+
 					selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
 							mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), true));
 					return true;
@@ -618,7 +821,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 		else{
 			try{
 				final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
-				Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG).show();
+				
+				loadingToast = Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG);
+				if (initialLoad == false)loadingToast.show();
+				initialLoad = true;
 				final int n = geodata.length();
 				index = n;
 				int uniqueId = 0;
@@ -630,8 +836,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 					markerOptions.icon(TeamMeUtils.getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
 					markerOptions.title(""+ uniqueId);
-					googleMap.addMarker(markerOptions);
-					mapMarkers.put(""+uniqueId, new MarkerInfo(geodata.getJSONObject(i)));
+					MarkerInfo marker = new MarkerInfo(geodata.getJSONObject(i));
+					if (passesFilter(marker) == true)
+						googleMap.addMarker(markerOptions);
+					mapMarkers.put(""+uniqueId, marker);
 				}
 			}catch(Exception e) {
 				throw new RuntimeException(e);
@@ -650,6 +858,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 	/////////Create and View Buttons go through here ///////////////
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+
+
 
 	public void clickedCreate(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap a location first!");
@@ -688,6 +899,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+
 
 
 }

@@ -35,6 +35,7 @@ public class Profile extends Activity implements AsyncResponse {
 	
 	public String prof_name;
 	public ImageView profile;
+	private Toast profileToast;
 	private Bitmap pic = null;
 	public Networking messagePasser;
 	public Networking.GetRequest getPasser;
@@ -57,7 +58,8 @@ public class Profile extends Activity implements AsyncResponse {
 			try{
 				Log.e("PROFILE RESPONSE STRING", jsonResponseString);
 				final JSONArray jsonProfile = new JSONArray(jsonResponseString);
-				Toast.makeText(getApplicationContext(), "Loading user profile" , Toast.LENGTH_LONG).show();
+				profileToast = Toast.makeText(getApplicationContext(), "Loading user profile" , Toast.LENGTH_LONG);
+				profileToast.show();
 				//final int n = geodata.length();
 				
 				username.setText(jsonProfile.getJSONObject(0).getString("userName"));
@@ -192,6 +194,13 @@ public class Profile extends Activity implements AsyncResponse {
 		}
 	}
 	
+	
+	@Override 
+	public void onPause(){
+		super.onPause();
+		if (profileToast != null)
+			profileToast.cancel();
+	}
 	private void selectPicture(){
 		final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
 		

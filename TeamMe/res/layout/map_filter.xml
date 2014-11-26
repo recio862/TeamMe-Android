@@ -62,11 +62,18 @@ android:focusableInTouchMode="true" >
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
- 
+  <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+          android:layout_marginBottom="10dp"
+        android:alpha="0.10"
+        android:background="#000000" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical" >
 
         <RadioGroup
@@ -74,30 +81,53 @@ android:focusableInTouchMode="true" >
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 		 <RadioButton
+		     android:id = "@+id/nofilterbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick = "noFilter"
                 android:text="No Filter" />
-		  
+		     <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+          android:layout_marginBottom="10dp"
+        android:alpha="0.10"
+        android:background="#000000" />
             <RadioButton
+                android:id = "@+id/activitybutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick = "activity"
                 android:text="Filter By Activity" />
 
             <Spinner
+                android:id = "@+id/activity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="70dp"
+               
                 android:background="@android:drawable/btn_dropdown"
                 android:entries="@array/spinner_items"
                 android:spinnerMode="dropdown" />
 
+             <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+          android:layout_marginBottom="10dp"
+        android:alpha="0.10"
+        android:background="#000000" />
             <RadioButton
+                
+                android:id = "@+id/customactivitybutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick = "customactivity"
                 android:text="Filter By Custom Activity" />
 
             <EditText
+                android:id = "@+id/customactivity"
                      android:inputType="text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,19 +135,7 @@ android:focusableInTouchMode="true" >
                 android:layout_marginRight="70dp"
                 android:background="@android:drawable/edit_text" />
             
-              <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Filter By Saved Teams" />
-
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="70dp"
-                android:background="@android:drawable/btn_dropdown"
-                android:entries="@array/teams"
-                android:spinnerMode="dropdown" />
+              
         </RadioGroup>
     </RelativeLayout>
 </LinearLayout>
