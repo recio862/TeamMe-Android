@@ -1,5 +1,6 @@
 package com.teamme;
 
+import java.io.InputStream;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -11,15 +12,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
+import android.graphics.NinePatch;
+import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -34,6 +43,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -222,24 +232,32 @@ public class MainActivity extends Activity implements AsyncResponse {
 			EditText edTxtTeamName = (EditText) viewDialogContent.findViewById(R.id.teamName55);
 			if (markerInfo != null)edTxtTeamName.setText(markerInfo.getTeamName());
 			EditText edTxtCustomActivity = (EditText) viewDialogContent.findViewById(R.id.username555);
-
+		
 			Spinner spinnerActivity = (Spinner) viewDialogContent.findViewById(R.id.spinner155);
 			if (markerInfo != null)
 				if (markerInfo.getActivityNum()-1 != -1){
-					spinnerActivity.setSelection(markerInfo.getActivityNum()-1);
+					
+					Drawable img = TeamMeUtils.getDrawableFromActivityNum(getApplicationContext(), markerInfo.getActivityNum() -1 );
+					spinnerActivity.setVisibility(View.GONE);
+					String text = TeamMeUtils.getActivityName(markerInfo.getActivityNum());
 					rb1.setChecked(true);
 					rb2.setChecked(false);
-					rb1.setVisibility(View.GONE);
+					rb1.setText(text);
+					rb1.setButtonDrawable(img);
 					rb2.setVisibility(View.GONE);
 					edTxtCustomActivity.setVisibility(View.GONE);
 				}
 				else {
-					edTxtCustomActivity.setText(markerInfo.getCustomActivity());
+					String text = markerInfo.getCustomActivity();
+					Drawable img = getResources().getDrawable( R.drawable.customgame);
+					edTxtCustomActivity.setCompoundDrawablesWithIntrinsicBounds( img, null, null, null);
 					rb2.setChecked(true);
+					rb2.setText(text);
 					rb1.setChecked(false);
+					rb2.setButtonDrawable(img);
 					rb1.setVisibility(View.GONE);
-					rb2.setVisibility(View.GONE);
 					spinnerActivity.setVisibility(View.GONE);
+					edTxtCustomActivity.setVisibility(View.GONE);
 				}
 
 			spinnerActivity.setEnabled(false);
@@ -263,7 +281,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 						selectedMarker = null;
 						playSound(R.raw.cancel);
 
-						TeamMeUtils.resetFields(dialogContent);
+						
 					}
 				}
 			})
@@ -363,9 +381,21 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 		Button negative_button = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 		if (negative_button != null){
-			negative_button.setBackgroundDrawable(getResources().getDrawable(android.R.color.black));
+			negative_button.setBackgroundColor(Color.parseColor("#000000"));
 			negative_button.setTextColor(Color.parseColor("#FC8F00"));  
 			negative_button.setTypeface(null, Typeface.BOLD);
+			negative_button.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View arg0, MotionEvent event) {
+					Button b = (Button) arg0;
+					if(event.getAction() == MotionEvent.ACTION_DOWN) {
+						b.setBackgroundColor(Color.parseColor("#383838"));
+				        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+				          b.setBackgroundColor(Color.parseColor("#000000"));
+				        }
+					return false;
+				}
+			});
 		}
 		
 		return super.onCreateDialog(id);
@@ -530,6 +560,26 @@ public class MainActivity extends Activity implements AsyncResponse {
 		radiobuttons[2] = (RadioButton) dialog.findViewById(R.id.customactivitybutton);
 
 		EditText t = (EditText) dialog.findViewById(R.id.customactivity);
+
+		t.addTextChangedListener(new TextWatcher(){
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				customactivitytext();
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				
+			}
+		    
+		}); 
 		String customActivity = mPrefs.getString("customActivity", "");
 
 		Spinner s = (Spinner) dialog.findViewById(R.id.activity);
@@ -643,9 +693,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 		RadioButton b = (RadioButton) dialog.findViewById(R.id.activitybutton);
 		if (!b.isChecked() && type == 4)
 			return;
+		
+		RadioButton b2 = (RadioButton) dialog.findViewById(R.id.customactivitybutton);
+		if (!b2.isChecked() && type == 3)
+			return;
 
 		EditText t = (EditText) dialog.findViewById(R.id.customactivity);
-		String customActivity = mPrefs.getString("customActivity", "");
+		String customActivity = t.getText().toString();
 
 		Spinner s = (Spinner) dialog.findViewById(R.id.activity);
 		String spinnerActivity = s.getSelectedItem().toString();
@@ -660,7 +714,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			ed.putInt("filter", activityNumber);
 			Log.d("Storing....", ""+activityNumber);
 		}
-		else {
+		else if (type == 2 || b2.isChecked() && type == 3){
 			ed.putInt("filter", 0);
 			ed.putString("customActivity", customActivity);
 		}
@@ -685,12 +739,19 @@ public class MainActivity extends Activity implements AsyncResponse {
 		setFilterSettings(4);
 		refreshMap();
 	}
+	public void customactivitytext(){
+		setFilterSettings(3);
+		refreshMap();
+	}
 
 	private boolean passesFilter(MarkerInfo marker) {
 		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
 		int filterType = mPrefs.getInt("filter", -1);
-
-		if (filterType == marker.getActivityNum() || filterType == -1 )
+		String customActivity = mPrefs.getString("customActivity", "");
+		if (filterType == 0 && (marker.getActivityNum()== 0 ) && marker.getCustomActivity().equalsIgnoreCase(customActivity))
+			return true;
+			
+		else if (filterType != 0 && (filterType == marker.getActivityNum() || filterType == -1) )
 			return true;
 
 		return false;

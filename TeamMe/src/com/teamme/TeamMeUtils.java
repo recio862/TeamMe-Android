@@ -2,6 +2,8 @@ package com.teamme;
 
 import java.util.Calendar;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -28,9 +30,6 @@ public class TeamMeUtils {
 		Calendar c = Calendar.getInstance();
 		pickFinishTime.setCurrentHour(c.get(Calendar.HOUR_OF_DAY));
 		pickFinishTime.setCurrentMinute(c.get(Calendar.MINUTE));
-
-
-
 	}
 
 	
@@ -68,9 +67,41 @@ public class TeamMeUtils {
 		
 	}
 	
+	public static Drawable getDrawableFromActivityNum(Context context, int activityNum){
+		Drawable icon = null;
+		switch (activityNum){
+		case 0:
+			icon = context.getResources().getDrawable( R.drawable.soccer);
+			break;
+		case 1:
+			icon = context.getResources().getDrawable( R.drawable.football);
+			break;
+		case 2:
+			icon = context.getResources().getDrawable( R.drawable.frisbee);
+			break;
+		case 3:
+			icon = context.getResources().getDrawable( R.drawable.tennis);
+			break;
+		case 4:
+			icon = context.getResources().getDrawable( R.drawable.bike);
+			break;
+		case 5:
+			icon = context.getResources().getDrawable( R.drawable.bowling);
+			break;
+		case 6:
+			icon = context.getResources().getDrawable( R.drawable.climbing);
+			break;
+		case 7:
+			icon = context.getResources().getDrawable( R.drawable.volleyball);
+			break;
+		}
+
+		return icon;
+	}
 	public static BitmapDescriptor getIconFromActivityNum(int activityNum, boolean selected){
 
 		BitmapDescriptor icon = (BitmapDescriptorFactory.fromResource(R.drawable.marker));
+	
 		switch (activityNum){
 		case 0:
 			if (!selected)
@@ -132,5 +163,30 @@ public class TeamMeUtils {
 
 
 
+	}
+
+
+
+	public static String getActivityName(int i) {
+		switch (i){
+		case 1:
+			return "Soccer";
+		case 2:
+			return "Football";
+		case 3:
+			return "Disc Golf";
+		case 4:
+			return "Tennis";
+		case 5:
+			return "Biking";
+		case 6:
+			return "Bowling";
+		case 7: 
+			return "Rock Climbing";
+		case 8: 
+			return "Volleyball";
+			
+		}
+		return null;
 	}
 }

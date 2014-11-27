@@ -2,6 +2,7 @@
  <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/teammebackground2"
             >
             
 <RelativeLayout
@@ -10,13 +11,7 @@
     android:orientation="vertical"
     >
 
-    
-    
-      
-    
-    
-    
-    
+ 
     
     
      <com.teamme.AnimatedView
