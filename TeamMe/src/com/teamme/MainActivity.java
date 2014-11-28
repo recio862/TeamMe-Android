@@ -63,6 +63,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.teamme.Networking.AsyncResponse;
 import com.teamme.Networking.CoordParameters;
+import com.teamme.Networking.GameDeletionParameters;
+import com.teamme.Networking.GetRequest;
 
 public class MainActivity extends Activity implements AsyncResponse {
 
@@ -92,6 +94,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private MarkerOptions markerOptions;
 	public AlertDialog dialog;
 	public Networking messagePasser;
+	private String mUserId;
 	public Networking.GetRequest getPasser;
 	public CoordParameters params;
 	public LatLng paramPoint;
@@ -141,56 +144,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 
-					//setContentView( R.layout.create_dialog );
-					EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
-					EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
-					Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
-					RadioButton rb = (RadioButton) dialogContent.findViewById(R.id.radio_pirates);
-					EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
-					EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
-					TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
-
-
-					String activity = spinnerActivity.getSelectedItem().toString();
-					Integer activityNum = 0;
-
-					playSound(R.raw.whistle);
-					if (rb.isChecked()){
-
-						activityNum = TeamMeUtils.getActivityNumber(activity);
-					}
-
-					SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
-					String userId = mPrefs.getString("email", "noUserNameFound!");
-					String teamName = edTxtTeamName.getText().toString();
-					String customActivity = edTxtCustomActivity.getText().toString();
-					String activePlayers = edTxtPlayersActive.getText().toString();
-					String neededPlayers = edTxtPlayersNeeded.getText().toString();
-					String finishTimeHour = String.valueOf(pickFinishTime.getCurrentHour());
-					String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
-
-
-					params = new CoordParameters("http://" + messagePasser.usedIp + ":80/android/project/updateMarkers.php", paramPoint, userId, 
-							finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
-					messagePasser.new SendCoordsTask().execute(params);
-					Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
-					gameCreated.setGravity(Gravity.CENTER, 0, 0);
-					gameCreated.show();
-
-					createButton.setAlpha((float)0.15);
-					myMarker.setIcon(TeamMeUtils.getIconFromActivityNum(activityNum, false));
-
-					MarkerInfo mi = new MarkerInfo(null);
-					mi.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName);
-
-					mapMarkers.put(""+index,mi );
-					myMarker.setTitle(""+index);
-					index++;
-					markerOptions = null;
-					myMarker = null;
-					createEnabled=  false;
-					TeamMeUtils.resetFields(dialogContent);
-
+					
 				}
 			});
 
@@ -287,6 +241,16 @@ public class MainActivity extends Activity implements AsyncResponse {
 			})
 			.setNegativeButton("Join Game", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
+					Toast gameCreated = Toast.makeText(getApplicationContext(), "Game Joined!", Toast.LENGTH_SHORT);
+					gameCreated.setGravity(Gravity.CENTER, 0, 0);
+					gameCreated.show();
+					if (selectedMarker != null){
+						viewEnabled = false;
+						viewButton.setAlpha((float)0.15);
+
+						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
+						selectedMarker = null;
+					}
 				}
 			});
 			
@@ -294,8 +258,12 @@ public class MainActivity extends Activity implements AsyncResponse {
 		//MAP FILTER DIALOG
 		else if (id == 4){
 			builder.setView(inflater.inflate(R.layout.map_filter, null));
+			
 			builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
+
+					
+
 				}
 			});
 
@@ -360,6 +328,81 @@ public class MainActivity extends Activity implements AsyncResponse {
 		dialog = builder.create();
 		dialog.show();
 
+		
+		//Add a listener to create game button so that we only create when the form is complete (no empty team name)
+		if (id == 0){
+			dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
+		      {            
+		          @Override
+		          public void onClick(View v)
+		          {
+		        	//setContentView( R.layout.create_dialog );
+						EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
+						EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
+						Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
+						RadioButton rb = (RadioButton) dialogContent.findViewById(R.id.radio_pirates);
+						EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
+						EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
+						TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
+
+						if ((!rb.isChecked() && (edTxtCustomActivity.getText().toString().equals("") || edTxtCustomActivity.getText().toString() == null) 
+								) || (edTxtTeamName.getText().toString().equals("") || edTxtTeamName.getText().toString() == null)){
+							Toast gameCreated = Toast.makeText(getApplicationContext(), "Form Incomplete! Be sure to select team name and activity!", Toast.LENGTH_SHORT);
+							gameCreated.setGravity(Gravity.CENTER, 0, 0);
+							gameCreated.show();
+							return;
+						}
+							
+						String activity = spinnerActivity.getSelectedItem().toString();
+						Integer activityNum = 0;
+
+						playSound(R.raw.whistle);
+						if (rb.isChecked()){
+
+							activityNum = TeamMeUtils.getActivityNumber(activity);
+						}
+
+						SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
+						String userId = mPrefs.getString("email", "noUserNameFound!");
+						String teamName = edTxtTeamName.getText().toString();
+						String customActivity = edTxtCustomActivity.getText().toString();
+						String activePlayers = edTxtPlayersActive.getText().toString();
+						String neededPlayers = edTxtPlayersNeeded.getText().toString();
+						String finishTimeHour = String.valueOf(pickFinishTime.getCurrentHour());
+						String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
+
+
+						params = new CoordParameters("http://" + messagePasser.usedIp + ":80/android/project/updateMarkers.php", paramPoint, mUserId, 
+								finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
+						messagePasser.new SendCoordsTask().execute(params);
+						Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
+						gameCreated.setGravity(Gravity.CENTER, 0, 0);
+						gameCreated.show();
+
+						createButton.setAlpha((float)0.15);
+						myMarker.setIcon(TeamMeUtils.getIconFromActivityNum(activityNum, false));
+
+						MarkerInfo mi = new MarkerInfo(null);
+						mi.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName);
+
+						mapMarkers.put(""+index,mi );
+						myMarker.setTitle(""+index);
+						index++;
+						markerOptions = null;
+						myMarker = null;
+						createEnabled=  false;
+						TeamMeUtils.resetFields(dialogContent);
+
+		              
+		                  dialog.dismiss();
+		              //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
+		          }
+		      });
+			
+			
+			
+			
+		}
 		Button positive_button = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
 		
 		if (positive_button != null){
@@ -438,7 +481,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 		if (mPrefs.getBoolean("loggedOut", true)){
 			Intent intent = new Intent(getApplicationContext(), Login.class);
@@ -624,6 +666,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	}
 	public void aboutDialog(MenuItem item){
 		showDialog(2);
+		
 	}
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -856,6 +899,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 				}
 			});
 		}
+	
+		
 	}
 
 	//http://stackoverflow.com/questions/14071230/android-maps-library-v2-zoom-controls-custom-position
@@ -874,6 +919,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	//passes data from the async networking thread to ui thread after results are returned
 	public void getResponse(String jsonDownloadedMarkersString){
+		
+		
 		if (jsonDownloadedMarkersString.equals("0") || jsonDownloadedMarkersString.equals(null) 
 				|| jsonDownloadedMarkersString.equals("") || jsonDownloadedMarkersString.equals("[]")){
 			Log.e("PROFILE RESPONSE STRING CAUGHT", jsonDownloadedMarkersString);
@@ -881,6 +928,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}
 		else{
 			try{
+				
 				final JSONArray geodata = new JSONArray(jsonDownloadedMarkersString);
 				
 				loadingToast = Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG);
@@ -894,10 +942,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
 					mGameNumber = (geodata.getJSONObject(i).getInt("markerId"));
+					
 					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 					markerOptions.icon(TeamMeUtils.getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
 					markerOptions.title(""+ uniqueId);
+				
 					MarkerInfo marker = new MarkerInfo(geodata.getJSONObject(i));
+					
 					if (passesFilter(marker) == true)
 						googleMap.addMarker(markerOptions);
 					mapMarkers.put(""+uniqueId, marker);
@@ -962,6 +1013,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 
 
-
-
+	
+/*
+	GameAdmin gameadmin = new GameAdmin();
+	getPasser = messagePasser.new GetRequest();
+	getPasser.responder = gameadmin;
+	getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabUserProfile.php?email=" + mPrefs.getString("email",""));
+	*/
 }
