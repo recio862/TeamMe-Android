@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,21 +31,26 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.teamme.Networking.AsyncResponse;
+import com.teamme.Networking.UpdateProfileParameters;
 
 public class Profile extends Activity implements AsyncResponse {
 	
 	public String prof_name;
 	public ImageView profile;
+	public String jsonEncodedImage;
+	public String profilePicPath = " ";
 	private Toast profileToast;
 	private Bitmap pic = null;
 	public Networking messagePasser;
 	public Networking.GetRequest getPasser;
-	public Networking.GetRequest profilePasser;
+	public Networking.UpdateProfileTask profilePasser;
 	public String usedIp;
+	public UpdateProfileParameters params;
 	EditText username;
 	EditText email;
 	EditText phone; 
-	
+	EditText password; 
+
     // here we populate the user profile fields from data pulled from the server which relies
 	//on the user having already signed in, to query the server for that email address.
 	public void getResponse(String jsonResponseString){
@@ -62,9 +68,19 @@ public class Profile extends Activity implements AsyncResponse {
 				profileToast.show();
 				//final int n = geodata.length();
 				
+				//need these for the instance where the user is logging into a different phone.
 				username.setText(jsonProfile.getJSONObject(0).getString("userName"));
+				email.setText(jsonProfile.getJSONObject(0).getString("email"));
 				phone.setText(jsonProfile.getJSONObject(0).getString("phone"));
+				jsonEncodedImage = jsonProfile.getJSONObject(0).getString("userImage");
+				Log.e("JSONECNODEDIMAGE", jsonEncodedImage);
 
+				if (! (null == jsonEncodedImage) && (jsonEncodedImage.equals(null))){
+				  byte[] decodedString = Base64.decode(jsonEncodedImage, Base64.DEFAULT);
+				  pic = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+				  profile.setImageBitmap(Bitmap.createScaledBitmap(pic, 150, 150, false));
+				}
+				//profile.setImageBitmap(Bitmap.createScaledBitmap(thumbnail, 150, 150, false));
 				//for (int i = 0; i < n; i++) {
 //					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 //					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
@@ -78,6 +94,7 @@ public class Profile extends Activity implements AsyncResponse {
 //					mapMarkers.put(""+i, new MarkerInfo(geodata.getJSONObject(i)));
 				//}
 			}catch(Exception e) {
+				Log.e("exception in profile getResponse", "yah dude");
 				throw new RuntimeException(e);
 			}
 		}
@@ -94,7 +111,10 @@ public class Profile extends Activity implements AsyncResponse {
 		phone = (EditText) findViewById(R.id.edit_phone_number);
 		Log.e("pref email", mPrefs.getString("email"," "));
 
+		username.setText(mPrefs.getString("username"," "));
 		email.setText(mPrefs.getString("email"," "));
+		email.setText(mPrefs.getString("phone"," "));
+
 		
 		messagePasser = new Networking(Profile.this);
 		usedIp = messagePasser.amazonServerIp;
@@ -111,24 +131,40 @@ public class Profile extends Activity implements AsyncResponse {
 		getPasser.responder = this;
 		getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabUserProfile.php?email=" + mPrefs.getString("email","")); 
 		//username, email and phone number should be set from information retrieved from server now
-		
+		Log.e("passed get", mPrefs.getString("email"," "));
+
 		confirmChanges.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				username = (EditText) findViewById(R.id.edit_profile_name);
 				email = (EditText) findViewById(R.id.edit_email);
 				phone = (EditText) findViewById(R.id.edit_phone_number);
+				password = (EditText) findViewById(R.id.edit_new_password);
+
+				Log.e("confirming changes",phone.getText().toString());
+
 				SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
 				SharedPreferences.Editor ed = mPrefs.edit();
-				ed.putString("email",email.getText().toString());
-				ed.apply();
 
-				
-				profilePasser = messagePasser.new GetRequest();
-				profilePasser.responder = Profile.this;
-				profilePasser.execute("http://" + messagePasser.usedIp + 
-						":80/android/project/updateProfile.php?email=" +
-						email.getText().toString() + "&phone=" + phone.getText().toString() + "&username=" + username.getText().toString()); 
+                String oldemail = mPrefs.getString("email","99999997776");
+				ed.putString("username",username.getText().toString());
+				ed.putString("password",password.getText().toString());
+				ed.putString("email",email.getText().toString());
+				ed.putString("phone",phone.getText().toString());
+				ed.apply();
+				profilePasser = messagePasser.new UpdateProfileTask();
+				params = new UpdateProfileParameters("http://" + messagePasser.usedIp + ":80/android/project/updateProfile.php",
+						 username.getText().toString(), email.getText().toString(), oldemail, phone.getText().toString(),
+						 password.getText().toString(), profilePicPath);
+				Log.e("profilepath", profilePicPath);
+				profilePasser.execute(params); 
+//				profilePasser = messagePasser.new GetRequest();
+//				profilePasser.responder = Profile.this;
+//				profilePasser.execute("http://" + messagePasser.usedIp + 
+//						":80/android/project/updateProfile.php?email=" +
+//						email.getText().toString() + "&phone=" + phone.getText().toString() + "&username=" + username.getText().toString()
+//						+ "&oldemail=" + oldemail); 
+
 
 			}
 		});
@@ -165,6 +201,7 @@ public class Profile extends Activity implements AsyncResponse {
 				f.delete();
 				OutputStream outFile = null;
 				File file = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
+				profilePicPath = file.getAbsolutePath();
 				try{
 					outFile = new FileOutputStream(file);
 					bitmap.compress(Bitmap.CompressFormat.PNG, 85, outFile);
@@ -187,6 +224,7 @@ public class Profile extends Activity implements AsyncResponse {
 			c.moveToFirst();
 			int columnIndex = c.getColumnIndex(filePath[0]);
 			String picturePath = c.getString(columnIndex);
+			profilePicPath = picturePath;
 			c.close();
 			Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 			Log.w("Path of image from gallery: ", picturePath + "");

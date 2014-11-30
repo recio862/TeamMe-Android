@@ -28,11 +28,9 @@ public class GameAdmin implements AsyncResponse  {
 				final int n = geodata.length();
 				
 				for (int i = 0 ; i < n ; i++){
-					int id = geodata.getJSONObject(i).getInt("userId");
-
-					
+					int id = geodata.getJSONObject(i).getInt("userId");					
 					setUserId(id);
-					}
+				}
 			}
 			catch(Exception e) {
 				throw new RuntimeException(e);
