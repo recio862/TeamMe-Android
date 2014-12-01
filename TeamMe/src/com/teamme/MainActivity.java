@@ -239,6 +239,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					gameCreated.setGravity(Gravity.CENTER, 0, 0);
 					gameCreated.show();
 					if (selectedMarker != null){
+						
 						viewEnabled = false;
 						viewButton.setAlpha((float)0.15);
 
@@ -257,6 +258,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
 						selectedMarker = null;
+						refreshMap();
 					}
 				}
 			});
@@ -848,6 +850,15 @@ public class MainActivity extends Activity implements AsyncResponse {
 		if (restrictMarkerLoading == true)
 			return;
 		googleMap.clear();
+		selectedMarker = null;
+		mapMarkers = new HashMap<String, MarkerInfo>();
+		viewEnabled = false;
+		createEnabled = false;
+		if (viewButton != null)
+			viewButton.setAlpha((float) 0.15);
+		if (createButton != null)
+			createButton.setAlpha((float)0.15);
+
 		getPasser = messagePasser.new GetRequest();
 		getPasser.responder = this;
 
@@ -896,9 +907,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 					viewEnabled = true;
 					viewButton.setAlpha((float) 0.70);
 
-					if (selectedMarker != null)
+					if (selectedMarker != null){
+						if (passesFilter(mapMarkers.get(selectedMarker.getTitle()))){
+					
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
 								mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
+							}
+					}
 					paramPoint = marker.getPosition();
 					selectedMarker = marker;
 					createEnabled = false;
@@ -906,8 +921,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 						myMarker.remove();
 					if (createButton != null)
 						createButton.setAlpha((float)0.15);
+					if (selectedMarker != null){
+						
+						if (passesFilter(mapMarkers.get(selectedMarker.getTitle()))){
 					selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
 							mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), true));
+						}
+					}
 					return true;
 				}
 
@@ -990,15 +1010,16 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 					markerOptions.icon(TeamMeUtils.getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
-					markerOptions.title(""+ i);
-
+					markerOptions.title(""+ uniqueId);
+					
 					MarkerInfo marker = new MarkerInfo(geodata.getJSONObject(i));
 
 					if (passesFilter(marker) == true){
 						googleMap.addMarker(markerOptions);
-					mapMarkers.put(""+i, marker);
+					mapMarkers.put(""+uniqueId, marker);
+					
 					}
-					Log.d("title", marker.getTeamName());
+					Log.d("title", ""+uniqueId);
 
 				}
 			}catch(Exception e) {
