@@ -8,8 +8,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="lib" path="libs/json-20140107.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Zach/Downloads/httpmime-4.3.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Zach/Downloads/httpmime-4.3.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Zach/Downloads/httpcore-4.3.3.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore-4.3.3.jar"/>
+	<classpathentry kind="lib" path="libs/httpmime-4.3.3.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
