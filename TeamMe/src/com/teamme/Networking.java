@@ -100,6 +100,7 @@ public class Networking {
 
 	
 	//inspired by http://stackoverflow.com/questions/12069669/how-can-you-pass-multiple-primitive-parameters-to-asynctask
+	//used when 
 	public static class CoordParameters {
 		String url;
 		LatLng position;
@@ -229,15 +230,15 @@ public class Networking {
 	
 	//used in deleting stuff
 	public static class GameDeletionParameters {
-		Integer gameNum;
+		Integer markerId;
 		String url;
-		GameDeletionParameters(String url1, Integer gameNum1){
+		GameDeletionParameters(String url1, Integer markerId){
 			this.url = url1;
-			this.gameNum = gameNum1;
+			this.markerId = markerId;
 		}
 	}
 
-	public InputStream OpenHttpPOSTConnectionForDeletion(String url, Integer activityNum) {
+	public InputStream OpenHttpPOSTConnectionForDeletion(String url, Integer markerId) {
 		InputStream inputStream = null;
 		try{
 			//HttpParams httpParameters = new BasicHttpParams();
@@ -250,7 +251,7 @@ public class Networking {
 			httpPost.addHeader("Host", usedIp);
 			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
 			List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			nameValuePairs.add(new BasicNameValuePair("activityNum", String.valueOf(activityNum)));
+			nameValuePairs.add(new BasicNameValuePair("markerId", String.valueOf(markerId)));
 
 			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
 
@@ -265,22 +266,21 @@ public class Networking {
 	public class DeleteMarkersTask extends AsyncTask<GameDeletionParameters, Void, String>{
 		protected String doInBackground(GameDeletionParameters... params){
 			String url = params[0].url;
-			Integer gameNum = params[0].gameNum;
+			Integer gameNum = params[0].markerId;
 
 			return deleteCoords(url, gameNum);
 		}
 
-		private String deleteCoords(String url, Integer gameNum) {
+		private String deleteCoords(String url, Integer markerId) {
 			int BUFFER_SIZE = 2000;
 			InputStream in = null;
 			try {
-				in = OpenHttpPOSTConnectionForDeletion(url, gameNum);
+				in = OpenHttpPOSTConnectionForDeletion(url, markerId);
 				if (in == null){
 					Log.d("IN", "error null returned by post request");
 					//throw NoHttpResponseException;
 					return "";
 				}				
-
 			} catch(Exception e) {
 				Log.d("Networking", e.getLocalizedMessage());
 				return "";
@@ -376,23 +376,6 @@ public class Networking {
 		    }
 			return inputStream;
 
-//			
-//			HttpClient httpclient = new DefaultHttpClient();
-//			HttpPost httpPost = new HttpPost(url);
-//
-//			httpPost.addHeader("Host", usedIp);
-//			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
-//			List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-//			nameValuePairs.add(new BasicNameValuePair("activityNum", String.valueOf(activityNum)));
-//
-//			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-//
-//			HttpResponse httpResponse = httpclient.execute(httpPost);
-//			inputStream = httpResponse.getEntity().getContent();
-//		} catch(Exception e) {
-//			Log.d("OpenHttpPOSTConnectionForUpdateProfile", e.getLocalizedMessage());
-//		}
-//		return inputStream;
 	}
 
 	public class UpdateProfileTask extends AsyncTask<UpdateProfileParameters, Void, String>{
@@ -449,4 +432,233 @@ public class Networking {
 			Log.d("UpdateProfileTask", result);
 		}
 	}
+	
+	//used in joining a game
+	public static class GameJoinParameters {
+		Integer markerId;
+		String url;
+		Integer activePlayers;
+		Integer neededPlayers;
+		GameJoinParameters(String url, Integer markerId, Integer activePlayers, Integer neededPlayers){
+			this.url = url;
+			this.markerId = markerId;
+			this.activePlayers = activePlayers;
+			this.neededPlayers = neededPlayers;
+		}
+	}
+
+	public InputStream OpenHttpPOSTConnectionForGameJoin(String url, Integer markerId, Integer activePlayers, Integer neededPlayers) {
+		InputStream inputStream = null;
+		try{
+			//HttpParams httpParameters = new BasicHttpParams();
+			//HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
+			//HttpConnectionParams.setSoTimeout(httpParameters, 10000+12000);
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost(url);
+			//httpPost.setParams(httpParameters);
+
+			httpPost.addHeader("Host", usedIp);
+			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
+			List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			nameValuePairs.add(new BasicNameValuePair("markerId", String.valueOf(markerId)));
+			nameValuePairs.add(new BasicNameValuePair("activePlayers", String.valueOf(activePlayers)));
+			nameValuePairs.add(new BasicNameValuePair("neededPlayers", String.valueOf(neededPlayers)));
+
+			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+
+			HttpResponse httpResponse = httpclient.execute(httpPost);
+			inputStream = httpResponse.getEntity().getContent();
+		} catch(Exception e) {
+			Log.d("OpenHttpPOSTConnectionForGameJoin", e.getLocalizedMessage());
+		}
+		return inputStream;
+	}
+
+	public class GameJoinTask extends AsyncTask<GameJoinParameters, Void, String>{
+		protected String doInBackground(GameJoinParameters... params){
+			String url = params[0].url;
+			Integer markerId = params[0].markerId;
+			Integer activePlayers = params[0].activePlayers;
+			Integer neededPlayers = params[0].neededPlayers;
+
+			return gameJoin(url, markerId, activePlayers, neededPlayers);
+		}
+
+		private String gameJoin(String url, Integer markerId, Integer activePlayers, Integer neededPlayers) {
+			int BUFFER_SIZE = 2000;
+			InputStream in = null;
+			try {
+				in = OpenHttpPOSTConnectionForGameJoin(url, markerId, activePlayers, neededPlayers);
+				if (in == null){
+					Log.d("IN", "error null returned by post request");
+					//throw NoHttpResponseException;
+					return "";
+				}				
+			} catch(Exception e) {
+				Log.d("Networking", e.getLocalizedMessage());
+				return "";
+			}
+			//Log.d("IN", "meow1");
+
+			InputStreamReader isr = new InputStreamReader(in);
+			int charRead;
+			String str = " ";
+			char [] inputBuffer = new char[BUFFER_SIZE];
+			try {
+				while ((charRead = isr.read(inputBuffer)) > 0) {
+					//convert chars to a String
+					String readString = String.copyValueOf(inputBuffer, 0, charRead);
+					str += readString;
+					inputBuffer = new char[BUFFER_SIZE];
+				}
+				in.close();
+			} catch (IOException e) {
+				Log.d("gameJoin", e.getLocalizedMessage());
+				return "";
+			}
+			return str;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			//Toast.makeText(mContext.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+			Log.d("gameJoin", result);
+		}
+	}
+	
+	
+	
+	//used in updating a game
+	public static class GameUpdateParameters {
+			String url;
+			LatLng position;
+			String userId;
+			String finishHour;
+			String finishMinute;
+			String activePlayers;
+			String neededPlayers;
+			String customActivity;
+			String teamName;
+			Integer activityNum;
+			Integer markerId;
+
+			GameUpdateParameters(String url1, LatLng pos, String userId1, String finishHour1, String finishMinute1, String activePlayers1,
+					String neededPlayers1, String customActivity1, String teamName1, Integer activityNum1, Integer markerId){
+				this.position = pos;
+				this.url = url1;
+				this.userId = userId1;
+				this.finishHour = finishHour1;
+				this.finishMinute = finishMinute1;
+				this.activePlayers = activePlayers1;
+				this.neededPlayers = neededPlayers1;
+				this.customActivity = customActivity1;
+				this.teamName = teamName1;
+				this.activityNum = activityNum1;
+				this.markerId = markerId;
+			}
+		}
+
+
+		//from the Android cookbook by Wei Meng lee, POST
+		public InputStream OpenHttpPOSTConnectionForGameUpdate(String url, LatLng pos, String userId, String finishHour, String finishMinute, 
+				String activePlayers, String neededPlayers, String customActivity, String teamName, Integer activityNum, Integer markerId) {
+			InputStream inputStream = null;
+			try{
+				//HttpParams httpParameters = new BasicHttpParams();
+				//HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
+				//HttpConnectionParams.setSoTimeout(httpParameters, 10000+12000);
+				HttpClient httpclient = new DefaultHttpClient();
+				HttpPost httpPost = new HttpPost(url);
+				//httpPost.setParams(httpParameters);
+
+				httpPost.addHeader("Host",usedIp);
+				httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");	
+				List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(10);
+				nameValuePairs.add(new BasicNameValuePair("lat", String.valueOf(pos.latitude)));
+				nameValuePairs.add(new BasicNameValuePair("lng", String.valueOf(pos.longitude)));
+				nameValuePairs.add(new BasicNameValuePair("userId", userId));
+				nameValuePairs.add(new BasicNameValuePair("finishHour", finishHour));
+				nameValuePairs.add(new BasicNameValuePair("finishMinute", finishMinute));
+				nameValuePairs.add(new BasicNameValuePair("activePlayers", activePlayers));
+				nameValuePairs.add(new BasicNameValuePair("neededPlayers", neededPlayers));
+				nameValuePairs.add(new BasicNameValuePair("customActivity", customActivity));
+				nameValuePairs.add(new BasicNameValuePair("teamName", teamName));
+				nameValuePairs.add(new BasicNameValuePair("activityNum", String.valueOf(activityNum)));
+				nameValuePairs.add(new BasicNameValuePair("markerId", String.valueOf(markerId)));
+
+
+				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+
+				HttpResponse httpResponse = httpclient.execute(httpPost);
+				inputStream = httpResponse.getEntity().getContent();
+			} catch(Exception e) {
+				Log.d("OpenHttpPOSTConnectionGameUpdate", e.getLocalizedMessage());
+			}
+			return inputStream;
+		}
+
+		public class GameUpdateTask extends AsyncTask<GameUpdateParameters, Void, String>{
+			protected String doInBackground(GameUpdateParameters... params){
+
+				String url = params[0].url;
+				LatLng point = params[0].position;
+				String userId = params[0].userId;
+				String finishHour = params[0].finishHour;
+				String finishMinute = params[0].finishMinute;
+				String activePlayers = params[0].activePlayers;
+				String neededPlayers = params[0].neededPlayers;
+				String customActivity = params[0].customActivity;
+				String teamName = params[0].teamName;
+				Integer activityNum = params[0].activityNum;
+				Integer markerId = params[0].markerId;
+
+				return gameUpdate(url,point,userId, finishHour, finishMinute, activePlayers,
+						neededPlayers, customActivity, teamName, activityNum, markerId);
+			}
+
+			private String gameUpdate(String url, LatLng pos, String userId, String finishHour, String finishMinute, 
+					String activePlayers, String neededPlayers, String customActivity, String teamName, Integer activityNum,
+					Integer markerId) {
+				int BUFFER_SIZE = 2000;
+				InputStream in = null;
+				try {
+					in = OpenHttpPOSTConnectionForGameUpdate(url, pos, userId, finishHour, finishMinute, activePlayers,
+							neededPlayers, customActivity, teamName, activityNum, markerId);
+					if (in == null){
+						Log.d("IN", "error null returned by post request");
+						//throw NoHttpResponseException;
+						return "";
+					}				
+
+				} catch(Exception e) {
+					Log.d("Networking", e.getLocalizedMessage());
+					return "";
+				}
+				//Log.d("IN", "meow1");
+
+				InputStreamReader isr = new InputStreamReader(in);
+				int charRead;
+				String str = " ";
+				char [] inputBuffer = new char[BUFFER_SIZE];
+				try {
+					while ((charRead = isr.read(inputBuffer)) > 0) {
+						//convert chars to a String
+						String readString = String.copyValueOf(inputBuffer, 0, charRead);
+						str += readString;
+						inputBuffer = new char[BUFFER_SIZE];
+					}
+					in.close();
+				} catch (IOException e) {
+					Log.d("GameUpdate", e.getLocalizedMessage());
+					return "";
+				}
+				return str;
+			}
+
+			@Override
+			protected void onPostExecute(String result) {
+				//Toast.makeText(mContext.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+				Log.d("GameUpdateTask", result);
+			}
+		}
 }

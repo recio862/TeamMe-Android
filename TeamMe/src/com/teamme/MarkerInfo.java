@@ -15,6 +15,8 @@ public class MarkerInfo {
 	private String customActivity;
 	private String teamName;
 	private Integer activityNum;
+	private Integer markerId;
+
 
 
 	public MarkerInfo(JSONObject jsonObject) {
@@ -33,6 +35,8 @@ public class MarkerInfo {
 			setCustomActivity("");
 			setTeamName("");
 			setActivityNum(0);
+			setMarkerId(0);
+
 			return;
 		}
 
@@ -46,6 +50,8 @@ public class MarkerInfo {
 			setCustomActivity(jsonObject.getString("customActivity"));
 			setTeamName(jsonObject.getString("teamName"));
 			setActivityNum(jsonObject.getInt("activityNum"));
+			setMarkerId(jsonObject.getInt("markerId"));
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -113,10 +119,16 @@ public class MarkerInfo {
 	public void setActivityNum(Integer activityNum) {
 		this.activityNum = activityNum;
 	}
+	public Integer getMarkerId() {
+		return markerId;
+	}
+	public void setMarkerId(Integer markerId) {
+		this.markerId = markerId;
+	}
 	public void setAllFields(Integer activityNum2, String userId2,
 			String activePlayers2, String neededPlayers2,
 			String finishTimeHour, String finishTimeMinute,
-			String customActivity2, String teamName2) {
+			String customActivity2, String teamName2, Integer markerId2) {
 		setActivityNum(activityNum2);
 		setUserId(userId2);
 		setActivePlayers(activePlayers2);
@@ -125,7 +137,7 @@ public class MarkerInfo {
 		setFinishMinute(finishTimeMinute);
 		setCustomActivity(customActivity2);
 		setTeamName(teamName2);
-
+		setMarkerId(markerId2);
 	}
 
 }

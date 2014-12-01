@@ -1,6 +1,5 @@
 package com.teamme;
 
-import java.io.InputStream;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -12,15 +11,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.NinePatch;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -43,7 +36,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -63,8 +55,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.teamme.Networking.AsyncResponse;
 import com.teamme.Networking.CoordParameters;
-import com.teamme.Networking.GameDeletionParameters;
-import com.teamme.Networking.GetRequest;
+import com.teamme.Networking.GameJoinParameters;
+import com.teamme.Networking.GameUpdateParameters;
 
 public class MainActivity extends Activity implements AsyncResponse {
 
@@ -97,9 +89,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private String mUserId;
 	public Networking.GetRequest getPasser;
 	public CoordParameters params;
+	public GameJoinParameters gameJoinParams;
+	public GameUpdateParameters gameUpdateParams;
 	public LatLng paramPoint;
 	private boolean createEnabled = false;
 	private boolean viewEnabled = false;
+	public int newActivePlayers;
+	public int newNeededPlayers;
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -234,8 +230,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
 						selectedMarker = null;
 						playSound(R.raw.cancel);
-
-						
 					}
 				}
 			})
@@ -247,7 +241,20 @@ public class MainActivity extends Activity implements AsyncResponse {
 					if (selectedMarker != null){
 						viewEnabled = false;
 						viewButton.setAlpha((float)0.15);
-
+						
+						newActivePlayers = 
+								Integer.parseInt(mapMarkers.get(selectedMarker.getTitle()).getActivePlayers()) + 1;
+						newNeededPlayers = 
+								Integer.parseInt(mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers()) - 1;
+						
+						gameJoinParams = new GameJoinParameters("http://" + messagePasser.usedIp + ":80/android/project/joinGame.php", 
+								mapMarkers.get(selectedMarker.getTitle()).getMarkerId(),
+								newActivePlayers,
+								newNeededPlayers);
+						messagePasser.new GameJoinTask().execute(gameJoinParams);
+						
+						//mapMarkers.get(selectedMarker.getTitle()).getActivePlayers()
+						
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
 						selectedMarker = null;
 					}
@@ -320,6 +327,24 @@ public class MainActivity extends Activity implements AsyncResponse {
 			})
 			.setNegativeButton("Edit Game", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
+					mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers();
+					gameUpdateParams = new GameUpdateParameters("http://" + messagePasser.usedIp + ":80/android/project/updateGame.php",
+							paramPoint,
+							mapMarkers.get(selectedMarker.getTitle()).getUserId(), 
+							mapMarkers.get(selectedMarker.getTitle()).getFinishHour(),
+							mapMarkers.get(selectedMarker.getTitle()).getFinishMinute(),
+							mapMarkers.get(selectedMarker.getTitle()).getActivePlayers(), 
+							mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers(),
+							mapMarkers.get(selectedMarker.getTitle()).getCustomActivity(),
+							mapMarkers.get(selectedMarker.getTitle()).getTeamName(),
+							mapMarkers.get(selectedMarker.getTitle()).getActivityNum(),
+							mapMarkers.get(selectedMarker.getTitle()).getMarkerId());
+					messagePasser.new GameUpdateTask().execute(gameUpdateParams);
+//					gameJoinParams = new GameJoinParameters("http://" + messagePasser.usedIp + ":80/android/project/joinGame.php", 
+//							mapMarkers.get(selectedMarker.getTitle()).getMarkerId(),
+//							newActivePlayers,
+//							newNeededPlayers);
+//					messagePasser.new GameJoinTask().execute(gameJoinParams);
 				}
 			});
 
@@ -383,14 +408,20 @@ public class MainActivity extends Activity implements AsyncResponse {
 						myMarker.setIcon(TeamMeUtils.getIconFromActivityNum(activityNum, false));
 
 						MarkerInfo mi = new MarkerInfo(null);
-						mi.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName);
+						mi.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName,0);
+
 
 						mapMarkers.put(""+index,mi );
 						myMarker.setTitle(""+index);
 						index++;
 						markerOptions = null;
 						myMarker = null;
-						createEnabled=  false;
+						createEnabled = false;
+						//though not computationally efficient, this is where we will get the markerId from.
+						//the title is reset in the getResponse method to the right value.
+						getPasser = messagePasser.new GetRequest();
+						getPasser.responder = MainActivity.this;
+						getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabMarkers.php?id=1"); 
 						TeamMeUtils.resetFields(dialogContent);
 
 		              
@@ -868,7 +899,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					if (selectedMarker != null)
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
 								mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
-
+					paramPoint = myMarker.getPosition();
 					selectedMarker = myMarker;
 
 					selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
@@ -919,8 +950,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	//passes data from the async networking thread to ui thread after results are returned
 	public void getResponse(String jsonDownloadedMarkersString){
-		
-		
 		if (jsonDownloadedMarkersString.equals("0") || jsonDownloadedMarkersString.equals(null) 
 				|| jsonDownloadedMarkersString.equals("") || jsonDownloadedMarkersString.equals("[]")){
 			Log.e("PROFILE RESPONSE STRING CAUGHT", jsonDownloadedMarkersString);
@@ -938,10 +967,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 				index = n;
 				int uniqueId = 0;
 				for (int i = 0; i < n; i++) {
-					uniqueId = i;
 					Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 					Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
-					mGameNumber = (geodata.getJSONObject(i).getInt("markerId"));
+					uniqueId  = (geodata.getJSONObject(i).getInt("markerId"));
 					
 					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 					markerOptions.icon(TeamMeUtils.getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
