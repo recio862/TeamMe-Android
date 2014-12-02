@@ -849,6 +849,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private void refreshMap(){
 		if (restrictMarkerLoading == true)
 			return;
+		if (googleMap != null)
 		googleMap.clear();
 		selectedMarker = null;
 		mapMarkers = new HashMap<String, MarkerInfo>();
