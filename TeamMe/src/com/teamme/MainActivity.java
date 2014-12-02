@@ -425,7 +425,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					getPasser.responder = MainActivity.this;
 					getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabMarkers.php?id=1"); 
 					TeamMeUtils.resetFields(dialogContent);
-
+					refreshMap();
 
 					dialog.dismiss();
 					//else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
@@ -1010,16 +1010,16 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
 					markerOptions.icon(TeamMeUtils.getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
-					markerOptions.title(""+ uniqueId);
+					markerOptions.title(""+ i);
 					
 					MarkerInfo marker = new MarkerInfo(geodata.getJSONObject(i));
 
 					if (passesFilter(marker) == true){
 						googleMap.addMarker(markerOptions);
-					mapMarkers.put(""+uniqueId, marker);
+					mapMarkers.put(""+i, marker);
 					
 					}
-					Log.d("title", ""+uniqueId);
+					Log.d("title", ""+i);
 
 				}
 			}catch(Exception e) {
