@@ -53,10 +53,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.Parse;
 import com.teamme.Networking.AsyncResponse;
 import com.teamme.Networking.CoordParameters;
 import com.teamme.Networking.GameJoinParameters;
 import com.teamme.Networking.GameUpdateParameters;
+
+import com.parse.ParseAnonymousUtils;
+import com.parse.ParseUser;
 
 public class MainActivity extends Activity implements AsyncResponse {
 
@@ -514,6 +518,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//Parse Code
+		Parse.initialize(this, "ybMbNsW5K7M3tWC0hq5d2JJyiDDJfDW65eGRcYRc", "ny76yoFFCO2ACumEzDDzOqHs40udxmyaJkjHG5eo");
+		
+		
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 		if (mPrefs.getBoolean("loggedOut", true)){
 			Intent intent = new Intent(getApplicationContext(), Login.class);

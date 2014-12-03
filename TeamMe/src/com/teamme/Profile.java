@@ -30,6 +30,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseUser;
 import com.teamme.Networking.AsyncResponse;
 import com.teamme.Networking.UpdateProfileParameters;
 
@@ -50,6 +52,7 @@ public class Profile extends Activity implements AsyncResponse {
 	EditText email;
 	EditText phone; 
 	EditText password; 
+	ParseUser user;
 
     // here we populate the user profile fields from data pulled from the server which relies
 	//on the user having already signed in, to query the server for that email address.
@@ -103,17 +106,26 @@ public class Profile extends Activity implements AsyncResponse {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.profile);
+		user = ParseUser.getCurrentUser();
+		try {
+			user.fetch();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Toast.makeText(getApplicationContext(), user.getUsername().toString(), Toast.LENGTH_LONG).show();
 
 		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
 		username = (EditText) findViewById(R.id.edit_profile_name);
 		email = (EditText) findViewById(R.id.edit_email);
 		phone = (EditText) findViewById(R.id.edit_phone_number);
-		Log.e("pref email", mPrefs.getString("email"," "));
+		Log.e("right herety here", "HERE");
 
-		username.setText(mPrefs.getString("username"," "));
-		email.setText(mPrefs.getString("email"," "));
-		email.setText(mPrefs.getString("phone"," "));
+		username.setText(user.getUsername());
+		email.setText(user.getEmail());
+		phone.setText(" ");
 
 		
 		messagePasser = new Networking(Profile.this);
@@ -129,9 +141,9 @@ public class Profile extends Activity implements AsyncResponse {
 		Button confirmChanges = (Button) findViewById(R.id.view_team_button);
 		getPasser = messagePasser.new GetRequest();
 		getPasser.responder = this;
-		getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabUserProfile.php?email=" + mPrefs.getString("email","")); 
+		getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabUserProfile.php?email=" + user.getEmail()); 
 		//username, email and phone number should be set from information retrieved from server now
-		Log.e("passed get", mPrefs.getString("email"," "));
+		Log.e("passed get", user.getEmail());
 
 		confirmChanges.setOnClickListener(new OnClickListener(){
 			@Override
