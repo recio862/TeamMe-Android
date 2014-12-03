@@ -568,11 +568,18 @@ public class MainActivity extends Activity implements AsyncResponse {
 					MarkerInfo markerinfo = new MarkerInfo(null);
 					markerinfo.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName,0);
 
+					int act2 = markerinfo.getActivityNum();
+					String act;
+					if(act2 == 0){
+						act = markerinfo.getCustomActivity();
+						Log.e("hello", act);}
+					else
+						act = TeamMeUtils.getActivityName(markerinfo.getActivityNum());
 					Game g = new Game();
 					g.setAdmin(ParseUser.getCurrentUser());
 					g.setTeamName(markerinfo.getTeamName());
 					g.setMarkerId(markerinfo.getMarkerId());
-					g.setActivity(TeamMeUtils.getActivityName(markerinfo.getActivityNum()));
+					g.setActivity(act);
 					g.setHour(markerinfo.getFinishHour());
 					g.setMinute(markerinfo.getFinishMinute());
 					g.setActivePlayers(markerinfo.getActivePlayers());
