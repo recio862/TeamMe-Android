@@ -51,14 +51,16 @@ android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 		 <RadioButton
+		     	android:id="@+id/current_teams"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                  android:layout_marginLeft="25dp"
-                android:text="Current Team:" 
+                android:text="Current Teams:" 
                 android:textSize="20sp"
                 android:textStyle="bold"/>"
 		  
             <RadioButton
+                android:id="@+id/saved_teams"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
@@ -73,7 +75,7 @@ android:layout_centerHorizontal="true"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="70dp"
                 android:background="@android:drawable/btn_dropdown"
-                android:entries="@array/spinner_items2"
+                android:entries="@array/spinner_items"
                 android:spinnerMode="dropdown" />
 
          

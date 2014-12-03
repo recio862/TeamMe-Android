@@ -5,6 +5,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
+import com.parse.FindCallback;
 
 import org.json.JSONArray;
 
@@ -107,6 +113,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private boolean viewEnabled = false;
 	public int newActivePlayers;
 	public int newNeededPlayers;
+	ParseUser user;
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -269,7 +276,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 								Integer.parseInt(mapMarkers.get(selectedMarker.getTitle()).getActivePlayers()) + 1;
 						newNeededPlayers = 
 								Integer.parseInt(mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers()) - 1;
-
+						int markerid = mapMarkers.get(selectedMarker.getTitle()).getMarkerId();
 						gameJoinParams = new GameJoinParameters("http://" + messagePasser.usedIp + ":80/android/project/joinGame.php", 
 								mapMarkers.get(selectedMarker.getTitle()).getMarkerId(),
 								newActivePlayers,
@@ -280,6 +287,24 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
 						selectedMarker = null;
+						//Parse code
+						ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+						query.whereEqualTo("markerId", markerid);
+						query.findInBackground(new FindCallback<ParseObject>() {
+							
+							@Override
+							public void done(List<ParseObject> objects, ParseException e) {
+								// TODO Auto-generated method stub
+								if(objects.size() > 0){
+									Game game = (Game) objects.get(0);
+									game.addMember(user);
+									game.setNeededPlayers(Integer.toString(newNeededPlayers));
+									game.setActivePlayers(Integer.toString(newActivePlayers));
+									game.saveEventually();
+									Toast.makeText(getApplicationContext(), game.getTeamName(), Toast.LENGTH_LONG).show();
+								}
+							}
+						});
 						refreshMap();
 					}
 				}
@@ -632,7 +657,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		
 		//Parse Code
 		Parse.initialize(this, "ybMbNsW5K7M3tWC0hq5d2JJyiDDJfDW65eGRcYRc", "ny76yoFFCO2ACumEzDDzOqHs40udxmyaJkjHG5eo");
-		
+		ParseObject.registerSubclass(Game.class);
 		
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 		if (mPrefs.getBoolean("loggedOut", true)){
@@ -641,6 +666,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			finish();
 			return;
 		}
+		user = ParseUser.getCurrentUser();
 		setContentView(R.layout.activity_main);
 		createSoundPool();
 		fixZoom();
@@ -732,6 +758,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		ed.apply();
 		Intent intent = new Intent(getApplicationContext(), Login.class);
 		startActivity(intent);
+		user.logOut();
 		finish();
 	}
 	public void settingsDialog(MenuItem item){
