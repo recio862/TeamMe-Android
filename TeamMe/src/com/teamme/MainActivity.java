@@ -25,6 +25,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -515,6 +516,34 @@ public class MainActivity extends Activity implements AsyncResponse {
 		}		
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+	    if ((keyCode == KeyEvent.KEYCODE_BACK))
+	    {
+	    	if (dialog != null)
+				dialog.dismiss();
+			if (googleMap != null)
+				googleMap.clear();
+			if (loadingToast != null)
+				loadingToast.cancel();
+			selectedMarker = null;
+			mapMarkers = new HashMap<String, MarkerInfo>();
+			viewEnabled = false;
+			createEnabled = false;
+			if (viewButton != null)
+				viewButton.setAlpha((float) 0.15);
+			if (createButton != null)
+				createButton.setAlpha((float)0.15);
+
+			if(mSounds != null) {
+				mSounds.release();
+				mSounds = null;
+			}		
+	        finish();
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
