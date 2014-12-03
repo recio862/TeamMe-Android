@@ -1,84 +1,30 @@
 package com.teamme;
 
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.teamme.Networking.AsyncResponse;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
-public class Login extends Activity implements AsyncResponse{
-    public int userId;
+public class Login extends Activity{
+
 	EditText email;
-	private Networking.GetRequest getPasser;
-	private Networking messagePasser;
-	public String usedIp;
-	private String password;
+	EditText password;
+	String emailtxt;
+	String passwordtxt;
 
-	
-	public void getResponse(String jsonDownloadedMarkersString){
-		if (jsonDownloadedMarkersString.equals("0") || jsonDownloadedMarkersString.equals(null) 
-				|| jsonDownloadedMarkersString.equals("") || jsonDownloadedMarkersString.equals("[]")){
-			Log.e("PROFILE RESPONSE STRING CAUGHT", jsonDownloadedMarkersString);
-			return;
-		}
-		else{
-			try{
-				//final JSONArray userData = new JSONArray(jsonDownloadedMarkersString);
-				final JSONObject userData = new JSONObject(jsonDownloadedMarkersString);
-				
-				SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
-				SharedPreferences.Editor ed = mPrefs.edit();
-				ed.putBoolean("loggedOut", userData.getBoolean("loggedOut"));
-				ed.putString("email",email.getText().toString());
-				ed.putString("userId", userData.getString("userId"));
-				ed.putString("username",userData.getString("userName"));
-				ed.putString("password",userData.getString("password"));
-				ed.putString("phone",userData.getString("phone"));
-				ed.apply();
-				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-				startActivity(intent);
-				finish();
-//				loadingToast = Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_LONG);
-//				if (initialLoad == false)loadingToast.show();
-//				initialLoad = true;
-				//final int n = geodata.length();
-//				index = n;
-//				int uniqueId = 0;
-//				for (int i = 0; i < n; i++) {
-//					Log.d("Number of markers", ""+ n);
-//					//Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
-//					//Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
-//					uniqueId  = (geodata.getJSONObject(i).getInt("markerId"));
-//
-//					markerOptions = new MarkerOptions().position(new LatLng(geodata.getJSONObject(i).getDouble("lat"), geodata.getJSONObject(i).getDouble("lng")));
-//					markerOptions.icon(TeamMeUtils.getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
-//					markerOptions.title(""+ i);
-//					
-//					MarkerInfo marker = new MarkerInfo(geodata.getJSONObject(i));
-//
-//					if (passesFilter(marker) == true){
-//						googleMap.addMarker(markerOptions);
-//					mapMarkers.put(""+i, marker);
-//					
-//					}
-					//Log.d("title", ""+i);
-				//}
-			}catch(Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,31 +32,18 @@ public class Login extends Activity implements AsyncResponse{
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		Button login = (Button) findViewById(R.id.login_button);
 		Button register = (Button) findViewById(R.id.register_button);
+		email = (EditText) findViewById(R.id.email);
+		password = (EditText) findViewById(R.id.password);
 		
-		messagePasser = new Networking(this);
-		usedIp = messagePasser.amazonServerIp;
 		
-		getPasser = messagePasser.new GetRequest();
-		getPasser.responder = this;
-	
 		login.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View arg0, MotionEvent event) {
-
 				Button b = (Button) arg0;
 				if(event.getAction() == MotionEvent.ACTION_DOWN) {
 					b.setBackgroundColor(Color.parseColor("#E38100"));
 					login(arg0);
-					try{
-						email = (EditText) findViewById(R.id.email);
-						password = ((EditText) findViewById(R.id.password)).getText().toString();
-						getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/checkLogin.php?email=" + email.getText().toString()
-							+ "&password=" + password); 
-						}
-						catch(Exception ex){
-							throw new IllegalStateException();
-						}
 			        } else if (event.getAction() == MotionEvent.ACTION_UP) {
 			          b.setBackgroundColor(Color.parseColor("#FC8F00"));
 			     
@@ -126,15 +59,8 @@ public class Login extends Activity implements AsyncResponse{
 				Button b = (Button) arg0;
 				if(event.getAction() == MotionEvent.ACTION_DOWN) {
 					b.setBackgroundColor(Color.parseColor("#E38100"));
-					try{
-						email = (EditText) findViewById(R.id.email);
-						password = ((EditText) findViewById(R.id.password)).getText().toString();
-						getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/checkLogin.php?email=" + email.getText().toString()
-							+ "&password=" + password); 
-						}
-						catch(Exception ex){
-							throw new IllegalStateException();
-						}
+					register(arg0);
+				
 			        } else if (event.getAction() == MotionEvent.ACTION_UP) {
 			          b.setBackgroundColor(Color.parseColor("#FC8F00"));
 			        }
@@ -145,10 +71,66 @@ public class Login extends Activity implements AsyncResponse{
 	}
 	
 	public void login(View view){
+	
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+		final SharedPreferences.Editor ed = mPrefs.edit();
+		
+		emailtxt = email.getText().toString();
+		passwordtxt = password.getText().toString();
+		
+		//Send data to parse
+		ParseUser.logInInBackground(emailtxt, passwordtxt,
+				new LogInCallback(){
+					public void done(ParseUser user, ParseException e){
+						if(user != null){
+							//if user exists and is authenticated
+							ed.putBoolean("loggedOut", false);
+							ed.putString("email", emailtxt);
+							ed.apply();
+							Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+							startActivity(intent);
+							finish();
+						}
+					}
+		});
 
+//		email = (EditText) findViewById(R.id.email);
+//		ed.putBoolean("loggedOut", false);
+//		ed.putString("email",email.getText().toString());
+//		ed.apply();
+//			Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//			startActivity(intent);
+//			finish();
+			
 	}
 	
 	public void register(View view){
-
+		//TO-DO create dialog with all fields necessary to create a profile
+		//TO-DO connect data from dialog to server
+		
+		emailtxt = email.getText().toString();
+		passwordtxt = password.getText().toString();
+		
+		//force user to fill up the form
+		if(emailtxt.equals("") || passwordtxt.equals("")){
+			Toast.makeText(getApplicationContext(), "Please fill in email and password fields", Toast.LENGTH_LONG).show();
+		} else{
+			// Save new user data into parse
+			ParseUser user = new ParseUser();
+			user.setUsername(emailtxt);
+			user.setEmail(emailtxt);
+			user.setPassword(passwordtxt);
+			user.signUpInBackground(new SignUpCallback(){
+				public void done(ParseException e){
+					if(e == null){
+						Toast.makeText(getApplicationContext(), "You successfully registered with TeamMe!, please Log In" , Toast.LENGTH_LONG).show();
+					}
+					else{
+						Toast.makeText(getApplicationContext(), "An error occurred. Please try registering again.", Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+		}
+		
 	}
 }
