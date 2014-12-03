@@ -120,6 +120,7 @@ public class Login extends Activity{
 			user.setUsername(emailtxt);
 			user.setEmail(emailtxt);
 			user.setPassword(passwordtxt);
+			user.put("phoneNumber", "");
 			user.signUpInBackground(new SignUpCallback(){
 				public void done(ParseException e){
 					if(e == null){

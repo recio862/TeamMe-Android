@@ -3,6 +3,14 @@ package com.teamme;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 public class MarkerInfo {
 
 	//private MarkerOptions mMarker;
@@ -51,6 +59,37 @@ public class MarkerInfo {
 			setTeamName(jsonObject.getString("teamName"));
 			setActivityNum(jsonObject.getInt("activityNum"));
 			setMarkerId(jsonObject.getInt("markerId"));
+			
+			ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+			query.whereEqualTo("markerId", jsonObject.getInt("markerId"));
+			int found = 0;
+			int activity = jsonObject.getInt("activityNum");
+			String act;
+			if(activity == 0){
+				act = jsonObject.getString("customActivity");
+				Log.e("hello", act);}
+			else
+				act = TeamMeUtils.getActivityName(getActivityNum());
+			try {
+				found = query.count();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(found < 1){
+				Game g = new Game();
+				g.setAdmin(ParseUser.getCurrentUser());
+				g.setTeamName(jsonObject.getString("teamName"));
+				g.setMarkerId(jsonObject.getInt("markerId"));
+				g.setActivity(act);
+				g.setHour(jsonObject.getString("finishHour"));
+				g.setMinute(jsonObject.getString("finishMinute"));
+				g.setActivePlayers(jsonObject.getString("activePlayers"));
+				g.setNeededPlayers(jsonObject.getString("neededPlayers"));
+				g.addMember(ParseUser.getCurrentUser());
+				g.saveEventually();
+			}
 
 		} catch (JSONException e) {
 			e.printStackTrace();
