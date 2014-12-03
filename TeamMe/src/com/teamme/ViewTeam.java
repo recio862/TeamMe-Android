@@ -95,8 +95,8 @@ public class ViewTeam extends Activity {
 				}
 			}
 			
-			for(int i = 0; i < list.size(); i++)
-				Toast.makeText(getApplicationContext(), list.get(i), Toast.LENGTH_LONG).show();
+//			for(int i = 0; i < list.size(); i++)
+//				Toast.makeText(getApplicationContext(), list.get(i), Toast.LENGTH_LONG).show();
 			listAdapter = new ArrayAdapter<String>(this, R.layout.profile_list, list);
 			members.setAdapter(listAdapter);
 			members.setOnItemClickListener(new OnItemClickListener(){
