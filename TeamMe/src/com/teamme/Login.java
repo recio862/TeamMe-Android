@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -27,6 +28,7 @@ public class Login extends Activity{
 	String emailtxt;
 	String passwordtxt;
 	private Toast invalidLoginToast;
+	private SharedPreferences mPrefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,7 @@ public class Login extends Activity{
 	
 	public void login(View view){
 	
-		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+		 mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
 		final SharedPreferences.Editor ed = mPrefs.edit();
 		
 		emailtxt = email.getText().toString();
@@ -88,11 +90,14 @@ public class Login extends Activity{
 					public void done(ParseUser user, ParseException e){
 						if(user != null){
 							//if user exists and is authenticated
+							if (mPrefs.getBoolean("loggedOut", true)){
+							Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+							startActivity(intent);
+							}
 							ed.putBoolean("loggedOut", false);
 							ed.putString("email", emailtxt);
 							ed.apply();
-							Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-							startActivity(intent);
+							Log.d("test", "test");
 							finish();
 						}
 						else{

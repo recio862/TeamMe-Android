@@ -117,6 +117,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	protected Dialog onCreateDialog(int id) {
+		
 		if (loadingToast != null)
 			loadingToast.cancel();
 		// 1. Instantiate an AlertDialog.Builder with its constructor
