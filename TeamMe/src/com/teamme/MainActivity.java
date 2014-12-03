@@ -854,6 +854,11 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	public void refreshMap(View view){
+		if (loadingToast != null)
+		loadingToast.show();
+		refreshMap();
+	}
 	private void refreshMap(){
 		if (restrictMarkerLoading == true)
 			return;
