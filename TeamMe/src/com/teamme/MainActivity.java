@@ -86,7 +86,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private MarkerOptions markerOptions;
 	public AlertDialog dialog;
 	public Networking messagePasser;
-	private String mUserId;
 	public Networking.GetRequest getPasser;
 	public CoordParameters params;
 	public GameJoinParameters gameJoinParams;
@@ -390,7 +389,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					}
 
 					SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
-					String userId = mPrefs.getString("email", "noUserNameFound!");
+					String userId = mPrefs.getString("userId", "noUserNameFound!");
 					String teamName = edTxtTeamName.getText().toString();
 					String customActivity = edTxtCustomActivity.getText().toString();
 					String activePlayers = edTxtPlayersActive.getText().toString();
@@ -399,7 +398,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
 
 
-					params = new CoordParameters("http://" + messagePasser.usedIp + ":80/android/project/updateMarkers.php", paramPoint, mUserId, 
+					params = new CoordParameters("http://" + messagePasser.usedIp + ":80/android/project/updateMarkers.php", paramPoint, userId, 
 							finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
 					messagePasser.new SendCoordsTask().execute(params);
 					Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
@@ -945,9 +944,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 					if (selectedMarker != null){
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(
 								mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
-	
-						
-
 					
 					selectedMarker = null;
 					viewEnabled = false;
@@ -1004,7 +1000,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 				index = n;
 				int uniqueId = 0;
 				for (int i = 0; i < n; i++) {
-					Log.d("Number of markers", ""+ n);
+					Log.d("Number of markers", "" + n);
 					//Log.d("LAT", "meow" + geodata.getJSONObject(i).getDouble("lat"));
 					//Log.d("LONG", "meow" + geodata.getJSONObject(i).getDouble("lng"));
 					uniqueId  = (geodata.getJSONObject(i).getInt("markerId"));
@@ -1021,7 +1017,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 					
 					}
 					Log.d("title", ""+i);
-
 				}
 			}catch(Exception e) {
 				throw new RuntimeException(e);
@@ -1041,9 +1036,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-
-
-
 	public void clickedCreate(View view) {
 		HelpPopup helpPopup = new HelpPopup(MainActivity.this,"Tap a location first!");
 		if (!createEnabled)
@@ -1062,7 +1054,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			helpPopup.show(view);
 		else{
 			SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
-			String userId = mPrefs.getString("email", "null");
+			String userId = mPrefs.getString("userId", "null");
 			if (selectedMarker != null){
 				if (mapMarkers.containsKey(selectedMarker.getTitle())){
 					String getUserIdFromMarker = mapMarkers.get(selectedMarker.getTitle()).getUserId();
