@@ -1,5 +1,6 @@
 package com.teamme;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -221,7 +222,14 @@ public class MainActivity extends Activity implements AsyncResponse {
 			if (markerInfo != null)edTxtPlayersActive.setText(markerInfo.getActivePlayers());
 			EditText edTxtPlayersNeeded = (EditText) viewDialogContent.findViewById(R.id.num_players255);
 			if (markerInfo != null)edTxtPlayersNeeded.setText(markerInfo.getNeededPlayers());
+			
 			TimePicker pickFinishTime = (TimePicker) viewDialogContent.findViewById(R.id.timePicker155);
+			Calendar c = Calendar.getInstance();
+			if (markerInfo != null){
+				pickFinishTime.setCurrentHour(Integer.parseInt(markerInfo.getFinishHour()));
+			pickFinishTime.setCurrentMinute(Integer.parseInt(markerInfo.getFinishMinute()));
+			}
+			
 			pickFinishTime.setEnabled(false);
 
 
@@ -886,6 +894,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	public void refreshMap(View view){
 		if (loadingToast != null)
+			loadingToast.cancel();
+		loadingToast = Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_SHORT);
 		loadingToast.show();
 		ImageView v = (ImageView) view;
 	

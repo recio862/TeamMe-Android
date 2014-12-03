@@ -1,5 +1,7 @@
 package com.teamme;
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +26,7 @@ public class Login extends Activity{
 	EditText password;
 	String emailtxt;
 	String passwordtxt;
+	private Toast invalidLoginToast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,9 @@ public class Login extends Activity{
 		Button register = (Button) findViewById(R.id.register_button);
 		email = (EditText) findViewById(R.id.email);
 		password = (EditText) findViewById(R.id.password);
+		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 		
-		
+		email.setText(mPrefs.getString("email", ""));
 		login.setOnTouchListener(new OnTouchListener() {
 
 			@Override
@@ -91,6 +95,11 @@ public class Login extends Activity{
 							startActivity(intent);
 							finish();
 						}
+						else{
+							invalidLoginToast = Toast.makeText(getApplicationContext(), "Invalid Login Credentials!" , Toast.LENGTH_SHORT);
+							invalidLoginToast.show();
+						}
+							
 					}
 		});
 
@@ -102,6 +111,14 @@ public class Login extends Activity{
 //			startActivity(intent);
 //			finish();
 			
+	}
+	
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (invalidLoginToast != null)
+			invalidLoginToast.cancel();
 	}
 	
 	public void register(View view){
@@ -123,7 +140,7 @@ public class Login extends Activity{
 			user.signUpInBackground(new SignUpCallback(){
 				public void done(ParseException e){
 					if(e == null){
-						Toast.makeText(getApplicationContext(), "You successfully registered with TeamMe!, please Log In" , Toast.LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), "You successfully registered with TeamMe! \nPlease Log in." , Toast.LENGTH_LONG).show();
 					}
 					else{
 						Toast.makeText(getApplicationContext(), "An error occurred. Please try registering again.", Toast.LENGTH_LONG).show();
