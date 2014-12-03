@@ -60,7 +60,7 @@ public class MarkerInfo {
 			setActivityNum(jsonObject.getInt("activityNum"));
 			setMarkerId(jsonObject.getInt("markerId"));
 			
-			ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+			/*ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
 			query.whereEqualTo("markerId", jsonObject.getInt("markerId"));
 			int found = 0;
 			int activity = jsonObject.getInt("activityNum");
@@ -77,7 +77,7 @@ public class MarkerInfo {
 				e.printStackTrace();
 			}
 			
-			if(found < 1){
+		/*	if(found < 1){
 				Game g = new Game();
 				g.setAdmin(ParseUser.getCurrentUser());
 				g.setTeamName(jsonObject.getString("teamName"));
@@ -89,7 +89,7 @@ public class MarkerInfo {
 				g.setNeededPlayers(jsonObject.getString("neededPlayers"));
 				g.addMember(ParseUser.getCurrentUser());
 				g.saveEventually();
-			}
+			}*/
 
 		} catch (JSONException e) {
 			e.printStackTrace();
