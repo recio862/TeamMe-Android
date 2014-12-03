@@ -36,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -857,6 +858,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 	public void refreshMap(View view){
 		if (loadingToast != null)
 		loadingToast.show();
+		ImageView v = (ImageView) view;
+	
+		
 		refreshMap();
 	}
 	private void refreshMap(){

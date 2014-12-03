@@ -42,6 +42,7 @@ public class Profile extends Activity implements AsyncResponse {
 	public String jsonEncodedImage;
 	public String profilePicPath = " ";
 	private Toast profileToast;
+	private Toast t;
 	private Bitmap pic = null;
 	public Networking messagePasser;
 	public Networking.GetRequest getPasser;
@@ -115,7 +116,8 @@ public class Profile extends Activity implements AsyncResponse {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Toast.makeText(getApplicationContext(), user.getUsername().toString(), Toast.LENGTH_LONG).show();
+		t = Toast.makeText(getApplicationContext(), user.getUsername().toString(), Toast.LENGTH_LONG);
+		t.show();
 
 		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
 		username = (EditText) findViewById(R.id.edit_profile_name);
@@ -250,6 +252,8 @@ public class Profile extends Activity implements AsyncResponse {
 		super.onPause();
 		if (profileToast != null)
 			profileToast.cancel();
+		if (t != null)
+			t.cancel();
 	}
 	private void selectPicture(){
 		final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
