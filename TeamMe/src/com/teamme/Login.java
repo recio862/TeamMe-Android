@@ -35,11 +35,12 @@ public class Login extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+		 mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
 		Button login = (Button) findViewById(R.id.login_button);
 		Button register = (Button) findViewById(R.id.register_button);
 		email = (EditText) findViewById(R.id.email);
 		password = (EditText) findViewById(R.id.password);
-		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 		
 		email.setText(mPrefs.getString("email", ""));
 		login.setOnTouchListener(new OnTouchListener() {
@@ -49,6 +50,7 @@ public class Login extends Activity{
 				Button b = (Button) arg0;
 				if(event.getAction() == MotionEvent.ACTION_DOWN) {
 					b.setBackgroundColor(Color.parseColor("#E38100"));
+					if (mPrefs.getBoolean("loggedOut", true))
 					login(arg0);
 			        } else if (event.getAction() == MotionEvent.ACTION_UP) {
 			          b.setBackgroundColor(Color.parseColor("#FC8F00"));
@@ -77,8 +79,7 @@ public class Login extends Activity{
 	}
 	
 	public void login(View view){
-	
-		 mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
+	 
 		final SharedPreferences.Editor ed = mPrefs.edit();
 		
 		emailtxt = email.getText().toString();

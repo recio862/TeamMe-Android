@@ -137,16 +137,18 @@ public class MainActivity extends Activity implements AsyncResponse {
 			mTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
 			builder.setView(dialogContent).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					//					createEnabled = false;
-					//					createButton.setAlpha((float)0.15);
+										createEnabled = false;
+										createButton.setAlpha((float)0.15);
 					//					myMarker.remove();
+					if (myMarker != null)
+						myMarker.remove();
 					playSound(R.raw.cancel);
 					TeamMeUtils.resetFields(dialogContent);
 				}
 			})
 			.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-
+					
 
 				}
 			});
@@ -243,8 +245,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
 						selectedMarker = null;
-						playSound(R.raw.cancel);
 					}
+						playSound(R.raw.cancel);
+					
 				}
 			})
 			.setNegativeButton("Join Game", new DialogInterface.OnClickListener() {
@@ -1100,6 +1103,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 			helpPopup.show(view);
 		else 
 		{
+			createEnabled = false;
+			if (createButton != null)
+				createButton.setAlpha((float)0.15);
+			
 			showDialog(0);
 			LayoutParams params = dialog.getWindow().getAttributes();
 			params.width = LayoutParams.FILL_PARENT;
@@ -1114,10 +1121,17 @@ public class MainActivity extends Activity implements AsyncResponse {
 			SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
 			String userId = mPrefs.getString("userId", "null");
 			if (selectedMarker != null){
+				viewEnabled = false;
+				viewButton.setAlpha((float)0.15);
+
+			
+			}
+			if (selectedMarker != null){
 				if (mapMarkers.containsKey(selectedMarker.getTitle())){
 					String getUserIdFromMarker = mapMarkers.get(selectedMarker.getTitle()).getUserId();
 					Log.d("UID:", getUserIdFromMarker);
 					if (getUserIdFromMarker.equals(userId)){
+						
 						showDialog(6);
 						return;
 					}
