@@ -1,12 +1,12 @@
 package com.teamme;
-<<<<<<< HEAD
+
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-=======
+
 
 import java.util.ArrayList;
 
@@ -17,7 +17,6 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,10 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-<<<<<<< HEAD
-=======
 
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
 public class ViewTeam extends Activity {
 	public String prof_name;
 	public ImageView profile;
@@ -47,19 +43,13 @@ public class ViewTeam extends Activity {
 	private ArrayAdapter<String> listAdapter;
 	String marker;
 	ArrayList<String> list;
-<<<<<<< HEAD
-=======
-	
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_team);
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-<<<<<<< HEAD
-=======
-		
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
+
 		teamName = (TextView) findViewById(R.id.team_name);
 		members = (ListView) findViewById(R.id.member);
 		if(savedInstanceState == null){
@@ -68,11 +58,11 @@ public class ViewTeam extends Activity {
 				marker = extras.getString("team_id");
 			else
 				marker = "You haven't joined any teams.";
-<<<<<<< HEAD
+
 			// Toast.makeText(getApplicationContext(), marker, Toast.LENGTH_LONG).show();
-=======
+
 //			Toast.makeText(getApplicationContext(), marker, Toast.LENGTH_LONG).show();
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
+
 		}
 		else{
 			marker = savedInstanceState.getString("team_id");
@@ -87,10 +77,7 @@ public class ViewTeam extends Activity {
 				e.printStackTrace();
 				Toast.makeText(getApplicationContext(), "Couldn't find a game", Toast.LENGTH_LONG).show();
 			}
-<<<<<<< HEAD
-=======
-			
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
+
 			ParseObject game = null;
 			try {
 				game = query.getFirst();
@@ -98,19 +85,13 @@ public class ViewTeam extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-<<<<<<< HEAD
-=======
-			
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
+
 			if(game == null)
 				return;
 			String name = "Team " + game.getString("teamName");
 			name = name + ":";
 			teamName.setText(name);
-<<<<<<< HEAD
-=======
-			
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
+
 			list = new ArrayList<String>();
 			JSONArray jArray = game.getJSONArray("members");
 			if(jArray != null){
@@ -123,14 +104,14 @@ public class ViewTeam extends Activity {
 					}
 				}
 			}
-<<<<<<< HEAD
+
 			// for(int i = 0; i < list.size(); i++)
 			// Toast.makeText(getApplicationContext(), list.get(i), Toast.LENGTH_LONG).show();
-=======
+
 			
 //			for(int i = 0; i < list.size(); i++)
 //				Toast.makeText(getApplicationContext(), list.get(i), Toast.LENGTH_LONG).show();
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
+
 			listAdapter = new ArrayAdapter<String>(this, R.layout.profile_list, list);
 			members.setAdapter(listAdapter);
 			members.setOnItemClickListener(new OnItemClickListener(){

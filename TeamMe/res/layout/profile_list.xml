@@ -1,16 +1,10 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-<<<<<<< HEAD
+
 android:id="@+id/rowTextView"
 android:layout_width="fill_parent"
 android:layout_height="wrap_content"
 android:padding="10dp"
 android:textSize="16sp" >
 </TextView>
-=======
- android:id="@+id/rowTextView" 
- android:layout_width="fill_parent" 
- android:layout_height="wrap_content"
- android:padding="10dp"
- android:textSize="16sp" >
-</TextView>
->>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
+
+
