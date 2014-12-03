@@ -1,0 +1,61 @@
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        
+        
+<RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="54dp"
+                android:background="#FF000000"
+                android:contentDescription="about"
+                android:scaleType="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:drawableLeft="@drawable/search2"
+                android:drawablePadding="15dp"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingTop="5dp"
+                android:text="Search"
+                android:textColor="#FC8F00"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    
+        <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" 
+            android:layout_marginBottom="30dp">
+		
+            <RadioButton
+                
+                android:id = "@+id/searchicon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick = "customactivity"
+                android:background = "@drawable/emptybackground2"
+                android:text="Enter an Address or Location" />
+
+            <EditText
+                android:id = "@+id/searchtext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@android:drawable/edit_text"
+                android:inputType="textPostalAddress"    />       
+              
+        </RadioGroup>
+</LinearLayout>

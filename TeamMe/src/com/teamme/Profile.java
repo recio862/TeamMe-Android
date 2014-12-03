@@ -16,14 +16,18 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,7 +73,7 @@ public class Profile extends Activity implements AsyncResponse {
 				Log.e("PROFILE RESPONSE STRING", jsonResponseString);
 				final JSONArray jsonProfile = new JSONArray(jsonResponseString);
 				profileToast = Toast.makeText(getApplicationContext(), "Loading user profile" , Toast.LENGTH_LONG);
-				profileToast.show();
+				//profileToast.show();
 				//final int n = geodata.length();
 				
 				//need these for the instance where the user is logging into a different phone.
@@ -116,8 +120,8 @@ public class Profile extends Activity implements AsyncResponse {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		t = Toast.makeText(getApplicationContext(), user.getUsername().toString(), Toast.LENGTH_LONG);
-		t.show();
+		//t = Toast.makeText(getApplicationContext(), user.getUsername().toString(), Toast.LENGTH_LONG);
+		//t.show();
 
 		SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);  
 		username = (EditText) findViewById(R.id.edit_profile_name);
@@ -146,7 +150,22 @@ public class Profile extends Activity implements AsyncResponse {
 		getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabUserProfile.php?email=" + user.getEmail()); 
 		//username, email and phone number should be set from information retrieved from server now
 		Log.e("passed get", user.getEmail());
+		confirmChanges.setOnTouchListener(new OnTouchListener(){
 
+			@Override
+			public boolean onTouch(View arg0, MotionEvent event) {
+				Button b = (Button) arg0;
+				if(event.getAction() == MotionEvent.ACTION_DOWN) {
+					b.setBackgroundColor(Color.parseColor("#E38100"));
+					
+			        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+			          b.setBackgroundColor(Color.parseColor("#FC8F00"));
+			     
+			        }
+				return false;
+			}
+			
+		});
 		confirmChanges.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
@@ -171,7 +190,10 @@ public class Profile extends Activity implements AsyncResponse {
 						 username.getText().toString(), email.getText().toString(), oldemail, phone.getText().toString(),
 						 password.getText().toString(), profilePicPath);
 				Log.e("profilepath", profilePicPath);
-				profilePasser.execute(params); 
+				profilePasser.execute(params);
+				Toast success = Toast.makeText(getApplicationContext(), "Changes Saved!" , Toast.LENGTH_SHORT);
+				success.setGravity(Gravity.CENTER, 0, 0);
+				success.show();
 //				profilePasser = messagePasser.new GetRequest();
 //				profilePasser.responder = Profile.this;
 //				profilePasser.execute("http://" + messagePasser.usedIp + 

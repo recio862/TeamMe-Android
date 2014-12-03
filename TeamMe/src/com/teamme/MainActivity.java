@@ -1,7 +1,10 @@
 package com.teamme;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 
@@ -15,7 +18,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
@@ -127,7 +132,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		final View viewDialogContent = inflater.inflate(R.layout.view_dialog, null);
 		final View editDialogContent = inflater.inflate(R.layout.edit_dialog, null);
 		final View filterDialogContent = inflater.inflate(R.layout.map_filter, null);
-
+		final View searchDialogContent = inflater.inflate(R.layout.search_dialog, null);
 		// 2. Chain together various setter methods to set the dialog characteristics
 
 		//CREATE GAME DIALOG
@@ -281,7 +286,72 @@ public class MainActivity extends Activity implements AsyncResponse {
 			});
 
 		}
-		//MAP FILTER DIALOG
+		//SEARCH DIALOG
+		else if (id == 8){
+			builder.setView(searchDialogContent);
+			RadioButton rb1 = (RadioButton)searchDialogContent.findViewById(R.id.searchicon);
+
+			Drawable img = getApplicationContext().getResources().getDrawable( R.drawable.emptybackground);
+			
+			
+			rb1.setChecked(true);
+			rb1.setEnabled(false);
+			rb1.setButtonDrawable(img);
+			//TO-DO: error checking
+			//			if (mapMarkers.containsKey(title)){
+			//				markerInfo = mapMarkers.get(title);
+			//			}
+			
+			builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+
+				}
+			})
+			.setNegativeButton("Search", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					String location = "";
+					EditText edTxt= (EditText) searchDialogContent.findViewById(R.id.searchtext);
+					if (edTxt != null){
+						
+					location = edTxt.getText().toString();
+					}
+					if(location!=null && !location.equals("")){
+			        	
+			        	Geocoder geoCoder = new Geocoder(getBaseContext());
+			            try {
+			                List<Address> addresses = geoCoder.getFromLocationName(location, 1);
+			                if (addresses.size() > 0) {
+
+			                    Double lat = (double) (addresses.get(0).getLatitude());
+			                    Double lon = (double) (addresses.get(0).getLongitude());
+
+			                    Log.d("lat-long", "" + lat + "......." + lon);
+			                    final LatLng user = new LatLng(lat, lon);
+			                   
+			                    // Move the camera instantly to hamburg with a zoom of 15.
+			                   
+			                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(user,
+			    						14));
+			                  
+			                }
+			                else
+			                	Toast.makeText(getApplicationContext(), "Unable to find your location!", Toast.LENGTH_SHORT).show();
+			            } catch (IOException e) {
+			                e.printStackTrace();
+			            }
+			        }
+					else{
+						Toast.makeText(getApplicationContext(), "Unable to find your location!", Toast.LENGTH_SHORT).show();
+					}
+					
+				}
+			});
+
+			
+			
+					
+			
+		}
 		else if (id == 4){
 			builder.setView(inflater.inflate(R.layout.map_filter, null));
 
@@ -901,10 +971,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 			loadingToast.cancel();
 		loadingToast = Toast.makeText(getApplicationContext(), "Loading Games" , Toast.LENGTH_SHORT);
 		loadingToast.show();
-		ImageView v = (ImageView) view;
-	
+		
 		
 		refreshMap();
+	}
+	public void searchMap(View view){
+		showDialog(8);
+	
 	}
 	private void refreshMap(){
 		if (restrictMarkerLoading == true)
