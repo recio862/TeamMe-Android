@@ -73,7 +73,7 @@ android:layout_centerHorizontal="true"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="70dp"
                 android:background="@android:drawable/btn_dropdown"
-                android:entries="@array/spinner_items"
+                android:entries="@array/spinner_items2"
                 android:spinnerMode="dropdown" />
 
          

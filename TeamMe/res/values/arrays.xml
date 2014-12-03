@@ -13,6 +13,12 @@
         <item>Volleyball</item>
     </string-array>
     
+     <string-array name="spinner_items2">
+        <item>FridayFootball</item>
+        <item>bowling noobs</item>
+      
+    </string-array>
+    
     <string-array name="teams">
         <item>This</item>
         <item>Needs</item>
