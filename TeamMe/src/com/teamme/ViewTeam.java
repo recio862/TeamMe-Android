@@ -43,6 +43,7 @@ public class ViewTeam extends Activity {
 	private ArrayAdapter<String> listAdapter;
 	String marker;
 	ArrayList<String> list;
+	private Toast currentToast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,10 @@ public class ViewTeam extends Activity {
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				Toast.makeText(getApplicationContext(), "Couldn't find a game", Toast.LENGTH_LONG).show();
+				if (currentToast != null)
+					currentToast.cancel();
+				currentToast = Toast.makeText(getApplicationContext(), "Couldn't find a game", Toast.LENGTH_LONG);
+				currentToast.show();
 			}
 
 			ParseObject game = null;

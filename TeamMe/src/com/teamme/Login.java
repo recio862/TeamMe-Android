@@ -29,6 +29,7 @@ public class Login extends Activity{
 	String passwordtxt;
 	private Toast invalidLoginToast;
 	private SharedPreferences mPrefs;
+	private Toast currentToast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +103,10 @@ public class Login extends Activity{
 							finish();
 						}
 						else{
-							invalidLoginToast = Toast.makeText(getApplicationContext(), "Invalid Login Credentials!" , Toast.LENGTH_SHORT);
-							invalidLoginToast.show();
+							if (currentToast != null)
+								currentToast.cancel();
+							currentToast = Toast.makeText(getApplicationContext(), "Invalid Login Credentials!" , Toast.LENGTH_SHORT);
+							currentToast.show();
 						}
 							
 					}
@@ -123,8 +126,9 @@ public class Login extends Activity{
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (invalidLoginToast != null)
-			invalidLoginToast.cancel();
+	
+		if (currentToast != null)
+			currentToast.cancel();
 	}
 	
 	public void register(View view){
@@ -136,7 +140,8 @@ public class Login extends Activity{
 		
 		//force user to fill up the form
 		if(emailtxt.equals("") || passwordtxt.equals("")){
-			Toast.makeText(getApplicationContext(), "Please fill in email and password fields", Toast.LENGTH_LONG).show();
+			currentToast = Toast.makeText(getApplicationContext(), "Please fill in email and password fields", Toast.LENGTH_LONG);
+			currentToast.show();
 		} else{
 			// Save new user data into parse
 			ParseUser user = new ParseUser();
@@ -147,10 +152,16 @@ public class Login extends Activity{
 			user.signUpInBackground(new SignUpCallback(){
 				public void done(ParseException e){
 					if(e == null){
-						Toast.makeText(getApplicationContext(), "You successfully registered with TeamMe! \nPlease Log in." , Toast.LENGTH_LONG).show();
+						if (currentToast != null)
+							currentToast.cancel();
+						currentToast = Toast.makeText(getApplicationContext(), "You successfully registered with TeamMe! \nPlease Log in." , Toast.LENGTH_LONG);
+								currentToast.show();
 					}
 					else{
-						Toast.makeText(getApplicationContext(), "An error occurred. Please try registering again.", Toast.LENGTH_LONG).show();
+						if (currentToast != null)
+							currentToast.cancel();
+						currentToast = Toast.makeText(getApplicationContext(), "An error occurred. Please try registering again.", Toast.LENGTH_LONG);
+						currentToast.show();
 					}
 				}
 			});

@@ -62,7 +62,7 @@ public class Profile extends Activity implements AsyncResponse {
 	private TextWatcher emailwatcher;
 	private PhoneNumberFormattingTextWatcher phonewatcher;
 	private TextWatcher passwatcher;
-
+	private Toast currentToast;
     // here we populate the user profile fields from data pulled from the server which relies
 	//on the user having already signed in, to query the server for that email address.
 	public void getResponse(String jsonResponseString){
@@ -76,8 +76,11 @@ public class Profile extends Activity implements AsyncResponse {
 			try{
 				Log.e("PROFILE RESPONSE STRING", jsonResponseString);
 				final JSONArray jsonProfile = new JSONArray(jsonResponseString);
-				profileToast = Toast.makeText(getApplicationContext(), "Loading user profile" , Toast.LENGTH_LONG);
-				profileToast.show();
+				
+					if (currentToast != null)
+						currentToast.cancel();
+				currentToast = Toast.makeText(getApplicationContext(), "Loading user profile" , Toast.LENGTH_LONG);
+				currentToast.show();
 				//final int n = geodata.length();
 				
 				//need these for the instance where the user is logging into a different phone.
@@ -268,23 +271,37 @@ public class Profile extends Activity implements AsyncResponse {
 		Log.e("passed get", user.getEmail());
 
 		confirmChanges.setOnClickListener(new OnClickListener(){
+			
+
 			@Override
 			public void onClick(View v) {
 				if(editedFields){
 					
-					Toast.makeText(getApplicationContext(), "Updating Profile", Toast.LENGTH_SHORT).show();
+					if (currentToast != null)
+						currentToast.cancel();
+					currentToast = Toast.makeText(getApplicationContext(), "Updating Profile", Toast.LENGTH_SHORT);
+					currentToast.show();
 					user.saveInBackground(new SaveCallback() {
 						
 						@Override
 						public void done(ParseException e) {
 							// TODO Auto-generated method stub
-							Toast.makeText(getApplicationContext(), "Profile Updated Successfully!", Toast.LENGTH_LONG).show();
+							if (currentToast != null)
+								currentToast.cancel();
+							currentToast = Toast.makeText(getApplicationContext(), "Profile Updated Successfully!", Toast.LENGTH_LONG);
+							currentToast.show();
 						}
 					});
 					editedFields = false;
 				}
 				else
-					Toast.makeText(getApplicationContext(), "No changes to save", Toast.LENGTH_LONG).show();
+				{
+					if (currentToast != null)
+						currentToast.cancel();
+					currentToast = Toast.makeText(getApplicationContext(), "No changes to save", Toast.LENGTH_LONG);
+					currentToast.show();
+					
+				}
 			}
 		});
 		
@@ -355,8 +372,8 @@ public class Profile extends Activity implements AsyncResponse {
 	@Override 
 	public void onPause(){
 		super.onPause();
-		if (profileToast != null)
-			profileToast.cancel();
+		if (currentToast != null)
+			currentToast.cancel();
 	}
 	private void selectPicture(){
 		final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
@@ -364,7 +381,7 @@ public class Profile extends Activity implements AsyncResponse {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Add Photo");
 		builder.setItems(options, new DialogInterface.OnClickListener() {
-			
+			 
 			@Override
 			public void onClick(DialogInterface dialog, int item) {
 				if(options[item].equals("Take Photo"))

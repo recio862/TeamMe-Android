@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 						myMarker.remove();
 					playSound(R.raw.cancel);
 					TeamMeUtils.resetFields(dialogContent);
-					Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_LONG).show();
+					//Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_LONG).show();
 				}
 			})
 			.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
@@ -273,6 +273,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					Toast gameCreated = Toast.makeText(getApplicationContext(), "Game Joined!", Toast.LENGTH_SHORT);
 					gameCreated.setGravity(Gravity.CENTER, 0, 0);
 					gameCreated.show();
+					playSound(R.raw.whistle);
 					if (selectedMarker != null){
 						
 						viewEnabled = false;
@@ -282,7 +283,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 								Integer.parseInt(mapMarkers.get(selectedMarker.getTitle()).getActivePlayers()) + 1;
 						newNeededPlayers = 
 								Integer.parseInt(mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers()) - 1;
-						int markerid = mapMarkers.get(selectedMarker.getTitle()).getMarkerId();
+						MarkerInfo markerinfo = mapMarkers.get(selectedMarker.getTitle());
+						int markerid = markerinfo.getMarkerId();
 
 						gameJoinParams = new GameJoinParameters("http://" + messagePasser.usedIp + ":80/android/project/joinGame.php", 
 								mapMarkers.get(selectedMarker.getTitle()).getMarkerId(),
@@ -299,6 +301,36 @@ public class MainActivity extends Activity implements AsyncResponse {
 						//Parse code
 						ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
 						query.whereEqualTo("markerId", markerid);
+						int found = 0;
+						int activity = markerinfo.getActivityNum();
+						String act;
+						if(activity == 0){
+							act = markerinfo.getCustomActivity();
+							Log.e("hello", act);}
+						else
+							act = TeamMeUtils.getActivityName(markerinfo.getActivityNum());
+						try {
+							found = query.count();
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						if(found < 1){
+							Game g = new Game();
+							g.setAdmin(ParseUser.getCurrentUser());
+							g.setTeamName(markerinfo.getTeamName());
+							g.setMarkerId(markerinfo.getMarkerId());
+							g.setActivity(act);
+							g.setHour(markerinfo.getFinishHour());
+							g.setMinute(markerinfo.getFinishMinute());
+							g.setActivePlayers(markerinfo.getActivePlayers());
+							g.setNeededPlayers(markerinfo.getNeededPlayers());
+							g.addMember(ParseUser.getCurrentUser());
+							g.saveEventually();
+						}
+						//ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+						query.whereEqualTo("markerId", markerid);
 						query.findInBackground(new FindCallback<ParseObject>() {
 							
 							@Override
@@ -310,7 +342,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 									game.setNeededPlayers(Integer.toString(newNeededPlayers));
 									game.setActivePlayers(Integer.toString(newActivePlayers));
 									game.saveEventually();
-									Toast.makeText(getApplicationContext(), game.getTeamName(), Toast.LENGTH_LONG).show();
+									//Toast.makeText(getApplicationContext(), game.getTeamName(), Toast.LENGTH_LONG).show();
 								}
 							}
 						});
@@ -502,6 +534,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 						return;
 					}
 
+					
+					
 					String activity = spinnerActivity.getSelectedItem().toString();
 					Integer activityNum = 0;
 
@@ -531,11 +565,22 @@ public class MainActivity extends Activity implements AsyncResponse {
 					createButton.setAlpha((float)0.15);
 					myMarker.setIcon(TeamMeUtils.getIconFromActivityNum(activityNum, false));
 
-					MarkerInfo mi = new MarkerInfo(null);
-					mi.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName,0);
+					MarkerInfo markerinfo = new MarkerInfo(null);
+					markerinfo.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName,0);
 
-
-					mapMarkers.put(""+index,mi );
+					Game g = new Game();
+					g.setAdmin(ParseUser.getCurrentUser());
+					g.setTeamName(markerinfo.getTeamName());
+					g.setMarkerId(markerinfo.getMarkerId());
+					g.setActivity(TeamMeUtils.getActivityName(markerinfo.getActivityNum()));
+					g.setHour(markerinfo.getFinishHour());
+					g.setMinute(markerinfo.getFinishMinute());
+					g.setActivePlayers(markerinfo.getActivePlayers());
+					g.setNeededPlayers(markerinfo.getNeededPlayers());
+					g.addMember(ParseUser.getCurrentUser());
+					g.saveEventually();
+					
+					mapMarkers.put(""+index,markerinfo );
 					myMarker.setTitle(""+index);
 					index++;
 					markerOptions = null;

@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -33,7 +34,15 @@ public class Teams extends Activity {
 	private RadioButton saved;
 	private Button viewTeam;
 	ParseUser user;
+	private TextView text;
+	private Toast currentToast;
 	
+	@Override 
+	public void onPause(){
+		super.onPause();
+		if (currentToast != null)
+			currentToast.cancel();
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,6 +71,7 @@ public class Teams extends Activity {
 						public void done(List<ParseObject> objects, ParseException e) {
 							if(e == null && objects.size() > 0){
 								ParseObject game = objects.get(0);
+								
 								Intent intent = new Intent(getApplicationContext(), ViewTeam.class);
 								String marker = game.getNumber("markerId").toString();
 								intent.putExtra("team_id", marker);
@@ -87,6 +97,8 @@ public class Teams extends Activity {
 //		q.addAscendingOrder("markerId");
 		q.orderByAscending("markerId");
 		q.findInBackground(new FindCallback<ParseObject>() {
+		
+
 			@Override
 			public void done(List<ParseObject> objs, ParseException e){
 				ParseObject g = null;
@@ -103,9 +115,14 @@ public class Teams extends Activity {
 					intent.putExtra("team_id", marker);
 					startActivity(intent);
 				}
-				else
-					Toast.makeText(getApplicationContext(), "You have not joined any games yet.", Toast.LENGTH_LONG).show();
-			}
+				else{
+					
+					if (currentToast != null)
+						currentToast.cancel();
+					currentToast = Toast.makeText(getApplicationContext(), "You have not joined any games yet.", Toast.LENGTH_LONG);
+					currentToast.show();
+				}
+				}
 		});
 	}
 	
