@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Locale;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -11,6 +12,8 @@ import com.parse.ParseQuery;
 
 import java.util.List;
 import com.parse.FindCallback;
+=======
+>>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
 
 import org.json.JSONArray;
 
@@ -73,7 +76,11 @@ import com.teamme.Networking.CoordParameters;
 import com.teamme.Networking.GameJoinParameters;
 import com.teamme.Networking.GameUpdateParameters;
 
+import com.parse.FindCallback;
 import com.parse.ParseAnonymousUtils;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 public class MainActivity extends Activity implements AsyncResponse {
@@ -156,6 +163,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 						myMarker.remove();
 					playSound(R.raw.cancel);
 					TeamMeUtils.resetFields(dialogContent);
+					Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_LONG).show();
 				}
 			})
 			.setNegativeButton("Create Game", new DialogInterface.OnClickListener() {
@@ -277,6 +285,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 						newNeededPlayers = 
 								Integer.parseInt(mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers()) - 1;
 						int markerid = mapMarkers.get(selectedMarker.getTitle()).getMarkerId();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
 						gameJoinParams = new GameJoinParameters("http://" + messagePasser.usedIp + ":80/android/project/joinGame.php", 
 								mapMarkers.get(selectedMarker.getTitle()).getMarkerId(),
 								newActivePlayers,
@@ -287,6 +299,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
 						selectedMarker = null;
+<<<<<<< HEAD
+=======
+						
+>>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
 						//Parse code
 						ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
 						query.whereEqualTo("markerId", markerid);
@@ -305,6 +321,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 								}
 							}
 						});
+<<<<<<< HEAD
+=======
+						
+>>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
 						refreshMap();
 					}
 				}
@@ -658,6 +678,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 		//Parse Code
 		Parse.initialize(this, "ybMbNsW5K7M3tWC0hq5d2JJyiDDJfDW65eGRcYRc", "ny76yoFFCO2ACumEzDDzOqHs40udxmyaJkjHG5eo");
 		ParseObject.registerSubclass(Game.class);
+<<<<<<< HEAD
+=======
+		
+>>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
 		
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 		if (mPrefs.getBoolean("loggedOut", true)){

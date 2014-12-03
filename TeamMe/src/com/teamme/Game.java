@@ -63,3 +63,18 @@ public class Game extends ParseObject{
 }
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 20e10363b43e15d005d13e5e52f3072e375cb0be
