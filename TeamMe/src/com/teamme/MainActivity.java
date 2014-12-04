@@ -447,7 +447,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 			if (markerInfo != null)edTxtTeamName.setText(markerInfo.getTeamName());
 			EditText edTxtCustomActivity = (EditText) editDialogContent.findViewById(R.id.username5);
 
-			Spinner spinnerActivity = (Spinner) editDialogContent.findViewById(R.id.spinner1);
+			final Spinner spinnerActivity = (Spinner) editDialogContent.findViewById(R.id.spinner1);
 			if (markerInfo != null)
 				if (markerInfo.getActivityNum()-1 != -1){
 					spinnerActivity.setSelection(markerInfo.getActivityNum()-1);
