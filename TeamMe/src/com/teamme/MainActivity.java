@@ -491,13 +491,13 @@ public class MainActivity extends Activity implements AsyncResponse {
 					mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers();
 					
 										String activity = spinnerActivity.getSelectedItem().toString();
-					EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
-					EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
-					Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
-					RadioButton rb = (RadioButton) dialogContent.findViewById(R.id.radio_pirates);
-					EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
-					EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
-					TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
+					EditText edTxtTeamName = (EditText) editDialogContent.findViewById(R.id.teamName);
+					EditText edTxtCustomActivity = (EditText) editDialogContent.findViewById(R.id.username5);
+					Spinner spinnerActivity = (Spinner) editDialogContent.findViewById(R.id.spinner1);
+					RadioButton rb = (RadioButton) editDialogContent.findViewById(R.id.radio_pirates);
+					EditText edTxtPlayersActive = (EditText) editDialogContent.findViewById(R.id.num_players);
+					EditText edTxtPlayersNeeded = (EditText) editDialogContent.findViewById(R.id.num_players2);
+					TimePicker pickFinishTime = (TimePicker) editDialogContent.findViewById(R.id.timePicker1);
 					Integer activityNum = 0;
 					if (rb.isChecked()){
 						activityNum = TeamMeUtils.getActivityNumber(activity);
