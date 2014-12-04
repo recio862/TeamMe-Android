@@ -1,0 +1,78 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+          
+            <ImageView
+                android:id="@+id/image5"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:background="#FF000000"
+                android:contentDescription="about"
+                android:scaleType="center" />
+
+            <TextView
+                android:id="@+id/myImageViewText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:drawableLeft="@drawable/about"
+                android:drawablePadding="15dp"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingTop="5dp"
+                android:text="About TeamMe!"
+                android:textColor="#FC8F00"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/sound_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="54dp"
+                android:src="@drawable/icon_team"
+                />
+
+           
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/sound_setting2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft = "10dp"
+                android:layout_marginTop = "20dp"
+                android:layout_marginBottom = "20dp"
+                android:text="@string/about_text"
+                android:textColor="#FC8F00"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

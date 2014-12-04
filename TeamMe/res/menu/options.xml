@@ -32,6 +32,7 @@
                 android:icon="@drawable/about"
                 android:onClick="aboutDialog"
                 android:title="@string/about"/>
+               
             <item
                 android:id="@+id/logout"
                 android:icon="@drawable/logoutoverflow"

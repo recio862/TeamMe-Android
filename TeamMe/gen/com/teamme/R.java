@@ -622,17 +622,18 @@ containing a value of this type.
         public static final int activity_main=0x7f030001;
         public static final int create_dialog=0x7f030002;
         public static final int edit_dialog=0x7f030003;
-        public static final int login=0x7f030004;
-        public static final int map_filter=0x7f030005;
-        public static final int popup=0x7f030006;
-        public static final int profile=0x7f030007;
-        public static final int profile_list=0x7f030008;
-        public static final int search_dialog=0x7f030009;
-        public static final int settings_dialog=0x7f03000a;
-        public static final int teams=0x7f03000b;
-        public static final int view_dialog=0x7f03000c;
-        public static final int view_profile=0x7f03000d;
-        public static final int view_team=0x7f03000e;
+        public static final int howto=0x7f030004;
+        public static final int login=0x7f030005;
+        public static final int map_filter=0x7f030006;
+        public static final int popup=0x7f030007;
+        public static final int profile=0x7f030008;
+        public static final int profile_list=0x7f030009;
+        public static final int search_dialog=0x7f03000a;
+        public static final int settings_dialog=0x7f03000b;
+        public static final int teams=0x7f03000c;
+        public static final int view_dialog=0x7f03000d;
+        public static final int view_profile=0x7f03000e;
+        public static final int view_team=0x7f03000f;
     }
     public static final class menu {
         public static final int options=0x7f0d0000;
