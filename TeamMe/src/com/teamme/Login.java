@@ -156,6 +156,7 @@ public class Login extends Activity{
 							currentToast.cancel();
 						currentToast = Toast.makeText(getApplicationContext(), "You successfully registered with TeamMe! \nPlease Log in." , Toast.LENGTH_LONG);
 								currentToast.show();
+								return;
 					}
 					else{
 						if (currentToast != null)
