@@ -465,6 +465,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 			EditText edTxtPlayersNeeded = (EditText) editDialogContent.findViewById(R.id.num_players2);
 			if (markerInfo != null)edTxtPlayersNeeded.setText(markerInfo.getNeededPlayers());
 			TimePicker pickFinishTime = (TimePicker) editDialogContent.findViewById(R.id.timePicker1);
+			if (markerInfo != null){
+				pickFinishTime.setCurrentHour(Integer.parseInt(markerInfo.getFinishHour()));
+				pickFinishTime.setCurrentMinute(Integer.parseInt(markerInfo.getFinishMinute()));
+			}
 
 
 			builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
@@ -485,16 +489,38 @@ public class MainActivity extends Activity implements AsyncResponse {
 			.setNegativeButton("Edit Game", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers();
+					
+										String activity = spinnerActivity.getSelectedItem().toString();
+					EditText edTxtTeamName = (EditText) dialogContent.findViewById(R.id.teamName);
+					EditText edTxtCustomActivity = (EditText) dialogContent.findViewById(R.id.username5);
+					Spinner spinnerActivity = (Spinner) dialogContent.findViewById(R.id.spinner1);
+					RadioButton rb = (RadioButton) dialogContent.findViewById(R.id.radio_pirates);
+					EditText edTxtPlayersActive = (EditText) dialogContent.findViewById(R.id.num_players);
+					EditText edTxtPlayersNeeded = (EditText) dialogContent.findViewById(R.id.num_players2);
+					TimePicker pickFinishTime = (TimePicker) dialogContent.findViewById(R.id.timePicker1);
+					Integer activityNum = 0;
+					if (rb.isChecked()){
+						activityNum = TeamMeUtils.getActivityNumber(activity);
+					}
+					SharedPreferences mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
+					String userId = mPrefs.getString("userId", "noUserNameFound!");
+					String teamName = edTxtTeamName.getText().toString();
+					String customActivity = edTxtCustomActivity.getText().toString();
+					String activePlayers = edTxtPlayersActive.getText().toString();
+					String neededPlayers = edTxtPlayersNeeded.getText().toString();
+					String finishTimeHour = String.valueOf(pickFinishTime.getCurrentHour());
+					String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
+					
 					gameUpdateParams = new GameUpdateParameters("http://" + messagePasser.usedIp + ":80/android/project/updateGame.php",
 							paramPoint,
-							mapMarkers.get(selectedMarker.getTitle()).getUserId(), 
-							mapMarkers.get(selectedMarker.getTitle()).getFinishHour(),
-							mapMarkers.get(selectedMarker.getTitle()).getFinishMinute(),
-							mapMarkers.get(selectedMarker.getTitle()).getActivePlayers(), 
-							mapMarkers.get(selectedMarker.getTitle()).getNeededPlayers(),
-							mapMarkers.get(selectedMarker.getTitle()).getCustomActivity(),
-							mapMarkers.get(selectedMarker.getTitle()).getTeamName(),
-							mapMarkers.get(selectedMarker.getTitle()).getActivityNum(),
+							userId, 
+							finishTimeHour,
+							finishTimeMinute,
+							activePlayers, 
+							neededPlayers,
+							customActivity,
+							teamName,
+							activityNum,
 							mapMarkers.get(selectedMarker.getTitle()).getMarkerId());
 					messagePasser.new GameUpdateTask().execute(gameUpdateParams);
 					//					gameJoinParams = new GameJoinParameters("http://" + messagePasser.usedIp + ":80/android/project/joinGame.php", 
@@ -1198,7 +1224,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					markerOptions.title("-1");
 					createButton.setAlpha((float) 0.70);
 					paramPoint = point;
-					createEnabled = true; 
+					createEnabled = true;
 					myMarker = googleMap.addMarker(markerOptions); 
 					playSound(R.raw.placemarker);
 				}
