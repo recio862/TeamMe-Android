@@ -57,6 +57,10 @@ public class Game extends ParseObject{
 		put("Activity", act);
 	}
 	
+	public void setUserId(String userid){
+		put("userId", userid);
+	}
+	
 	public void addMember(ParseUser user){
 		add("members", user.getUsername());
 	}

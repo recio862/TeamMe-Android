@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/image"
         android:layout_marginTop="20dp"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/Team_Name"
@@ -59,14 +59,15 @@
         android:layout_width="0px"
         android:layout_height="0px"
         android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:focusableInTouchMode="true"
+        android:layout_marginTop = "10dp" />
         
         <EditText
             android:id="@+id/teamName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:inputType="text"
             android:background="@android:drawable/edit_text" />

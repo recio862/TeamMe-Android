@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import java.util.Locale;
 import com.parse.ParseException;
@@ -553,9 +554,20 @@ public class MainActivity extends Activity implements AsyncResponse {
 					String neededPlayers = edTxtPlayersNeeded.getText().toString();
 					String finishTimeHour = String.valueOf(pickFinishTime.getCurrentHour());
 					String finishTimeMinute = String.valueOf(pickFinishTime.getCurrentMinute());
+					if (activePlayers.equals(""))
+						activePlayers = "0";
+					if (neededPlayers.equals(""))
+						neededPlayers = "0";
+					Random r = new Random();
 
-
-					params = new CoordParameters("http://" + messagePasser.usedIp + ":80/android/project/updateMarkers.php", paramPoint, userId, 
+					int random = r.nextInt(2147483647);
+					if (mPrefs.getString("uniqueid", "-1").equals("-1")){
+						SharedPreferences.Editor ed = mPrefs.edit();
+						ed.putString("uniqueid", ""+random);
+						ed.apply();
+					}
+						
+					params = new CoordParameters("http://" + messagePasser.usedIp + ":80/android/project/updateMarkers.php", paramPoint, mPrefs.getString("uniqueid",""+0), 
 							finishTimeHour, finishTimeMinute, activePlayers, neededPlayers, customActivity, teamName, activityNum);
 					messagePasser.new SendCoordsTask().execute(params);
 					Toast gameCreated = Toast.makeText(getApplicationContext(), "Your Game Was Created!", Toast.LENGTH_SHORT);
@@ -566,7 +578,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					myMarker.setIcon(TeamMeUtils.getIconFromActivityNum(activityNum, false));
 
 					MarkerInfo markerinfo = new MarkerInfo(null);
-					markerinfo.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName,0);
+					markerinfo.setAllFields(activityNum,userId, activePlayers, neededPlayers,finishTimeHour, finishTimeMinute, customActivity, teamName, 0);
 
 					int act2 = markerinfo.getActivityNum();
 					String act;
@@ -576,6 +588,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					else
 						act = TeamMeUtils.getActivityName(markerinfo.getActivityNum());
 					Game g = new Game();
+				
 					g.setAdmin(ParseUser.getCurrentUser());
 					g.setTeamName(markerinfo.getTeamName());
 					g.setMarkerId(markerinfo.getMarkerId());
@@ -586,6 +599,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					g.setNeededPlayers(markerinfo.getNeededPlayers());
 					g.addMember(ParseUser.getCurrentUser());
 					g.saveEventually();
+					
 					
 					mapMarkers.put(""+index,markerinfo );
 					myMarker.setTitle(""+index);
@@ -723,6 +737,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 		
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
+	
 		if (mPrefs.getBoolean("loggedOut", true)){
 			Intent intent = new Intent(getApplicationContext(), Login.class);
 			startActivity(intent);
@@ -730,6 +745,8 @@ public class MainActivity extends Activity implements AsyncResponse {
 			return;
 		}
 		user = ParseUser.getCurrentUser();
+		String s  = user.getObjectId();
+		Log.d("user id " , s);
 		setContentView(R.layout.activity_main);
 		createSoundPool();
 		fixZoom();
@@ -1233,11 +1250,19 @@ public class MainActivity extends Activity implements AsyncResponse {
 					markerOptions.icon(TeamMeUtils.getIconFromActivityNum(Integer.parseInt(geodata.getJSONObject(i).getString("activityNum")), false));
 					markerOptions.title(""+ i);
 					
-					MarkerInfo marker = new MarkerInfo(geodata.getJSONObject(i));
-
-					if (passesFilter(marker) == true){
+					MarkerInfo markerinfo = new MarkerInfo(geodata.getJSONObject(i));
+					int activity = markerinfo.getActivityNum();
+					String act;
+					if(activity == 0){
+						act = markerinfo.getCustomActivity();
+						Log.e("hello", act);}
+					else
+						act = TeamMeUtils.getActivityName(markerinfo.getActivityNum());
+					
+					
+					if (passesFilter(markerinfo) == true){
 						googleMap.addMarker(markerOptions);
-					mapMarkers.put(""+i, marker);
+					mapMarkers.put(""+i, markerinfo);
 					
 					}
 					Log.d("title", ""+i);
@@ -1290,17 +1315,24 @@ public class MainActivity extends Activity implements AsyncResponse {
 			
 			}
 			if (selectedMarker != null){
-				if (mapMarkers.containsKey(selectedMarker.getTitle())){
-					String getUserIdFromMarker = mapMarkers.get(selectedMarker.getTitle()).getUserId();
-					Log.d("UID:", getUserIdFromMarker);
-					if (getUserIdFromMarker.equals(userId)){
+							
+									 Log.d(mPrefs.getString("uniqueid", "-1"), "sajdhas thes");
+									 Log.d(mapMarkers.get(selectedMarker.getTitle()).getUserId(), "sajdhas thes2");
+							if (mPrefs.getString("uniqueid", "-1").equals(mapMarkers.get(selectedMarker.getTitle()).getUserId())){
+								showDialog(6);
+//							Intent intent = new Intent(getApplicationContext(), ViewTeam.class);
+///							String marker = game.getNumber("markerId").toString();
+//							if (Integer.parseInt(marker) == mapMarkers.get(selectedMarker.getTitle()).getMarkerId())
 						
-						showDialog(6);
-						return;
+//							
+						}
+						else
+							showDialog(3);
+						
 					}
-				}
+				
 			}
-			showDialog(3);
+			
 
 		}
 	}
@@ -1317,4 +1349,4 @@ public class MainActivity extends Activity implements AsyncResponse {
 	getPasser.responder = gameadmin;
 	getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabUserProfile.php?email=" + mPrefs.getString("email",""));
 	 */
-}
+
