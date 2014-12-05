@@ -432,6 +432,17 @@ public class MainActivity extends Activity implements AsyncResponse {
 			});
 
 		}
+		else if (id == 5){
+			builder.setView(inflater.inflate(R.layout.howto, null));
+
+			builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+
+
+
+				}
+			});
+		}
 		//EDIT GAME DIALOG
 		else if (id == 6){
 			builder.setView(editDialogContent);
@@ -523,6 +534,17 @@ public class MainActivity extends Activity implements AsyncResponse {
 							activityNum,
 							mapMarkers.get(selectedMarker.getTitle()).getMarkerId());
 					messagePasser.new GameUpdateTask().execute(gameUpdateParams);
+					if (selectedMarker != null){
+						viewEnabled = false;
+						viewButton.setAlpha((float)0.15);
+
+						selectedMarker.setIcon(TeamMeUtils.getIconFromActivityNum(mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), false));
+						selectedMarker = null;
+						playSound(R.raw.whistle);
+
+						TeamMeUtils.resetFields(dialogContent);
+					}
+					refreshMap();
 					//					gameJoinParams = new GameJoinParameters("http://" + messagePasser.usedIp + ":80/android/project/joinGame.php", 
 					//							mapMarkers.get(selectedMarker.getTitle()).getMarkerId(),
 					//							newActivePlayers,
@@ -538,6 +560,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 
 		//Add a listener to create game button so that we only create when the form is complete (no empty team name)
+		
 		if (id == 0){
 			dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
 			{            
@@ -954,6 +977,10 @@ public class MainActivity extends Activity implements AsyncResponse {
 		showDialog(2);
 
 	}
+	public void tutorialDialog(MenuItem item){
+		showDialog(5);
+
+	}
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -1195,6 +1222,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 							mapMarkers.get(selectedMarker.getTitle()).getActivityNum(), true));
 						}
 					}
+					playSound(R.raw.placemarker);
 					return true;
 				}
 

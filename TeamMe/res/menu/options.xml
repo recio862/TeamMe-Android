@@ -32,6 +32,11 @@
                 android:icon="@drawable/about"
                 android:onClick="aboutDialog"
                 android:title="@string/about"/>
+              <item
+                android:id="@+id/tutorial"
+                android:icon="@drawable/tutorial"
+                android:onClick="tutorialDialog"
+                android:title="Tutorial"/>
                
             <item
                 android:id="@+id/logout"

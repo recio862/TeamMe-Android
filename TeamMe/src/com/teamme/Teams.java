@@ -8,14 +8,19 @@ import org.json.JSONException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +41,8 @@ public class Teams extends Activity {
 	ParseUser user;
 	private TextView text;
 	private Toast currentToast;
-	
+	private Spinner s;
+	private SharedPreferences mPrefs;
 	@Override 
 	public void onPause(){
 		super.onPause();
@@ -50,10 +56,12 @@ public class Teams extends Activity {
 		setContentView(R.layout.teams);
 		user = ParseUser.getCurrentUser();
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		
+		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
 		current = (RadioButton) findViewById(R.id.current_teams);
 		saved = (RadioButton) findViewById(R.id.saved_teams);
 		viewTeam = (Button) findViewById(R.id.view_team_button);
+		s = (Spinner) findViewById(R.id.teams);
+		setTeams();
 		
 		viewTeam.setOnClickListener(new OnClickListener() {
 			
@@ -78,9 +86,14 @@ public class Teams extends Activity {
 								String marker2 = intent.getStringExtra("team_id");
 //								Toast.makeText(getApplicationContext(), marker2, Toast.LENGTH_LONG).show();
 								startActivity(intent);
+								finish();
 							}
 							else if(objects.size() == 0){
-								runSecondQuery();
+								//runSecondQuery();
+								if (currentToast != null)
+									currentToast.cancel();
+								currentToast = Toast.makeText(getApplicationContext(), "You have not joined any games yet.", Toast.LENGTH_LONG);
+								currentToast.show();
 								
 							}
 						}
@@ -88,9 +101,43 @@ public class Teams extends Activity {
 					
 					
 				}
+				else if (saved.isChecked()){
+					String savedteam = mPrefs.getString("savedteams", "");
+					if (savedteam.equals("")){
+						if (currentToast != null)
+							currentToast.cancel();
+						currentToast = Toast.makeText(getApplicationContext(), "You have not saved any games yet.", Toast.LENGTH_LONG);
+						currentToast.show();
+						return;
+						
+					}
+					Intent intent = new Intent(getApplicationContext(), ViewTeam.class);
+					
+					intent.putExtra("savedteam", true);
+					intent.putExtra("savedteamname", s.getItemAtPosition(0).toString());
+					startActivity(intent);
+					finish();
+					
+				}
 			}
 		});
 	
+	}
+	private void setTeams() {
+		String savedteam = mPrefs.getString("savedteams", "");
+		if (savedteam.equals(""))
+			return;
+		
+		String[] savedteams = savedteam.split(",");
+		
+		
+		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+			    this, android.R.layout.simple_spinner_item, savedteams);
+
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			s.setAdapter(adapter);
+		
 	}
 	public void runSecondQuery(){
 		ParseQuery<ParseObject> q = ParseQuery.getQuery("game");
@@ -104,16 +151,18 @@ public class Teams extends Activity {
 				ParseObject g = null;
 				for(ParseObject game : objs){
 					JSONArray members = game.getJSONArray("members");
-					if(members.toString().contains(user.getUsername().toString())){
+						if (members != null)
 						g = game;
 						break;
+					
 					}
-				}
+				
 				if(g != null){
 					Intent intent = new Intent(getApplicationContext(), ViewTeam.class);
 					String marker = g.getNumber("markerId").toString();
 					intent.putExtra("team_id", marker);
 					startActivity(intent);
+					finish();
 				}
 				else{
 					

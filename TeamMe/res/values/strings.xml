@@ -10,9 +10,9 @@
 	 <string name="my_teams">My Teams</string>
 	 <string name="logout">Log Out</string>
 	  <string name="about">About</string>
-	 <string name="about_text">TeamMe! is an app designed to help users find local games
-	     or activities that they can join and save the teams they play with so that they can
-	     keep in touch with them and play more in the future.</string>
+	  <string name="howto">1) Find a game: Now that you are logged in, you can view all the games by navigating the map.If you are having trouble finding a location, use the search feature at the top. Furthermore, you can filter by activity so that you can narrow down the specific type of team you want to join. To join, simply click the game you want to join, click View Game, and then click Join Game.\n\n2) Create a game: To create a game, select a location on the map, click Create Game", populate the fields, and then click Create Game.\n\n3) Customize: You can customize options through Settings and My Profile found in the Menu, and tailor them to how you see fit.</string>
+	 <string name="about_text">TeamMe is an app designed to help users find local games
+	     or activities that they can join. If a user cannot find an activity they want or wants to create their own, they can make their own activity as well. This app was created by Renato John Recio, Brian Zach Abel, and Ruben Baeza. The three of us are students at the University of Texas at Austin studying Computer Science. We created TeamMe as part of a Mobile Computing class taught in the Fall 2014 semester. The course is within the UTCS department and it is taught by Mike Scott.</string>
 	 <string name="profile_pic">Profile Picture</string>
 	 <string name="profile_name">Your Name</string>
 	 <string name="login">Login</string>

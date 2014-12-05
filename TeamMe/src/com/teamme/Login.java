@@ -30,13 +30,14 @@ public class Login extends Activity{
 	private Toast invalidLoginToast;
 	private SharedPreferences mPrefs;
 	private Toast currentToast;
+	private boolean loggedin;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
+		loggedin= false;
 		 mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
 		Button login = (Button) findViewById(R.id.login_button);
 		Button register = (Button) findViewById(R.id.register_button);
@@ -131,7 +132,7 @@ public class Login extends Activity{
 			currentToast.cancel();
 	}
 	
-	public void register(View view){
+	public void register(final View view){
 		//TO-DO create dialog with all fields necessary to create a profile
 		//TO-DO connect data from dialog to server
 		
@@ -154,15 +155,19 @@ public class Login extends Activity{
 					if(e == null){
 						if (currentToast != null)
 							currentToast.cancel();
-						currentToast = Toast.makeText(getApplicationContext(), "You successfully registered with TeamMe! \nPlease Log in." , Toast.LENGTH_LONG);
+						currentToast = Toast.makeText(getApplicationContext(), "You successfully registered with TeamMe! \nLogging in." , Toast.LENGTH_LONG);
 								currentToast.show();
+								loggedin = true;
+								login(view);
 								return;
 					}
 					else{
 						if (currentToast != null)
 							currentToast.cancel();
+						if (loggedin == false){
 						currentToast = Toast.makeText(getApplicationContext(), "An error occurred. Please try registering again.", Toast.LENGTH_LONG);
 						currentToast.show();
+						}
 					}
 				}
 			});
