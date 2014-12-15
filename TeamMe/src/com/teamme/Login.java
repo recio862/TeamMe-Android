@@ -108,7 +108,7 @@ public class Login extends Activity{
 		      mGoogleApiClient.connect();
 		    }
 		}
-    }
+        }
 	 
 	
 		/* A helper method to resolve the current ConnectionResult error. */
@@ -125,21 +125,6 @@ public class Login extends Activity{
 	      mGoogleApiClient.connect();
 	    }
 	  }
-	}
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login);
-		
-
-
-		//mGoogleApiClient.connect();
-		
-		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		Button login = (Button) findViewById(R.id.login_button);
-		Button register = (Button) findViewById(R.id.register_button);
-		findViewById(R.id.sign_in_button).setOnClickListener(this);
-		
 	}
 
 	@Override
