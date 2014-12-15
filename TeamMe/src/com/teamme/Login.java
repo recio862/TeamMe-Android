@@ -16,12 +16,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.plus.Plus;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-public class Login extends Activity{
+public class Login extends Activity implements ConnectionCallbacks, OnConnectionFailedListener, OnClickListener {
 
 	EditText email;
 	EditText password;
@@ -41,8 +46,6 @@ public class Login extends Activity{
 	  /* Request code used to invoke sign in user interactions. */
 	private static final int RC_SIGN_IN = 0;
 	
-	EditText email;
-	
 	/* Track whether the sign-in button has been clicked so that we know to resolve
 	 * all issues preventing sign-in without waiting.
 	 */
@@ -54,7 +57,6 @@ public class Login extends Activity{
 	private ConnectionResult mConnectionResult;
 	
 	//for gmail login
-	@Override
 	public void onClick(View view) {
 		  if (view.getId() == R.id.sign_in_button
 		    && !mGoogleApiClient.isConnecting()) {
