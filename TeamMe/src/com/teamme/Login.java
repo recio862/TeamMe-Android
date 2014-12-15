@@ -32,10 +32,132 @@ public class Login extends Activity{
 	private Toast currentToast;
 	private boolean loggedin;
 
+  /* Client used to interact with Google APIs. */
+	private GoogleApiClient mGoogleApiClient;
+	  /* A flag indicating that a PendingIntent is in progress and prevents
+	   * us from starting further intents.
+	   */
+	private boolean mIntentInProgress;
+	  /* Request code used to invoke sign in user interactions. */
+	private static final int RC_SIGN_IN = 0;
+	
+	EditText email;
+	
+	/* Track whether the sign-in button has been clicked so that we know to resolve
+	 * all issues preventing sign-in without waiting.
+	 */
+	private boolean mSignInClicked;
+
+	/* Store the connection result from onConnectionFailed callbacks so that we can
+	 * resolve them when the user clicks sign-in.
+	 */
+	private ConnectionResult mConnectionResult;
+	
+	//for gmail login
+	@Override
+	public void onClick(View view) {
+		  if (view.getId() == R.id.sign_in_button
+		    && !mGoogleApiClient.isConnecting()) {
+		    mSignInClicked = true;
+		    resolveSignInError();
+		  }
+	}
+	@Override
+	protected void onStart() {
+		    super.onStart();
+		    mGoogleApiClient.connect();
+	}
+	
+	 @Override
+	 protected void onStop() {
+		    super.onStop();
+		    if (mGoogleApiClient.isConnected()) {
+		      mGoogleApiClient.disconnect();
+		    }
+	  }
+	 public void onConnectionFailed(ConnectionResult result) {
+		  if (!mIntentInProgress) {
+		    // Store the ConnectionResult so that we can use it later when the user clicks
+		    // 'sign-in'.
+		    mConnectionResult = result;
+
+		    if (mSignInClicked) {
+		      // The user has already clicked 'sign-in' so we attempt to resolve all
+		      // errors until the user is signed in, or they cancel.
+		      resolveSignInError();
+		    }
+		  }
+	 }
+	@Override
+	public void onConnected(Bundle connectionHint) {
+	   mSignInClicked = false;
+	   Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
+	}
+	 
+	@Override
+	public void onConnectionSuspended(int cause) {
+		  mGoogleApiClient.connect();
+	}
+		
+	 @Override
+	protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+		  if (requestCode == RC_SIGN_IN) {
+		    mIntentInProgress = false;
+
+		    if (!mGoogleApiClient.isConnecting()) {
+		      mGoogleApiClient.connect();
+		    }
+		}
+    }
+	 
+	
+		/* A helper method to resolve the current ConnectionResult error. */
+	private void resolveSignInError() {
+	  if (mConnectionResult.hasResolution()) {
+	    try {
+	      mIntentInProgress = true;
+		startIntentSenderForResult(mConnectionResult.getResolution().getIntentSender(),
+	          RC_SIGN_IN, null, 0, 0, 0);
+	    } catch (SendIntentException e) {
+	      // The intent was canceled before it was sent.  Return to the default
+	      // state and attempt to connect to get an updated ConnectionResult.
+	      mIntentInProgress = false;
+	      mGoogleApiClient.connect();
+	    }
+	  }
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
+		
+
+
+		//mGoogleApiClient.connect();
+		
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		Button login = (Button) findViewById(R.id.login_button);
+		Button register = (Button) findViewById(R.id.register_button);
+		findViewById(R.id.sign_in_button).setOnClickListener(this);
+		
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.login);
+		
+		//this is for gmail login.
+		mGoogleApiClient = new GoogleApiClient.Builder(this)
+	        .addConnectionCallbacks(this)
+	        .addOnConnectionFailedListener(this)
+	        .addApi(Plus.API)
+	        .addScope(Plus.SCOPE_PLUS_LOGIN)
+	        .build();
+	        
+	        findViewById(R.id.sign_in_button).setOnClickListener(this);
+
+	        
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		loggedin= false;
 		 mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
