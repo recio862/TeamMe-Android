@@ -8,19 +8,11 @@ import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
 
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -163,7 +155,7 @@ public class ViewTeam extends Activity {
 			marker = savedInstanceState.getString("team_id");
 		}
 		if(marker.compareTo("You haven't joined any teams.") != 0){
-			ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+/*			ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
 			query.whereEqualTo("markerId", Integer.parseInt(marker));
 			try {
 				query.find();
@@ -201,7 +193,7 @@ public class ViewTeam extends Activity {
 						e.printStackTrace();
 					}
 				}
-			}
+			}*/
 			Set<String> set = new HashSet<String>(list);
 
 			String[] arraySet = set.toArray(new String[set.size()]);

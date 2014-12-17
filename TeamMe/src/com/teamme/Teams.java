@@ -24,11 +24,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 public class Teams extends Activity {
 	
@@ -38,7 +33,7 @@ public class Teams extends Activity {
 	private RadioButton current;
 	private RadioButton saved;
 	private Button viewTeam;
-	ParseUser user;
+	//ParseUser user;
 	private TextView text;
 	private Toast currentToast;
 	private Spinner s;
@@ -54,7 +49,7 @@ public class Teams extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.teams);
-		user = ParseUser.getCurrentUser();
+	//	user = ParseUser.getCurrentUser();
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE); 
 		current = (RadioButton) findViewById(R.id.current_teams);
@@ -69,7 +64,7 @@ public class Teams extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if(current.isChecked()){
-					ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+					/*ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
 					query.whereEqualTo("admin", user.getObjectId().toString());
 					query.addDescendingOrder("markerId");
 					
@@ -97,7 +92,7 @@ public class Teams extends Activity {
 								
 							}
 						}
-					});
+					});*/
 					
 					
 				}
@@ -140,7 +135,7 @@ public class Teams extends Activity {
 		
 	}
 	public void runSecondQuery(){
-		ParseQuery<ParseObject> q = ParseQuery.getQuery("game");
+	/*	ParseQuery<ParseObject> q = ParseQuery.getQuery("game");
 //		q.addAscendingOrder("markerId");
 		q.orderByAscending("markerId");
 		q.findInBackground(new FindCallback<ParseObject>() {
@@ -172,7 +167,7 @@ public class Teams extends Activity {
 					currentToast.show();
 				}
 				}
-		});
+		});*/
 	}
 	
 	//USE THIS TO CALL THE VIEW TEAM PAGE!

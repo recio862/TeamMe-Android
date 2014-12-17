@@ -11,8 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,10 +23,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.plus.Plus;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
 
 public class Login extends Activity implements ConnectionCallbacks, OnConnectionFailedListener, OnClickListener {
 
@@ -197,7 +193,7 @@ public class Login extends Activity implements ConnectionCallbacks, OnConnection
 		
 		emailtxt = email.getText().toString();
 		passwordtxt = password.getText().toString();
-		
+		/*
 		//Send data to parse
 		ParseUser.logInInBackground(emailtxt, passwordtxt,
 				new LogInCallback(){
@@ -223,6 +219,7 @@ public class Login extends Activity implements ConnectionCallbacks, OnConnection
 							
 					}
 		});
+		*/
 
 //		email = (EditText) findViewById(R.id.email);
 //		ed.putBoolean("loggedOut", false);
@@ -256,7 +253,7 @@ public class Login extends Activity implements ConnectionCallbacks, OnConnection
 			currentToast.show();
 		} else{
 			// Save new user data into parse
-			ParseUser user = new ParseUser();
+	/*		ParseUser user = new ParseUser();
 			user.setUsername(emailtxt);
 			user.setEmail(emailtxt);
 			user.setPassword(passwordtxt);
@@ -281,7 +278,7 @@ public class Login extends Activity implements ConnectionCallbacks, OnConnection
 						}
 					}
 				}
-			});
+			});*/
 		}
 		
 	}

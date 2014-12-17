@@ -7,12 +7,9 @@ import java.util.List;
 import java.util.Random;
 
 import java.util.Locale;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
+
 
 import java.util.List;
-import com.parse.FindCallback;
 
 import org.json.JSONArray;
 
@@ -69,18 +66,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.Parse;
 import com.teamme.Networking.AsyncResponse;
 import com.teamme.Networking.CoordParameters;
 import com.teamme.Networking.GameJoinParameters;
 import com.teamme.Networking.GameUpdateParameters;
 
-import com.parse.FindCallback;
-import com.parse.ParseAnonymousUtils;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 public class MainActivity extends Activity implements AsyncResponse {
 
@@ -119,7 +109,6 @@ public class MainActivity extends Activity implements AsyncResponse {
 	private boolean viewEnabled = false;
 	public int newActivePlayers;
 	public int newNeededPlayers;
-	ParseUser user;
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -300,7 +289,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
 	
 						//Parse code
-						ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
+/*						ParseQuery<ParseObject> query = ParseQuery.getQuery("game");
 						query.whereEqualTo("markerId", markerid);
 						int found = 0;
 						int activity = markerinfo.getActivityNum();
@@ -346,7 +335,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 									//Toast.makeText(getApplicationContext(), game.getTeamName(), Toast.LENGTH_LONG).show();
 								}
 							}
-						});
+						});*/
 
 						refreshMap();
 					}
@@ -636,7 +625,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 						Log.e("hello", act);}
 					else
 						act = TeamMeUtils.getActivityName(markerinfo.getActivityNum());
-					Game g = new Game();
+					/*Game g = new Game();
 				
 					g.setAdmin(ParseUser.getCurrentUser());
 					g.setTeamName(markerinfo.getTeamName());
@@ -648,7 +637,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 					g.setNeededPlayers(markerinfo.getNeededPlayers());
 					g.addMember(ParseUser.getCurrentUser());
 					g.saveEventually();
-					
+					*/
 					
 					mapMarkers.put(""+index,markerinfo );
 					myMarker.setTitle(""+index);
@@ -781,9 +770,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 		super.onCreate(savedInstanceState);
 		
 		//Parse Code
-		Parse.initialize(this, "ybMbNsW5K7M3tWC0hq5d2JJyiDDJfDW65eGRcYRc", "ny76yoFFCO2ACumEzDDzOqHs40udxmyaJkjHG5eo");
+	/*	Parse.initialize(this, "ybMbNsW5K7M3tWC0hq5d2JJyiDDJfDW65eGRcYRc", "ny76yoFFCO2ACumEzDDzOqHs40udxmyaJkjHG5eo");
 		ParseObject.registerSubclass(Game.class);
-
+*/
 		
 		mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
 	
@@ -793,9 +782,9 @@ public class MainActivity extends Activity implements AsyncResponse {
 			finish();
 			return;
 		}
-		user = ParseUser.getCurrentUser();
-		String s  = user.getObjectId();
-		Log.d("user id " , s);
+//		user = ParseUser.getCurrentUser();
+	//	String s  = user.getObjectId();
+	//	Log.d("user id " , s);
 		setContentView(R.layout.activity_main);
 		createSoundPool();
 		fixZoom();
@@ -887,7 +876,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 		ed.apply();
 		Intent intent = new Intent(getApplicationContext(), Login.class);
 		startActivity(intent);
-		user.logOut();
+	//	user.logOut();
 		finish();
 	}
 	public void settingsDialog(MenuItem item){

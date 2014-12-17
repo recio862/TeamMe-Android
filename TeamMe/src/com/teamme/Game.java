@@ -1,5 +1,5 @@
 package com.teamme;
-
+/*
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -64,9 +64,10 @@ public class Game extends ParseObject{
 	public void addMember(ParseUser user){
 		add("members", user.getUsername());
 	}
+	
 }
 
-
+*/
 
 
 

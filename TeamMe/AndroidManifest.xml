@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="21" />
 <permission
         android:name="in.wptrafficanalyzer.LocationGoogleMapV2Demo.permission.MAPS_RECEIVE"
         android:protectionLevel="signature"/>

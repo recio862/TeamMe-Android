@@ -33,9 +33,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import com.teamme.Networking.AsyncResponse;
 import com.teamme.Networking.UpdateProfileParameters;
 
@@ -56,7 +53,7 @@ public class Profile extends Activity implements AsyncResponse {
 	EditText email;
 	EditText phone; 
 	EditText password; 
-	ParseUser user;
+	//ParseUser user;
 	boolean editedFields;
 	private TextWatcher userwatcher;
 	private TextWatcher emailwatcher;
@@ -120,7 +117,7 @@ public class Profile extends Activity implements AsyncResponse {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				user.setUsername(s.toString());
+//				user.setUsername(s.toString());
 				editedFields = true;
 			}
 
@@ -145,7 +142,7 @@ public class Profile extends Activity implements AsyncResponse {
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				user.setEmail(s.toString());
+//				user.setEmail(s.toString());
 				editedFields = true;
 			}
 
@@ -170,7 +167,7 @@ public class Profile extends Activity implements AsyncResponse {
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				user.put("phoneNumber", s.toString());
+	//			user.put("phoneNumber", s.toString());
 				editedFields = true;
 			}
 
@@ -195,7 +192,7 @@ public class Profile extends Activity implements AsyncResponse {
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				user.setPassword(s.toString());
+		//		user.setPassword(s.toString());
 				editedFields = true;
 			}
 
@@ -222,13 +219,13 @@ public class Profile extends Activity implements AsyncResponse {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.profile);
-		user = ParseUser.getCurrentUser();
+/*		user = ParseUser.getCurrentUser();
 		try {
 			user.fetch();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		initializeWatchers();
 		
@@ -242,9 +239,9 @@ public class Profile extends Activity implements AsyncResponse {
 		
 		Log.e("right herety here", "HERE");
 
-		username.setText(user.getUsername().toString());
+		/*username.setText(user.getUsername().toString());
 		email.setText(user.getEmail().toString());
-		phone.setText(user.get("phoneNumber").toString());
+		phone.setText(user.get("phoneNumber").toString());*/
 		password.setText("");
 
 		
@@ -268,7 +265,7 @@ public class Profile extends Activity implements AsyncResponse {
 //		getPasser.responder = this;
 //		getPasser.execute("http://" + messagePasser.usedIp + ":80/android/project/grabUserProfile.php?email=" + user.getEmail()); 
 		//username, email and phone number should be set from information retrieved from server now
-		Log.e("passed get", user.getEmail());
+		//Log.e("passed get", user.getEmail());
 
 		confirmChanges.setOnClickListener(new OnClickListener(){
 			
@@ -281,7 +278,7 @@ public class Profile extends Activity implements AsyncResponse {
 						currentToast.cancel();
 					currentToast = Toast.makeText(getApplicationContext(), "Updating Profile", Toast.LENGTH_SHORT);
 					currentToast.show();
-					user.saveInBackground(new SaveCallback() {
+		/*			user.saveInBackground(new SaveCallback() {
 						
 						@Override
 						public void done(ParseException e) {
@@ -291,7 +288,7 @@ public class Profile extends Activity implements AsyncResponse {
 							currentToast = Toast.makeText(getApplicationContext(), "Profile Updated Successfully!", Toast.LENGTH_LONG);
 							currentToast.show();
 						}
-					});
+					});*/
 					editedFields = false;
 				}
 				else

@@ -4,12 +4,9 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK/appcompat_v7"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK/google-play-services_lib"/>
-	<classpathentry exported="true" kind="lib" path="libs/json-20140107.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/httpcore-4.3.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/httpmime-4.3.3.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/FacebookSDK"/>
+	<classpathentry kind="lib" path="/Users/brian/Downloads/httpmime-4.3.3.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
